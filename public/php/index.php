@@ -14,8 +14,9 @@ require './database/db_creator.php';
 $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 require "./functions/sql_functions.php";
 
-// Use JWT Token
+// Use JWT Token & mailer
 require './functions/token_functions.php';
+require './functions/helper_functions.php';
 
 // Use Server Method
 $method = $_SERVER['REQUEST_METHOD'];

@@ -1,6 +1,7 @@
 <?php
 // require __DIR__ . '/vendor/autoload.php'; // Include Composer's autoloader
 require_once './vendor/autoload.php';
+
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -21,4 +22,3 @@ function checkToken($token)
         return false;
     }
 }
-

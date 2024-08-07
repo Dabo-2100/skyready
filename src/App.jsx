@@ -2,9 +2,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./Pages/LoginPage";
 import Page404 from "./Pages/Page404";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import Loader from "./Components/Loader";
+import { useRecoilState } from "recoil";
+import { $LoaderIndex } from "./store";
 export default function App() {
+  const [loaderIndex] = useRecoilState($LoaderIndex);
   return (
     <div className="col-12 App">
+      {loaderIndex ? <Loader /> : null}
       <BrowserRouter>
         <Routes>
           <Route path="/">

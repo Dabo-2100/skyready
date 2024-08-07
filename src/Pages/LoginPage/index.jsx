@@ -1,16 +1,18 @@
 import "./index.scss";
 import { useRecoilState } from "recoil";
-import { $Server, $Token, $SwalDark } from "@/store";
+import { $Server, $Token, $SwalDark, $LoaderIndex } from "@/store";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/assets/IPACOLogo.png";
 import { useRef, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
+
 export default function LoginPage() {
   // GlobalState
   const [serverUrl] = useRecoilState($Server);
   const [token] = useRecoilState($Token);
   const [darkSwal] = useRecoilState($SwalDark);
+  const [, setLoaderIndex] = useRecoilState($LoaderIndex);
   const navigate = useNavigate();
 
   // LocalState
@@ -22,6 +24,7 @@ export default function LoginPage() {
   const passwordInput = useRef();
   // handlers
   const handleSubmit = () => {
+    setLoaderIndex(true);
     event.preventDefault();
     let mail = emailInput.current.value;
     let pass = passwordInput.current.value;
@@ -41,6 +44,7 @@ export default function LoginPage() {
             }
           )
           .then((res) => {
+            setLoaderIndex(false);
             if (!res.data.err) {
               Swal.fire({
                 icon: "success",
@@ -61,6 +65,7 @@ export default function LoginPage() {
             }
           })
           .catch((err) => {
+            setLoaderIndex(false);
             Swal.fire({
               icon: "error",
               text: "Connection Lost !",
@@ -71,6 +76,7 @@ export default function LoginPage() {
             console.log(err);
           });
       } else {
+        setLoaderIndex(false);
         Swal.fire({
           icon: "error",
           text: "Invalid Email",
@@ -79,6 +85,7 @@ export default function LoginPage() {
         });
       }
     } else {
+      setLoaderIndex(false);
       Swal.fire({
         icon: "info",
         text: "Please Enter You Email And Password !",
