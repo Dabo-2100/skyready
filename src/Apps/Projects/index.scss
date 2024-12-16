@@ -1,0 +1,195 @@
+#ProjectsApp {
+  .Tab {
+    .content {
+      background-color: #171829;
+      overflow-x: auto;
+    }
+    .filterIcon {
+      background-color: rgba(92, 97, 242, 0.2);
+      width: 17px;
+      height: 17px;
+      color: #5c61f2;
+    }
+  }
+
+  .link {
+    color: rgb(10, 88, 202);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  table {
+    tr td {
+      cursor: pointer;
+    }
+    th,
+    td {
+      vertical-align: middle;
+    }
+  }
+
+  .tab {
+    cursor: pointer;
+    transition: ease all 400ms;
+  }
+
+  .package-active {
+    color: white !important;
+    background-color: #383a63;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .package-inactvie {
+    color: grey !important;
+    cursor: pointer;
+  }
+
+  #Dashboard {
+    .widget {
+      background-color: #222227;
+    }
+  }
+  .table-dark {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+
+    thead tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+      th,
+      td {
+        border: 0 !important;
+        color: rgba(255, 255, 255, 0.6);
+        background-color: #10101c !important;
+      }
+    }
+
+    tbody tr {
+      border: 0 !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+      th,
+      td {
+        transition: ease all 250ms;
+        background-color: transparent !important;
+        border: 0 !important;
+      }
+      &:hover td,
+      &:hover th {
+        background-color: rgba(214, 214, 214, 0.2) !important;
+      }
+    }
+  }
+}
+
+.selectedTask {
+  background-color: #171829 !important;
+  th,
+  td {
+    background-color: #171829 !important;
+    color: white !important;
+  }
+}
+
+.form-control {
+  option {
+    color: rgb(10, 88, 202) !important;
+  }
+}
+
+.table-tree {
+  min-width: 100%;
+  thead {
+    th,
+    td {
+      font-size: 16px;
+      min-width: max-content;
+      white-space: nowrap;
+      font-weight: 600;
+      background-color: #10101c !important;
+      color: white;
+      padding: 10px 8px;
+      text-align: center;
+      border-bottom: 0 !important;
+    }
+  }
+  tbody {
+    tr {
+      background-color: transparent !important;
+    }
+    th,
+    td {
+      border-bottom: 0 !important;
+      background-color: transparent !important;
+      text-align: center;
+      min-width: max-content;
+      font-size: 16px;
+    }
+    .workPackage {
+      td,
+      th {
+        font-size: 16px;
+        color: white;
+        background-color: #17466132 !important;
+        cursor: pointer;
+        padding: 10px 8px;
+        min-width: max-content;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.4) !important;
+      }
+    }
+    .task {
+      transition: ease all 300ms;
+      background-color: #171829 !important;
+      &:hover {
+        background-color: rgb(56 58 99 / 63%) !important;
+      }
+      th,
+      td {
+        font-size: 16px;
+        color: white;
+        padding: 1rem 0;
+        transition: ease all 400ms;
+        border: solid 1px #172134;
+        padding: 10px 8px;
+        min-width: max-content;
+      }
+    }
+  }
+}
+
+.tag {
+  font-size: 12px;
+  &::before {
+    content: "# ";
+  }
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+.taskContextMenu {
+  background-color: transparent;
+  height: 100%;
+  z-index: 400;
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  * {
+    transition: ease 200ms all !important;
+  }
+  ul {
+    max-width: 200px !important;
+    padding: 5px;
+    li {
+      font-size: 0.8rem !important;
+      padding: 8px !important;
+      border-bottom: 1px solid rgba(128, 128, 128, 0.409);
+      &:hover {
+        background-color: #152645 !important;
+        color: white !important;
+        font-weight: 600;
+        border-radius: 4px;
+      }
+    }
+  }
+}

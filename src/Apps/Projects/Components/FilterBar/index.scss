@@ -1,0 +1,17 @@
+#FilterBar {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 200;
+  display: flex;
+  .filterContent {
+    background-color: #5c61f2;
+    width: 400px;
+    max-width: 90%;
+    height: 100vh;
+    overflow: auto;
+  }
+}

@@ -1,0 +1,11 @@
+#WelcomePage {
+  background-image: url("@/assets/Welcome.jpg");
+  background-color: rgb(16, 16, 28);
+  background-blend-mode: overlay;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  height: 100vh;
+  overflow: hidden;
+  color: white;
+}

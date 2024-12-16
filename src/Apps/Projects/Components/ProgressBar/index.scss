@@ -1,0 +1,27 @@
+.ProgressBar {
+  background-color: rgb(233 236 239);
+  border: 3px solid #8583ff;
+  border-radius: 2rem;
+  position: relative;
+  transition: ease all 400ms;
+
+  * {
+    transition: ease all 400ms;
+  }
+  span {
+    z-index: 100;
+    font-size: 14px;
+    font-weight: 800;
+    padding: 8px 0;
+    color: #10101c;
+  }
+  .bar {
+    width: 0%;
+    height: 100%;
+    border-radius: 2rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: linear-gradient(90deg, #383a63 0%, #5c61f2 100%);
+  }
+}

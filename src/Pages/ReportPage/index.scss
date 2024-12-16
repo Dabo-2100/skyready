@@ -1,0 +1,57 @@
+#ReportPage {
+  $darkColor: "#2c2a32";
+  min-height: 100vh;
+  background-color: rgb(16, 16, 28);
+  color: white;
+  #reportContent {
+    height: 95vh;
+    header {
+      background-color: #171829;
+      .topBar {
+        position: sticky;
+        top: 0;
+        left: 0;
+        background-color: #171829;
+        ul {
+          li {
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: ease 400ms all;
+            &:hover {
+              background-color: #383a63;
+            }
+          }
+          .activeLink {
+            color: white;
+            background-color: #383a63;
+          }
+        }
+      }
+    }
+    main {
+      flex-grow: 1;
+      background-color: #171829;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 16px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #171829;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 16px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}

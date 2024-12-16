@@ -1,0 +1,231 @@
+#FleetApp {
+  .Tab {
+    height: 1vh;
+    flex-grow: 1;
+    order: 2;
+    // overflow: auto;
+    .content {
+      background-color: #171829;
+      height: 100%;
+      // overflow-x: auto;
+    }
+
+    .filterIcon {
+      background-color: rgba(92, 97, 242, 0.2);
+      width: 17px;
+      height: 17px;
+      color: #5c61f2;
+    }
+
+    .table-dark {
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      thead tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        th,
+        td {
+          border: 0 !important;
+          color: rgba(255, 255, 255, 0.6);
+          background-color: #10101c !important;
+        }
+        // &:hover td,
+        // &:hover th {
+        //   background-color: rgb(0, 0, 0, 0) !important;
+        // }
+      }
+      tbody tr {
+        border: 0 !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        th,
+        td {
+          transition: ease all 250ms;
+          background-color: transparent !important;
+          border: 0 !important;
+        }
+
+        &:hover td,
+        &:hover th {
+          background-color: rgba(214, 214, 214, 0.2) !important;
+        }
+      }
+    }
+  }
+
+  .link {
+    color: rgb(10, 88, 202);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  table {
+    th,
+    td {
+      vertical-align: middle;
+    }
+  }
+
+  #AircraftInfo {
+    .content {
+      header {
+        .saveBtn {
+          button {
+            font-family: inherit;
+            font-size: 20px;
+            background: #212121;
+            color: white;
+            fill: rgb(155, 153, 153);
+            padding: 0.7em 1em;
+            padding-left: 0.9em;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            border-radius: 15px;
+            font-weight: 1000;
+          }
+
+          button span {
+            display: block;
+            margin-left: 0.3em;
+            transition: all 0.3s ease-in-out;
+          }
+
+          button svg {
+            display: block;
+            transform-origin: center center;
+            transition: transform 0.3s ease-in-out;
+          }
+
+          button:hover {
+            background: #000;
+          }
+
+          button:hover .svg-wrapper {
+            transform: scale(1.25);
+            transition: 0.5s linear;
+          }
+
+          button:hover svg {
+            transform: translateX(1.2em) scale(1.1);
+            fill: #fff;
+          }
+
+          button:hover span {
+            opacity: 0;
+            transition: 0.5s linear;
+          }
+
+          button:active {
+            transform: scale(0.95);
+          }
+        }
+        .editBtn {
+          .Btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100px;
+            height: 40px;
+            border: none;
+            padding: 0px 20px;
+            background-color: black;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 2px 2px 0px black;
+            transition-duration: 0.3s;
+          }
+
+          .svg {
+            width: 13px;
+            position: absolute;
+            right: 0;
+            margin-right: 20px;
+            fill: white;
+            transition-duration: 0.3s;
+          }
+
+          .Btn:hover {
+            color: transparent;
+          }
+
+          .Btn:hover svg {
+            right: 43%;
+            margin: 0;
+            padding: 0;
+            border: none;
+            transition-duration: 0.3s;
+          }
+
+          .Btn:active {
+            transform: translate(3px, 3px);
+            transition-duration: 0.3s;
+            box-shadow: 2px 2px 0px white;
+          }
+        }
+      }
+    }
+    .backSection {
+      button {
+        display: flex;
+        height: 3em;
+        width: 100px;
+        align-items: center;
+        justify-content: center;
+        background-color: #eeeeee4b;
+        border-radius: 3px;
+        letter-spacing: 1px;
+        transition: all 0.2s linear;
+        cursor: pointer;
+        border: none;
+        background: #fff;
+      }
+
+      button > svg {
+        margin-right: 5px;
+        margin-left: 5px;
+        font-size: 20px;
+        transition: all 0.4s ease-in;
+      }
+
+      button:hover > svg {
+        font-size: 1.2em;
+        transform: translateX(-5px);
+      }
+
+      button:hover {
+        box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  .tab {
+    cursor: pointer;
+    transition: ease all 400ms;
+  }
+
+  .package-active {
+    color: white !important;
+    background-color: #383a63;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .package-inactvie {
+    color: grey !important;
+    cursor: pointer;
+  }
+  #newDetailedPackage {
+    .packageTasks {
+      .form-control {
+        &:disabled {
+          background-color: rgba(255, 255, 255, 0) !important;
+          color: white;
+          border: 0;
+          text-align: center;
+        }
+      }
+    }
+  }
+}

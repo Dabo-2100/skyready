@@ -1,0 +1,59 @@
+#SideMenu {
+  order: 1;
+  width: 275px;
+  height: 100vh;
+  background-color: #171829;
+  transition: ease all 250ms;
+  position: relative;
+  * {
+    transition: ease all 250ms;
+  }
+
+  header {
+    border-bottom: 1px solid rgba(106, 113, 133, 0.2);
+  }
+
+  footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid rgba(106, 113, 133, 0.2);
+    @media screen and (max-width: 991px) {
+      position: static;
+    }
+  }
+
+  @media screen and (max-width: 991px) {
+    width: 100%;
+    order: 2;
+    height: auto;
+  }
+
+  .app {
+    cursor: pointer;
+  }
+
+  .appName {
+    color: rgb(159, 168, 193);
+    &:hover {
+      color: white;
+    }
+    @media screen and (max-width: 450px) {
+      display: none;
+    }
+  }
+
+  .appIcon {
+    color: rgb(159, 168, 193);
+    @media screen and (max-width: 450px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  .activeLink {
+    .appName,
+    .appIcon {
+      color: white;
+    }
+  }
+}
