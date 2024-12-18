@@ -62,6 +62,7 @@ export default function WorkPackage(props) {
             let package_id = props.package_id;
             getPackageTasks(serverUrl, token, openedProject, package_id).then((res) => {
                 setPackageTasks(res);
+                console.log(res);
             })
         }
     }, [isCollapsed, refreshIndex, props.estimated_duration]);
@@ -127,7 +128,7 @@ export default function WorkPackage(props) {
                         </div>
                     }
                 </th>
-                <th colSpan={1 + taskFilter.tableView.taskType + taskFilter.tableView.speciality}>
+                <th colSpan={1 + taskFilter.tableView.taskType + taskFilter.tableView.task_desc + taskFilter.tableView.speciality}>
                     <div className="d-flex gap-3 justify-content-center">
                         {props.package_name}
                     </div>
@@ -190,6 +191,7 @@ export default function WorkPackage(props) {
                                 task_type_id={el.task_type_id}
                                 task_type_name={el.task_type_name}
                                 task_tags={el.task_tags}
+                                task_desc={el.task_desc}
                                 comments_no={el.comments_no}
                             />)
                     })

@@ -168,8 +168,6 @@ export default function EditPackageTask() {
                                 showConfirmButton: false,
                             }).then(() => {
                                 setLoaderIndex(0);
-                                // refresh();
-                                // closeModal();
                             });
                         });
                     })

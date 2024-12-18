@@ -38,7 +38,10 @@ function workpackge_tasks_store()
                 array_push($fields, "parent_id");
                 array_push($values, $POST_data["parent_id"]);
             }
-
+            if (isset($POST_data["task_desc"])) {
+                array_push($fields, "task_desc");
+                array_push($values, $POST_data["task_desc"]);
+            }
             if (isset($POST_data["task_order"])) {
                 array_push($fields, "task_order");
                 array_push($values, $POST_data["task_order"]);

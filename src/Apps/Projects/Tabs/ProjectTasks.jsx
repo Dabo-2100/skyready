@@ -257,7 +257,7 @@ export default function ProjectTasks() {
                             <thead>
                                 <tr style={{ background: "#10101c !important" }}>
                                     <th>Order</th>
-                                    <th colSpan={1 + taskFilter.tableView.taskType + taskFilter.tableView.speciality}>
+                                    <th colSpan={1 + taskFilter.tableView.taskType + taskFilter.tableView.task_desc + taskFilter.tableView.speciality}>
                                         <div className="d-flex gap-3 justify-content-center">
                                             <FontAwesomeIcon icon={sort.package_name == 1 ? faArrowDown : faArrowUp} onClick={(event) => { event.stopPropagation(); filterBy("package_name") }} />
                                             Work Package

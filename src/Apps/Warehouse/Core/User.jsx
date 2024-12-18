@@ -1,4 +1,4 @@
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { $UserInfo } from "../../../store";
 import { useContext } from "react";
 import { HomeContext } from "../../../Pages/HomePage/HomeContext";
@@ -6,7 +6,7 @@ import { HomeContext } from "../../../Pages/HomePage/HomeContext";
 
 export class User {
     constructor() {
-        const [userInfo] = useRecoilState($UserInfo);
+        const userInfo = useRecoilValue($UserInfo);
         const { appIndex } = useContext(HomeContext);
         this.id = userInfo.user_id;
         this.name = userInfo.user_name;

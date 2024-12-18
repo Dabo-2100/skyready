@@ -22,6 +22,7 @@ const ProjectsProvider = ({ children }) => {
             startDate: false,
             dueDate: false,
             taskType: true,
+            task_desc: true,
             speciality: true,
             task_tags: true,
         },

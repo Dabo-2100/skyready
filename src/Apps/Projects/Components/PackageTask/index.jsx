@@ -9,13 +9,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Swal from "sweetalert2"
 import axios from "axios"
 import { $Server, $Token, $SwalDark } from "@/store";
-import { useRecoilState } from "recoil"
+import { useRecoilValue } from "recoil"
 import { User } from "../../../Warehouse/Core/User"
 
 export default function PackageTask(props) {
-    const [serverUrl] = useRecoilState($Server);
-    const [token] = useRecoilState($Token);
-    const [darkSwal] = useRecoilState($SwalDark);
+    const serverUrl = useRecoilValue($Server);
+    const token = useRecoilValue($Token);
+    const darkSwal = useRecoilValue($SwalDark);
     const { openModal2, refresh, menu, setMenu } = useContext(HomeContext);
     const { taskFilter, multiSelect } = useContext(ProjectsContext)
     const { setTaskToEdit, setOpenPackage_id } = useContext(FleetContext);
@@ -91,7 +91,7 @@ export default function PackageTask(props) {
                             }
                             multiSelect.toggleTask(obj)
                         }
-                        } type="checkbox" style={{ transform: "scale(2)" }} defaultChecked={props.selectAllIndex} />
+                        } type="checkbox" style={{ transform: "scale(1.5)" }} defaultChecked={props.selectAllIndex} />
                     ) : (props.task_index + 1)
                 }
             </td>
@@ -100,10 +100,38 @@ export default function PackageTask(props) {
                     {props.task_name} {props.comments_no != 0 && <FontAwesomeIcon onClick={handleRightClick} icon={faComment} />}
                 </div>
             </th>
-            {taskFilter.tableView.taskType && <th width="300px" style={{ width: "300px" }}>{props.task_type_name}</th>}
-            {taskFilter.tableView.speciality && <th style={{ whiteSpace: "nowrap" }}>{props.specialty_name}</th>}
-            {taskFilter.tableView.progress && <th className="px-2" style={{ whiteSpace: "nowrap" }}><ProgressBar log_id={props.log_id} status_id={props.status_id} percentage={props.task_progress} canEdit="true" /></th>}
-            {taskFilter.tableView.status && <th style={{ whiteSpace: "nowrap" }}><Status log_id={props.log_id} status_id={props.status_id} percentage={props.task_progress} status_name={props.status_name} /></th>}
+            {taskFilter.tableView.taskType &&
+                <th>
+                    <div style={{ minWidth: "200px" }}>
+                        {props.task_type_name}
+                    </div>
+                </th>
+            }
+            {taskFilter.tableView.task_desc &&
+                <th>
+                    <div style={{ minWidth: "250px" }}>
+                        {props.task_desc}
+                    </div>
+                </th>
+            }
+            {taskFilter.tableView.speciality &&
+                <th style={{ whiteSpace: "nowrap" }}>
+                    {props.specialty_name}
+                </th>
+            }
+            {taskFilter.tableView.progress &&
+                <th className="px-2" style={{ whiteSpace: "nowrap" }}>
+                    <div style={{ minWidth: "150px" }}>
+                        <ProgressBar log_id={props.log_id} status_id={props.status_id} percentage={props.task_progress} canEdit="true" />
+                    </div>
+                </th>}
+            {taskFilter.tableView.status &&
+                <th style={{ whiteSpace: "nowrap" }}>
+                    <div style={{ minWidth: "150px" }}>
+                        <Status log_id={props.log_id} status_id={props.status_id} percentage={props.task_progress} status_name={props.status_name} />
+                    </div>
+                </th>
+            }
             {taskFilter.tableView.duration && <th style={{ whiteSpace: "nowrap" }}>{props.task_duration}</th>}
             {taskFilter.tableView.startDate && <th style={{ whiteSpace: "nowrap" }}>{props.task_start_at && props.task_start_at.split("T")[0]} | {props.task_start_at && props.task_start_at.split("T")[1]} </th>}
             {taskFilter.tableView.dueDate && <th style={{ whiteSpace: "nowrap" }}>{props.task_end_at && props.task_end_at.split("T")[0]} | {props.task_end_at && props.task_end_at.split("T")[1]} </th>}

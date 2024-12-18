@@ -265,6 +265,7 @@ function project_tasks($id)
                         'task_progress'     => $el['task_progress'],
                         'task_name'         => $el['task_name'],
                         'task_duration'     => $el['task_duration'],
+                        'task_desc'         => $el['task_desc'],
                         'task_start_at'     => $el['task_start_at'],
                         'task_end_at'       => $el['task_end_at'],
                         'specialty_id'      => $el['specialty_id'],
