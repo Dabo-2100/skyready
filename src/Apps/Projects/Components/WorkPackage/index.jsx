@@ -62,7 +62,6 @@ export default function WorkPackage(props) {
             let package_id = props.package_id;
             getPackageTasks(serverUrl, token, openedProject, package_id).then((res) => {
                 setPackageTasks(res);
-                console.log(res);
             })
         }
     }, [isCollapsed, refreshIndex, props.estimated_duration]);
@@ -169,32 +168,49 @@ export default function WorkPackage(props) {
             </tr>
             {
                 isCollapsed && (packageTasks.length > 0) && (
-                    packageTasks.map((el, index) => {
-                        return (
-                            <PackageTask
-                                selectAllIndex={selectAllIndex}
-                                package_id={props.package_id}
-                                task_index={index}
-                                key={el.log_id}
-                                log_id={el.log_id}
-                                task_id={el.task_id}
-                                status_id={el.status_id}
-                                status_name={el.status_name}
-                                task_order={el.task_order}
-                                task_progress={isNaN(el.task_progress) ? 0 : el.task_progress}
-                                task_name={el.task_name}
-                                task_duration={el.task_duration}
-                                task_start_at={el.task_start_at}
-                                task_end_at={el.task_end_at}
-                                specialty_id={el.specialty_id}
-                                specialty_name={el.specialty_name}
-                                task_type_id={el.task_type_id}
-                                task_type_name={el.task_type_name}
-                                task_tags={el.task_tags}
-                                task_desc={el.task_desc}
-                                comments_no={el.comments_no}
-                            />)
-                    })
+                    <>
+                        {/* <tr style={{ color: "white !important" }}>
+                            <td>-</td>
+                            <td>Name</td>
+                            <td>Type</td>
+                            <td>Description</td>
+                            <td>Specialty</td>
+                            <td>Progress</td>
+                            <td>Status</td>
+                            <td>Durtation</td>
+                            <td>Start</td>
+                            <td>End</td>
+                            <td>Actions</td>
+                        </tr> */}
+                        {
+                            packageTasks.map((el, index) => {
+                                return (
+                                    <PackageTask
+                                        selectAllIndex={selectAllIndex}
+                                        package_id={props.package_id}
+                                        task_index={index}
+                                        key={el.log_id}
+                                        log_id={el.log_id}
+                                        task_id={el.task_id}
+                                        status_id={el.status_id}
+                                        status_name={el.status_name}
+                                        task_order={el.task_order}
+                                        task_progress={isNaN(el.task_progress) ? 0 : el.task_progress}
+                                        task_name={el.task_name}
+                                        task_duration={el.task_duration}
+                                        task_start_at={el.task_start_at}
+                                        task_end_at={el.task_end_at}
+                                        specialty_id={el.specialty_id}
+                                        specialty_name={el.specialty_name}
+                                        task_type_id={el.task_type_id}
+                                        task_type_name={el.task_type_name}
+                                        task_tags={el.task_tags}
+                                        task_desc={el.task_desc}
+                                        comments_no={el.comments_no}
+                                    />)
+                            })
+                        }
+                    </>
                 )
             }
         </>

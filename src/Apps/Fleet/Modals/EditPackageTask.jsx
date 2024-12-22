@@ -1,11 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { FleetContext } from "../FleetContext"
-import { useSpecialties, useTaskTypes, useAircraftZones, buildTree, useInsert, formCheck } from "@/customHooks";
 import { useRecoilState } from "recoil";
-import { $Server, $Token, $SwalDark } from "@/store";
-import axios from "axios";
-import Swal from "sweetalert2";
-import { useUpdate, useDelete, useGetData, reOrderTasks } from "@/customHooks";
 import { ProjectsContext } from "../../Projects/ProjectContext";
 import { HomeContext } from "../../../Pages/HomePage/HomeContext";
 import CommentsTree from "../../Projects/Components/CommentTree";
@@ -15,273 +10,72 @@ import Select from 'react-select'
 import Modal from "../../Warehouse/UI/Modals/Modal";
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem } from "react-bootstrap";
 import { $LoaderIndex } from "../../../store";
+import useEditPackageTask from "../../../Hooks/useEditPackageTask";
+import useWorkPackage from "../../../Hooks/useWorkPackage";
 
 export default function EditPackageTask() {
     const [, setLoaderIndex] = useRecoilState($LoaderIndex);
-    const [serverUrl] = useRecoilState($Server);
-    const [token] = useRecoilState($Token);
-    const [darkSwal] = useRecoilState($SwalDark);
-    const { closeModal, openModal4, refresh, refreshIndex } = useContext(HomeContext);
-    const { setSpecialty_id, selectedZones, setSelectedZones, removeSelectedZone, removeSelectedDesignator, openPackage_id, selectedDesignators, setSelectedDesignators, taskToEdit } = useContext(FleetContext);
+    const { openModal4, refreshIndex } = useContext(HomeContext);
     const { openedProject } = useContext(ProjectsContext);
-
-    const new_task_name = useRef();
-    const new_task_duration = useRef();
-    const new_type_id = useRef();
-    const new_speciality_id = useRef();
-    const new_content = useRef();
-
-    const [specialties, setSpecialties] = useState([]);
-    const [aircraftZones, setAircraftZones] = useState([]);
+    const { setSpecialty_id, selectedZones, setSelectedZones, removeSelectedZone, removeSelectedDesignator, selectedDesignators, setSelectedDesignators } = useContext(FleetContext);
+    const taskInputs = useRef([]);
+    const [comments, setComments] = useState([]);
     const [taskTypes, setTaskTypes] = useState([]);
-    const [packageInfo, setPackageInfo] = useState({ package_name: "" });
-    const [taskInfo, setTaskInfo] = useState({ task_name: "" });
     const [editIndex, setEditIndex] = useState(true);
-    const [comments, setComments] = useState([1]);
-
-    function areArraysEqual(arr1, arr2) {
-        if (arr1.length !== arr2.length) {
-            return false;
-        }
-        return arr1.every((obj, index) => JSON.stringify(obj) === JSON.stringify(arr2[index]));
-    }
-
-    const handleChange = (isSpecialty) => {
-        if (isSpecialty == 1) {
-            if (event.target.value > 1000) {
-                openModal4(5000);
-            }
-            else {
-                setSpecialty_id(event.target.value);
-                useTaskTypes(serverUrl, token, event.target.value).then((res) => {
-                    setTaskTypes(res);
-                    new_type_id.current.value = -1
-                });
-            }
-        }
-        else if (isSpecialty == 0) {
-            if (event.target.value > 1000) {
-                openModal4(+event.target.value);
-                event.target.value = 0;
-            }
-        }
-    }
-
-    const handleRemove = async () => {
-        Swal.fire({
-            icon: "question",
-            html: `
-                <div className="d-flex flex-wrap gap-3">
-                    <p className="text-danger">Are you sure you want to remove this task from the workpackage ?</p>
-                    <ul className="text-start fs-6">
-                        <li>This Will Affect All Related Projects Progress</li>
-                        <li>This Will Affect Workpackage Progress</li>
-                        <li>This Will Remove All Task Comments</li>
-                    </ul>
-                </div>
-            `,
-            showConfirmButton: true,
-            showDenyButton: true,
-            confirmButtonText: "Yes , Remove it",
-            denyButtonText: "Not Now !"
-        }).then((res) => {
-            if (res.isConfirmed) {
-                axios.post(`${serverUrl}/php/index.php/api/workpackage/tasks/delete`,
-                    { "task_id": taskToEdit },
-                    { headers: { Authorization: `Bearer ${token}` } }
-                ).then((res) => {
-                    Swal.fire({
-                        icon: "success",
-                        text: "Task Removed Succesfully",
-                        timer: 1500
-                    }).then(() => {
-                        closeModal();
-                    })
-                }).catch((err) => {
-                    console.log(err);
-                })
-            }
-        })
-    }
+    const [specialties, setSpecialties] = useState([]);
+    const [taskInfo, setTaskInfo] = useState({ task_name: "" });
+    const { specialties: wpSpecialties, taskTypes: getTaskTypes } = useWorkPackage();
+    const { getComments, getTaskInfo, saveComment, updateTask, removeTask, areArraysEqual } = useEditPackageTask();
 
     const saveChanges = async (event) => {
-        setLoaderIndex(1);
         event.preventDefault();
+        setLoaderIndex(1);
         setEditIndex(false);
-        let taskName = new_task_name.current.value;
-        let taskDuration = new_task_duration.current.value;
-        let specialtyId = new_speciality_id.current.value;
-        let taskTypeId = new_type_id.current.props.value.value || -1;
-
-        const obj = {
-            // "package_id": openPackage_id,
-            "task_name": taskName,
-            "task_duration": taskDuration,
-            "specialty_id": specialtyId,
-            "task_type_id": taskTypeId,
-        };
-
-        let data = [
-            { value: taskName, options: { required: true } },
-            { value: taskDuration, options: { required: true } },
-            { value: specialtyId, options: { notEqual: -1 } },
-            { value: taskTypeId, options: { notEqual: -1 } },
-        ];
-
-        let hasErrors = formCheck(data);
-        if (hasErrors != 0) {
-            Swal.fire({
-                icon: "error",
-                text: "Please fill required data !",
-                customClass: darkSwal,
-                timer: 1500,
-                showConfirmButton: false,
-            })
-            setLoaderIndex(0)
-        } else {
-            try {
-                const task_id = taskInfo.task_id;
-                useUpdate(serverUrl, token, "work_package_tasks", `task_id = ${task_id}`, obj).then(() => {
-                    useDelete(serverUrl, token, "tasks_x_zones", `task_id = ${task_id}`).then(() => {
-                        useDelete(serverUrl, token, "tasks_x_designators", `task_id = ${task_id}`).then(async () => {
-                            const zonesInsertPromises = selectedZones.map(
-                                (zone, index) => {
-                                    let zone_id = zone.zone_id;
-                                    useInsert(serverUrl, token, "tasks_x_zones", { task_id, zone_id })
-                                }
-                            );
-
-                            const designatorsPromises = selectedDesignators.map((el) => {
-                                let designator_id = el.designator_id;
-                                useInsert(serverUrl, token, "tasks_x_designators", { task_id, designator_id })
-                            }
-                            );
-
-                            await Promise.all(zonesInsertPromises);
-                            await Promise.all(designatorsPromises);
-
-                            Swal.fire({
-                                icon: "success",
-                                text: "Task Updated Succssefully!",
-                                customClass: darkSwal,
-                                timer: 1500,
-                                showConfirmButton: false,
-                            }).then(() => {
-                                setLoaderIndex(0);
-                            });
-                        });
-                    })
-                }).then(() => {
-                    reOrderTasks(serverUrl, token, openPackage_id);
-                })
-            } catch (error) {
-                console.log(error);
-            }
-        }
+        updateTask(taskInputs, taskInfo);
     };
 
     const addComment = (event) => {
         event.preventDefault();
-        let hasErrors = formCheck([{ value: new_content.current.value, options: { required: true } }
-        ])
-        if (hasErrors == 0) {
-            useGetData(serverUrl, token, `SELECT log_id FROM project_tasks WHERE task_id = ${taskToEdit} AND project_id = ${openedProject}`).then((res) => {
-                let log_id = res[0].log_id;
-                let obj = {
-                    log_id: log_id,
-                    comment_content: new_content.current.value,
-                };
-                useInsert(serverUrl, token, "task_comments", obj).then((res) => {
-                    new_content.current.value = "";
-                    Swal.fire({
-                        icon: "success",
-                        text: "Comment Added Successfully",
-                        timer: 1200,
-                    }).then(() => {
-                        refresh();
-                    })
-                })
-            })
-        }
-        else {
-            Swal.fire({
-                icon: "error",
-                text: "Please Fill Comment Content First",
-                timer: 1200
-            })
-        }
-
-    }
-
-    const getPackageData = async () => {
-        let final = {};
-        await axios.get(`${serverUrl}/php/index.php/api/packages/${openPackage_id}`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
-            final = res.data.data.info;
-        }).catch(err => { })
-        return final;
-    }
-
-    const getTaskInfo = async () => {
-        let final = {};
-        await axios.get(`${serverUrl}/php/index.php/api/workpackage/tasks/${taskToEdit}`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
-            final = res.data.data[0];
-        }).catch((err) => { console.log(err) });
-        return final;
+        saveComment(taskInputs.current[5].value).then(() => { taskInputs.current[5].value = "" })
     }
 
     useEffect(() => {
-        useGetData(serverUrl, token,
-            `SELECT * FROM task_comments 
-            WHERE log_id = (SELECT log_id FROM project_tasks WHERE task_id = ${taskToEdit} AND project_id = ${openedProject})
-            ORDER BY created_at DESC
-            `
-        ).then((res) => {
-            setComments(buildTree(res, "comment_id"))
-        })
-        new_speciality_id && new_speciality_id.current.value && useTaskTypes(serverUrl, token, new_speciality_id.current.value).then((res2) => {
-            if (!areArraysEqual(res2, taskTypes)) {
-                setTaskTypes(res2);
-                let obj = res2[res2.length - 1];
-                setTimeout(() => {
-                    let test = { value: obj.type_id, label: obj.type_name };
-                    new_type_id.current.selectOption(test);
-                }, 100);
-            }
-        })
-
-
+        getComments().then(setComments);
+        taskInputs.current[2] && taskInputs.current[2].value != -1 &&
+            getTaskTypes(taskInputs.current[2].value).then((res2) => {
+                if (!areArraysEqual(res2, taskTypes)) {
+                    setTaskTypes(res2);
+                    let obj = res2[res2.length - 1];
+                    setTimeout(() => {
+                        let test = { value: obj.type_id, label: obj.type_name };
+                        taskInputs.current[3].selectOption(test);
+                    }, 100);
+                }
+            })
     }, [refreshIndex])
 
     useEffect(() => {
-        useSpecialties(serverUrl, token).then((result) => {
+        wpSpecialties().then((result) => {
             setSpecialties(result);
             getTaskInfo().then((res) => {
                 setTaskInfo(res);
+                setSpecialty_id(res.specialty_id);
                 setSelectedZones(res['selected_zones']);
                 setSelectedDesignators(res['selected_designators']);
-                new_task_name.current.value = res.task_name;
-                new_task_duration.current.value = res.task_duration;
-                new_speciality_id.current.value = res.specialty_id;
-                setSpecialty_id(res.specialty_id);
-                useTaskTypes(serverUrl, token, res.specialty_id).then((res2) => {
+                taskInputs.current[0].value = res.task_name;
+                taskInputs.current[1].value = res.task_duration;
+                taskInputs.current[2].value = res.specialty_id;
+                taskInputs.current[4].value = res.task_desc;
+                getTaskTypes(res.specialty_id).then((res2) => {
                     setTaskTypes(res2);
                     let obj = res2.find(el => el.type_id == res.task_type_id);
                     setTimeout(() => {
-                        let test = { value: obj.type_id, label: obj.type_name };
-                        new_type_id.current.selectOption(test);
+                        obj && taskInputs.current[3].selectOption({ value: obj.type_id, label: obj.type_name });
                     }, 100);
                 })
-            });
+            })
         })
-        getPackageData().then((res) => {
-            setPackageInfo(res);
-            useAircraftZones(serverUrl, token, res.model_id).then((res) => {
-                setAircraftZones(buildTree(res, "zone_id"));
-            });
-        });
-        return () => {
-            setSelectedZones([]);
-        }
+        return () => { setSelectedZones([]); setSelectedDesignators([]); }
     }, []);
 
     return (
@@ -297,7 +91,7 @@ export default function EditPackageTask() {
                                 <div className="col-12">
                                     <h5>Add New Comment</h5>
                                     <form onSubmit={addComment} className="col-12 d-flex p-2 pt-0 gap-3 align-items-center border-top-0">
-                                        <textarea ref={new_content} className="form-control" rows={1}></textarea>
+                                        <textarea ref={el => { taskInputs.current[5] = el }} className="form-control" rows={1}></textarea>
                                         <button className="btn addBtn">Add</button>
                                     </form>
                                 </div>
@@ -307,12 +101,10 @@ export default function EditPackageTask() {
                     )
                 }
                 <AccordionItem eventKey="1" className="col-12">
-                    <AccordionHeader>
-                        <h5>Task Info</h5>
-                    </AccordionHeader>
+                    <AccordionHeader><h5>Task Info</h5></AccordionHeader>
                     <AccordionBody>
                         <div className="d-flex align-items-center gap-3 justify-content-end">
-                            <FontAwesomeIcon icon={faTrash} className="btn btn-danger" onClick={handleRemove} />
+                            <FontAwesomeIcon icon={faTrash} className="btn btn-danger" onClick={removeTask} />
                             {
                                 editIndex ? (
                                     <button className="saveButton" onClick={saveChanges}>
@@ -331,22 +123,29 @@ export default function EditPackageTask() {
                         <form className="col-12 d-flex flex-wrap gap-3 justify-content-lg-between">
                             <div className="col-12 col-lg-5 inputField">
                                 <label className="col-12" htmlFor="sn">Task Name <span className="text-danger">*</span></label>
-                                <input className="col-12 form-control" type="text" id="sn" ref={new_task_name} placeholder="Enter New Task Name" disabled={!editIndex} required />
+                                <input className="col-12 form-control" type="text" id="sn" ref={el => { taskInputs.current[0] = el }} placeholder="Enter New Task Name" disabled={!editIndex} required />
                             </div>
                             <div className="col-12 col-lg-5 inputField">
                                 <label className="col-12" htmlFor="rn">Task Duration <span className="text-danger">*</span></label>
-                                <input className="col-12 form-control" type="text" id="rn" ref={new_task_duration} placeholder="Enter Task Duration" disabled={!editIndex} required />
+                                <input className="col-12 form-control" type="text" id="rn" ref={el => { taskInputs.current[1] = el }} placeholder="Enter Task Duration" disabled={!editIndex} required />
                             </div>
                             <div className="col-12 col-lg-5 inputField">
-                                <label className="col-12" htmlFor="sn">Specialty <span className="text-danger">*</span></label>
-                                <select ref={new_speciality_id} className="col-12 form-select" onChange={() => handleChange(1)} disabled={!editIndex} required>
+                                <div className="col-12 d-flex align-items-center justify-content-between">
+                                    <label htmlFor="sn">Specialty <span className="text-danger">*</span></label>
+                                    <FontAwesomeIcon type="button" className="btn addBtn" onClick={() => openModal4(5000)} icon={faGears} />
+                                </div>
+                                <select onChange={(e) => {
+                                    e.target.value != taskInfo.task_type_id && getTaskTypes(e.target.value).then(setTaskTypes);
+                                    taskInputs.current[3].selectOption({});
+                                }
+                                } ref={el => { taskInputs.current[2] = el }
+                                } className="col-12 form-select" disabled={!editIndex} required>
                                     <option hidden value={-1} >Select Specialty</option>
                                     {
                                         specialties.map((el, index) => {
                                             return (<option value={el.specialty_id} key={index}>{el.specialty_name}</option>)
                                         })
                                     }
-                                    <option value={5000} className="btn addBtn py-2">Add New Specialty</option>
                                 </select>
                             </div>
                             <div className="col-12 col-lg-5 inputField">
@@ -357,11 +156,15 @@ export default function EditPackageTask() {
                                     }
                                 </label>
                                 <Select
-                                    ref={new_type_id}
+                                    ref={el => { taskInputs.current[3] = el }}
                                     className="col-12"
                                     options={taskTypes.map(el => { return { value: el.type_id, label: el.type_name } })}
                                     isDisabled={!editIndex}
                                 />
+                            </div>
+                            <div className="col-12 col-lg-5 inputField">
+                                <label htmlFor="">Task Description</label>
+                                <textarea ref={el => { taskInputs.current[4] = el }} className="form-control"></textarea>
                             </div>
                             <hr className="col-12 m-0" />
                             <div className="col-12 d-flex flex-wrap">
@@ -376,7 +179,6 @@ export default function EditPackageTask() {
                                                 </button>
                                             )
                                         }
-
                                     </div>
                                     <div className="col-12 d-flex gap-2 flex-wrap">
                                         {
@@ -387,7 +189,6 @@ export default function EditPackageTask() {
                                                         {
                                                             editIndex && <FontAwesomeIcon onClick={() => removeSelectedZone(zone.zone_id)} icon={faX} />
                                                         }
-
                                                     </button>
                                                 )
                                             })
@@ -405,7 +206,6 @@ export default function EditPackageTask() {
                                                 <div className="text">Add Designator</div>
                                             </button>)
                                         }
-
                                     </div>
                                     <div className="col-12 d-flex flex-wrap gap-3">
                                         {(selectedDesignators.length > 0) && (selectedDesignators.map((el, index) => {
@@ -426,6 +226,6 @@ export default function EditPackageTask() {
                     </AccordionBody>
                 </AccordionItem>
             </Accordion>
-        </Modal>
+        </Modal >
     )
 }

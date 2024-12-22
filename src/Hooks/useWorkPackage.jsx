@@ -34,5 +34,6 @@ export default function useWorkPackage() {
         }).catch(err => console.log(err))
         return final;
     }
+
     return { opendPackageInfo, taskTypes, specialties }
 }
