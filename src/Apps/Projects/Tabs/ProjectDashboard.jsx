@@ -52,10 +52,10 @@ export default function ProjectDashboard() {
     }
     const user = new User();
     useEffect(() => {
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         useDashboard(serverUrl, token, openedProject).then((res) => {
             setDashboardInfo(res[0]);
-            setLoaderIndex(0);
+            setLoaderIndex(false);
         })
     }, [refreshIndex]);
     return (

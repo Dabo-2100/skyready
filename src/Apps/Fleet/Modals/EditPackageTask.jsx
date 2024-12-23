@@ -29,7 +29,7 @@ export default function EditPackageTask() {
 
     const saveChanges = async (event) => {
         event.preventDefault();
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         setEditIndex(false);
         updateTask(taskInputs, taskInfo);
     };

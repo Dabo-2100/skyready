@@ -104,22 +104,22 @@ export default function ProjectTasks() {
     }, []);
 
     useEffect(() => {
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         useProjectActivePackages(serverUrl, token, openedProject).then((res) => {
             setWorkPackaes(res);
             setwpView(res);
-            setLoaderIndex(0);
+            setLoaderIndex(false);
         })
     }, [refreshIndex]);
 
     useEffect(() => {
         if (specialty_id == -1 && status_id == -1) {
             clearFilters();
-            setLoaderIndex(1);
+            setLoaderIndex(true);
             useProjectActivePackages(serverUrl, token, openedProject).then((res) => {
                 setWorkPackaes(res);
                 setwpView(res);
-                setLoaderIndex(0)
+                setLoaderIndex(false)
             })
         }
         else {

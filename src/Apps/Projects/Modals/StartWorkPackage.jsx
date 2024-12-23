@@ -76,10 +76,10 @@ export default function StartWorkPackage() {
                 icon: "error",
                 text: "Please Fill Time and Date First !",
                 timer: 1500
-            }).then(() => { setLoaderIndex(0); })
+            }).then(() => { setLoaderIndex(false); })
         }
         else {
-            setLoaderIndex(1);
+            setLoaderIndex(true);
             let Time = timesArr[startTime].split(" ")[0];
             let DayLight = timesArr[startTime].split(" ")[1];
             let TimeHrs = Time.split(":")[0] < 12 ? `0${Time.split(":")[0]}` : Time.split(":")[0];
@@ -112,7 +112,7 @@ export default function StartWorkPackage() {
                         timer: 1500,
                         showConfirmButton: false
                     }).then(() => {
-                        setLoaderIndex(0);
+                        setLoaderIndex(false);
                         closeModal();
                     })
                 })

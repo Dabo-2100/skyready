@@ -88,7 +88,7 @@ export default function NewProject() {
                 }
             ).then((res) => {
                 if (!res.data.err) {
-                    setLoaderIndex(1);
+                    setLoaderIndex(true);
                     Swal.fire({
                         icon: "success",
                         text: "New Project Added Successfully Registered to Your Fleet !",
@@ -96,7 +96,7 @@ export default function NewProject() {
                         timer: 1500,
                         showConfirmButton: false,
                     }).then(() => {
-                        setLoaderIndex(0);
+                        setLoaderIndex(false);
                         closeModal();
                     })
                 }

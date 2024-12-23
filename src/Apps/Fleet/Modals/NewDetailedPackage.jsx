@@ -86,7 +86,7 @@ export default function NewDetailedPackage() {
             { value: new_package_name.current.value, options: { notEqual: -1 } },
         ]);
         if (hasErrors == 0) {
-            setLoaderIndex(1);
+            setLoaderIndex(true);
             axios.post(`${serverUrl}/php/index.php/api/packages/store`, obj, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
                 if (!res.data.err) {
                     let data = res.data.data;
@@ -108,11 +108,11 @@ export default function NewDetailedPackage() {
                                 timer: 1500,
                                 showConfirmButton: false
                             }).then(() => {
-                                setLoaderIndex(0);
+                                setLoaderIndex(false);
                                 refresh();
                                 closeModal();
                             })
-                        }).catch(err => { console.log(err); setLoaderIndex(0); })
+                        }).catch(err => { console.log(err); setLoaderIndex(false); })
                     }
                     else {
                         Swal.fire({
@@ -121,7 +121,7 @@ export default function NewDetailedPackage() {
                             timer: 1500,
                             showConfirmButton: false
                         }).then(() => {
-                            setLoaderIndex(0);
+                            setLoaderIndex(false);
                             refresh();
                             closeModal();
                         })
@@ -135,7 +135,7 @@ export default function NewDetailedPackage() {
                     timer: 1500,
                     showConfirmButton: false,
                 }).then(() => {
-                    setLoaderIndex(0);
+                    setLoaderIndex(false);
                 })
                 console.log(err);
 

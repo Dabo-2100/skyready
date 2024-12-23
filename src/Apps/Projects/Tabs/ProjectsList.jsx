@@ -21,10 +21,10 @@ export default function ProjectsList() {
     openModal(6001);
   }
   useEffect(() => {
-    setLoaderIndex(1);
+    setLoaderIndex(true);
     useProjects(serverUrl, token).then((res) => {
       setProjects(res);
-      setLoaderIndex(0)
+      setLoaderIndex(false)
     })
   }, [refreshIndex]);
 

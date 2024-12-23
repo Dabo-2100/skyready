@@ -46,13 +46,13 @@ export default function EditDetailedPackage() {
     const new_ = useRef();
 
     const getPackageData = async () => {
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         await axios.get(`${serverUrl}/php/index.php/api/packages/${openPackage_id}`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
             setPackageInfo(res.data.data.info);
             setPackageTasks(res.data.data.tasks);
             setNewApplicability(res.data.data.info.applicability.map((x) => x.aircraft_id));
             setModelId(res.data.data.info.model_id);
-            setLoaderIndex(0);
+            setLoaderIndex(false);
         }).catch(err => console.log(err))
     }
 
@@ -80,7 +80,7 @@ export default function EditDetailedPackage() {
     }
 
     const handleSaveWPInfo = () => {
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         let obj = {
             model_id: new_model_id.current.value,
             package_name: new_package_name.current.value,
@@ -111,7 +111,7 @@ export default function EditDetailedPackage() {
                         })
                     }).catch(err => console.log(err))
                 }
-                setLoaderIndex(0);
+                setLoaderIndex(false);
                 refresh();
                 // closeModal();
             })
@@ -136,9 +136,9 @@ export default function EditDetailedPackage() {
     }
 
     const handleReOrder = () => {
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         reOrderTasks(serverUrl, token, packageInfo.package_id).then(() => {
-            setLoaderIndex(0)
+            setLoaderIndex(false)
             refresh();
         })
     }

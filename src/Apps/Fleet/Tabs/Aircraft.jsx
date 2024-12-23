@@ -34,11 +34,11 @@ export default function Aircraft() {
 
     useEffect(() => {
         setRoleName(userInfo.user_roles.find(el => el['app_order'] == appIndex).role_name);
-        setLoaderIndex(1)
+        setLoaderIndex(true)
         useAircraftFleet(serverUrl, token).then((res) => {
             setAircaft(res);
             setView(res);
-            setLoaderIndex(0);
+            setLoaderIndex(false);
         })
     }, [refreshIndex]);
 

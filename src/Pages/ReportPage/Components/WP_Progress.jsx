@@ -18,7 +18,7 @@ export default function WP_Progress() {
     const getProjectPackages = () => {
         let project_id = activeProject;
         if (project_id) {
-            setLoaderIndex(1);
+            setLoaderIndex(true);
             let q = `
                 SELECT 
                 wp.package_name,
@@ -36,7 +36,7 @@ export default function WP_Progress() {
             `;
             useGetData(serverUrl, token, q).then((res) => {
                 setTimeout(() => {
-                    setLoaderIndex(0);
+                    setLoaderIndex(false);
                     const groupedPackages = res.reduce((acc, pkg) => {
                         const parentId = pkg.parent_id;
                         if (!acc[parentId]) {

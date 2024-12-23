@@ -20,7 +20,7 @@ export default function Status(props) {
     const { multiSelect } = useContext(ProjectsContext);
 
     const updateStatus = (event) => {
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         let percentage = props.percentage;
         let newStatus = event.target.value;
         let log_id = props.log_id;
@@ -51,7 +51,7 @@ export default function Status(props) {
                 showCloseButton: false,
                 showConfirmButton: false,
             }).then(() => {
-                setLoaderIndex(0)
+                setLoaderIndex(false)
                 refresh();
                 setEditIndex(false);
             })
@@ -59,7 +59,7 @@ export default function Status(props) {
     }
 
     const updateMultiStatus = async (event) => {
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         let tasks = multiSelect.ids;
         for (let task of tasks) {
             let newStatus = event.target.value;
@@ -92,7 +92,7 @@ export default function Status(props) {
             showCloseButton: false,
             showConfirmButton: false,
         }).then(() => {
-            setLoaderIndex(0);
+            setLoaderIndex(false);
             multiSelect.close();
             setEditIndex(false);
             refresh();
@@ -100,7 +100,7 @@ export default function Status(props) {
     }
 
     const updateWorkPackage = async (event) => {
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         await useUpdate(serverUrl, token, "project_work_packages", `work_package_id = ${props.package_id} AND project_id=${props.project_id}`, {
             status_id: event.target.value
         });
@@ -113,7 +113,7 @@ export default function Status(props) {
             showCloseButton: false,
             showConfirmButton: false,
         }).then(() => {
-            setLoaderIndex(0);
+            setLoaderIndex(false);
             multiSelect.close();
             setEditIndex(false);
             refresh();

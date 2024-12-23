@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef } from "react"
 import { HomeContext } from "../../../../Pages/HomePage/HomeContext"
-import CloseBtn from "../Components/CloseBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 

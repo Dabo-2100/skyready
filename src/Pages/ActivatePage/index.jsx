@@ -61,7 +61,7 @@ export default function ActivatePage() {
   };
 
   const sendMail = () => {
-    setLoaderIndex(1);
+    setLoaderIndex(true);
     axios.post(`${serverUrl}/php/index.php/api/users/resend`, {}, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
       console.log(res);
       Swal.fire({
@@ -70,14 +70,14 @@ export default function ActivatePage() {
         customClass: darkSwal,
         showConfirmButton: false,
         timer: 1500,
-      }).then(() => { setLoaderIndex(0) });
+      }).then(() => { setLoaderIndex(false) });
     })
   }
 
   useEffect(() => {
-    setLoaderIndex(1);
+    setLoaderIndex(true);
     let email = sessionStorage.getItem("user_email");
-    setTimeout(() => { (!email || !token) ? (navigate('/login'), sessionStorage.clear()) : (setCheckEmail(email), setLoaderIndex(0)) }, 800);
+    setTimeout(() => { (!email || !token) ? (navigate('/login'), sessionStorage.clear()) : (setCheckEmail(email), setLoaderIndex(false)) }, 800);
   }, [])
   return (
     <div className="col-12 d-flex align-items-center justify-content-center p-3" id="ActivatePage">

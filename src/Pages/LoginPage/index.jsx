@@ -118,7 +118,7 @@ export default function LoginPage() {
           console.log(err);
         });
     } else {
-      setLoaderIndex(0);
+      setLoaderIndex(false);
     }
   }, []);
 

@@ -19,11 +19,11 @@ export default function Warehouses() {
     const [warehouses, setWarehouses] = useState([]);
     const user = new User();
     useEffect(() => {
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         inventoryRepo.get_warehouses(serverUrl, token).then((res) => {
             const store = new Store(res);
             store.setCache();
-            setTimeout(() => { setLoaderIndex(0); }, 600)
+            setTimeout(() => { setLoaderIndex(false); }, 600)
             setWarehouses(res);
         });
     }, [refreshIndex]);

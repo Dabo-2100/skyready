@@ -10,7 +10,7 @@ export default function Report2() {
     const serverUrl = useRecoilValue($Server);
     const token = useRecoilValue($Token);
     useEffect(() => {
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         useReport().getData(serverUrl, token).then((res) => {
             let data = useReport().groupPackages(res);
             console.log(data);

@@ -93,7 +93,7 @@ export default function useEditPackageTask() {
                 timer: 1500,
                 showConfirmButton: false,
             })
-            setLoaderIndex(0)
+            setLoaderIndex(false)
         } else {
             try {
                 const task_id = taskInfo.task_id;
@@ -123,7 +123,7 @@ export default function useEditPackageTask() {
                                 timer: 1500,
                                 showConfirmButton: false,
                             }).then(() => {
-                                setLoaderIndex(0);
+                                setLoaderIndex(false);
                             });
                         });
                     })

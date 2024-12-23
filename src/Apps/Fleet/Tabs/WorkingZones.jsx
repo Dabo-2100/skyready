@@ -35,9 +35,9 @@ export default function WorkingZones() {
 
     const getFilterData = () => {
         let zones_id = selectedZones.map(el => el.zone_id).toString(",");
-        setLoaderIndex(1);
+        setLoaderIndex(true);
         axios.post(`${serverUrl}/php/index.php/api/aircraft/task/vs/zones`, { zones_id }, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
-            setLoaderIndex(0);
+            setLoaderIndex(false);
             openModal(2002);
             console.log(res.data);
         })
