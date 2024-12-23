@@ -52,7 +52,7 @@ export default function useNewPackageTask() {
                 if (!response.data.err) {
                     const task_id = response.data['task_id'];
                     const zonesInsertPromises = selectedZones.map(
-                        (zone, index) => {
+                        (zone) => {
                             let zone_id = zone.zone_id;
                             dbInsert("tasks_x_zones", { task_id, zone_id })
                         }

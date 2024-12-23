@@ -1,5 +1,5 @@
 import { useRecoilValue } from "recoil"
-import { $Server, $SwalDark, $Token } from "../store"
+import { $Server, $Token } from "../store"
 import { useContext } from "react";
 import { FleetContext } from "../Apps/Fleet/FleetContext";
 import axios from "axios";
@@ -7,7 +7,6 @@ import axios from "axios";
 export default function useWorkPackage() {
     const serverUrl = useRecoilValue($Server);
     const token = useRecoilValue($Token);
-    const darkSwal = useRecoilValue($SwalDark);
     const { openPackage_id } = useContext(FleetContext);
 
     const taskTypes = async (specialty_id = 0) => {
