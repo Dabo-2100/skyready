@@ -1,6 +1,7 @@
+import PropTypes from "prop-types"
+
 export default function SaveBtn({ onClick, label }) {
     return (
-
         <button className="saveButton" onClick={onClick}>
             <div className="svg-wrapper-1">
                 <div className="svg-wrapper">
@@ -11,6 +12,10 @@ export default function SaveBtn({ onClick, label }) {
             </div>
             <span>{label}</span>
         </button>
-
     )
+}
+
+SaveBtn.propTypes = {
+    onClick: PropTypes.func,
+    label: PropTypes.string.isRequired
 }

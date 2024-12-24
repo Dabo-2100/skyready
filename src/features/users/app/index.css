@@ -1,0 +1,16 @@
+#UsersApp {
+    .content {
+        background-color: #171829;
+        height: 100%;
+
+        table {
+            th {
+                background-color: rgb(16, 16, 28) !important;
+            }
+
+            td {
+                background-color: rgba(0, 0, 0, 0) !important;
+            }
+        }
+    }
+}

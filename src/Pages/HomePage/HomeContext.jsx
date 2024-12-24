@@ -1,4 +1,5 @@
 // ThemeContext.js
+import PropTypes from "prop-types";
 import { createContext, useState } from "react";
 const HomeContext = createContext();
 
@@ -26,7 +27,7 @@ const HomeProvider = ({ children }) => {
   }
   // Refresh Modal States
   const [refreshIndex, setRefreshIndex] = useState(0);
-  const refresh = () => setRefreshIndex(refreshIndex + 1);
+  const refresh = () => setRefreshIndex((prev) => (prev + 1));
   // const task right menu
   const [menu, setMenu] = useState({ index: false, posX: 0, posY: 0 })
 
@@ -43,6 +44,10 @@ const HomeProvider = ({ children }) => {
       {children}
     </HomeContext.Provider>
   );
+};
+
+HomeProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export { HomeContext, HomeProvider };

@@ -1,15 +1,16 @@
 <?php
 $endpoints += [
-    '/api/users'                => 'users_index',
-    '/api/users/\d+'            => 'users_show',
-    '/api/users/store'          => 'users_store',
-    '/api/users/activate'       => 'users_activate',
-    '/api/users/register'       => 'users_register',
-    '/api/users/resend'         => 'users_resend',
-    '/api/users/reset'          => 'users_reset',
-    '/api/roles'                => 'app_roles',
-    '/api/users/update'         => 'users_update',
-    '/api/users/token/update'   => 'token_update',
+    '/api/users'                    => 'users_index',
+    '/api/users/\d+'                => 'users_show',
+    '/api/users/store'              => 'users_store',
+    '/api/users/hard-activate/\d+'  => 'users_activate',
+    '/api/users/register'           => 'users_register',
+    '/api/users/resend'             => 'users_resend',
+    '/api/roles'                    => 'app_roles',
+    '/api/users/update'             => 'users_update',
+    '/api/users/delete/\d+'         => 'users_delete',
+    '/api/users/token/update'       => 'token_update',
+    '/api/users/reset'              => 'users_reset',
 ];
 
 function users_index()
@@ -73,7 +74,7 @@ function users_show($id)
         }
         echo json_encode($response, true);
     } else {
-        echo 'Method Not Allowed';
+        echo 'Method Not Allowed This';
     }
 }
 
@@ -111,7 +112,7 @@ function users_store()
         // }
         echo json_encode($response, true);
     } else {
-        echo 'Method Not Allowed';
+        echo 'Method Not Allowed That';
     }
 }
 
@@ -236,6 +237,38 @@ function users_resend()
         } catch (\Throwable $err) {
             $response['msg'] = $err;
         }
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+
+function users_activate($id)
+{
+    $user_id = explode("/api/users/hard-activate/", $id[0])[1];
+    global $method, $response;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        update_data("app_users", "user_id = {$user_id}", ['is_active' => 1]);
+        $response['err'] = false;
+        $response['msg'] = 'User Activate Successfully';
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function users_delete($id)
+{
+    $user_id = explode("/api/users/delete/", $id[0])[1];
+    global $method, $response;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        delete_data("app_user_authority", "user_id = {$user_id}");
+        delete_data("app_users", "user_id = {$user_id}");
+        $response['err'] = false;
+        $response['msg'] = 'User Activate Successfully';
         echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';

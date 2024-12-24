@@ -40,7 +40,7 @@ export default function SideMenu() {
                 sessionStorage.removeItem("$Token");
                 setToken(null);
                 navigate('/login');
-            };
+            }
         })
     }
 

@@ -21,8 +21,8 @@ import NewProject from "@/Apps/Projects/Modals/NewProject";
 import ProjectView from "@/Apps/Projects/Modals/ProjectView";
 import StartWorkPackage from "../../Apps/Projects/Modals/StartWorkPackage.jsx";
 // Users App Modals
-import NewUser from "@/Apps/Users/Modals/NewUser.jsx";
-import EditUser from "@/Apps/Users/Modals/EditUser.jsx";
+import NewUser from "../../features/users/ui/modals/NewUser.jsx";
+import EditUser from "../../features/users/ui/modals/EditUser.jsx";
 import NewWarehouse from "../../Apps/Warehouse/UI/Modals/NewWarehouse.jsx";
 import AircraftZones from "../../Apps/Fleet/Modals/AircraftZones.jsx";
 import TasksVsZones from "../../Apps/Fleet/Modals/TasksVsZones.jsx";

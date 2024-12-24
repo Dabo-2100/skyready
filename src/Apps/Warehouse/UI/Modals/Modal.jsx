@@ -1,12 +1,14 @@
 import { useContext, useEffect } from "react"
 import { HomeContext } from "../../../../Pages/HomePage/HomeContext"
 import CloseBtn from "../Components/CloseBtn";
+import PropTypes from "prop-types";
 
 export default function Modal(props) {
     const { closeModal } = useContext(HomeContext);
     // Modal Default Logic
     const handleKeyDown = (event) => { if (event.key === "Escape") { closeModal() } };
     useEffect(() => {
+        window.removeEventListener("keydown", handleKeyDown);
         window.addEventListener("keydown", handleKeyDown);
         return () => { window.removeEventListener("keydown", handleKeyDown); }
     }, [])
@@ -22,3 +24,8 @@ export default function Modal(props) {
         </div >
     )
 }
+
+Modal.propTypes = {
+    className: PropTypes.object,
+    children: PropTypes.node,
+};
