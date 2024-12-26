@@ -2,7 +2,7 @@ import "./index.scss";
 import { useContext, useEffect, useState } from "react";
 import { HomeContext } from "./HomeContext.jsx";
 // System Apps
-import FleetApp from "@/Apps/Fleet";
+import FleetApp from "../../features/aircraft-fleet/app";
 import ProjectsApp from "@/Apps/Projects/index.jsx";
 import UsersApp from "../../features/users/app";
 import FormsApp from "@/Apps/Forms";
@@ -18,6 +18,7 @@ import { WarehouseProvider } from "../../Apps/Warehouse/warehouseContext.jsx";
 import { allModals } from "./Modals.jsx";
 import useAuthentication from "../../shared/ui/hooks/useAuthentication.jsx";
 import { $UserInfo } from "../../store/index.js";
+import { AircraftFleetProvider } from "../../features/aircraft-fleet/AircraftFleetContext.jsx";
 
 
 export default function HomePage() {
@@ -77,17 +78,19 @@ export default function HomePage() {
                 <div className="col-12 d-flex flex-column flex-lg-row" id="HomePage">
                     <SideMenu />
                     <FleetProvider>
-                        <ProjectsProvider>
-                            <UserProvider>
-                                <WarehouseProvider>
-                                    {isChecked && renderContent()}
-                                    {renderModalLayer1()}
-                                    {renderModalLayer2()}
-                                    {renderModalLayer3()}
-                                    {renderModalLayer4()}
-                                </WarehouseProvider>
-                            </UserProvider>
-                        </ProjectsProvider>
+                        <AircraftFleetProvider>
+                            <ProjectsProvider>
+                                <UserProvider>
+                                    <WarehouseProvider>
+                                        {isChecked && renderContent()}
+                                        {renderModalLayer1()}
+                                        {renderModalLayer2()}
+                                        {renderModalLayer3()}
+                                        {renderModalLayer4()}
+                                    </WarehouseProvider>
+                                </UserProvider>
+                            </ProjectsProvider>
+                        </AircraftFleetProvider>
                     </FleetProvider>
                 </div >
             }

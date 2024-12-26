@@ -1,0 +1,115 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGears } from "@fortawesome/free-solid-svg-icons";
+import { useContext, useEffect, useRef, useState } from "react"
+import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
+import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
+import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
+import useAircraft from "../hooks/useAircraft";
+
+export default function NewAircraft() {
+    const { openModal2, refreshIndex } = useContext(HomeContext);
+    const { getAircraftManufacturers, getAircraftStatus, getAircraftModels, getAircraftUsages, addNewAircraftToFleet } = useAircraft();
+    const formInputs = useRef([]);
+    const [manufacturers, setManufacturers] = useState([]);
+    const [aircraftStatus, setAircraftStatus] = useState([]);
+    const [aircraftModels, setAircraftModels] = useState([]);
+    const [aircraftUsages, setAircraftUsages] = useState([]);
+
+    useEffect(() => {
+        getAircraftManufacturers().then(setManufacturers);
+        getAircraftStatus().then(setAircraftStatus);
+        getAircraftModels().then(setAircraftModels);
+        getAircraftUsages().then(setAircraftUsages)
+    }, [refreshIndex]);
+
+    return (
+        <Modal>
+            <header className="col-12 p-0 pb-2 px-3 d-flex align-items-center justify-content-between">
+                <h1 className="fs-5">New Aircraft</h1>
+                <SaveBtn label="Register" onClick={() => addNewAircraftToFleet(formInputs)} />
+            </header>
+            <main className="col-12 d-flex flex-wrap">
+                <div className="col-12 d-flex flex-wrap gap-3  justify-content-lg-between">
+                    <div className="col-12 col-lg-5 inputField">
+                        <label className="col-12" htmlFor="sn">Serial No <span className="text-danger">*</span></label>
+                        <input className="col-12 form-control" type="text" id="sn" ref={el => { formInputs.current[0] = el }} placeholder="Enter aircraft serial no" required />
+                    </div>
+                    <div className="col-12 col-lg-5 inputField">
+                        <label className="col-12" htmlFor="rn">Registration Number <span className="text-danger">*</span></label>
+                        <input className="col-12 form-control" type="text" id="rn" ref={el => { formInputs.current[1] = el }} placeholder="Enter aircraft Registration Number" required />
+                    </div>
+                    <div className="col-12 col-lg-5 inputField">
+
+                        <div className="col-12 d-flex align-items-center justify-content-between">
+                            <label htmlFor="sn">Model <span className="text-danger">*</span></label>
+                            <button className="btn addBtn" onClick={() => openModal2(1004)}><FontAwesomeIcon icon={faGears} /></button>
+                        </div>
+
+                        <select ref={el => { formInputs.current[5] = el }} className="col-12 form-select" required>
+                            <option hidden value={-1} >Select aircraft Model</option>
+                            {
+                                aircraftModels.map((el, index) => {
+                                    return (<option value={el.model_id} key={index}>{el.model_name}</option>)
+                                })
+                            }
+                        </select>
+                    </div>
+                    <div className="col-12 col-lg-5 inputField">
+                        <div className="d-flex col-12 align-items-center justify-content-between">
+                            <label htmlFor="sn">Status <span className="text-danger">*</span></label>
+                            <button className="btn addBtn" onClick={() => openModal2(1003)}><FontAwesomeIcon icon={faGears} /></button>
+
+                        </div>
+                        <select ref={el => { formInputs.current[2] = el }} className="col-12 form-select" required>
+                            <option hidden value={-1} >Select aircraft Status</option>
+                            {
+                                aircraftStatus.map((el, index) => {
+                                    return (<option value={el.status_id} key={index}>{el.status_name}</option>)
+                                })
+                            }
+                        </select>
+                    </div>
+                    <div className="col-12 col-lg-5 inputField">
+                        <div className="d-flex col-12 align-items-center justify-content-between">
+                            <label htmlFor="sn">Manufacturer <span className="text-danger">*</span></label>
+                            <button className="btn addBtn" onClick={() => openModal2(1002)}><FontAwesomeIcon icon={faGears} /></button>
+                        </div>
+                        <select ref={el => { formInputs.current[3] = el }} className="col-12 form-select" required>
+                            <option hidden value={-1}>Select aircraft Manufacturer</option>
+                            {
+                                manufacturers.map((el, index) => {
+                                    return (<option value={el.manufacturer_id} key={index}>{el.manufacturer_name}</option>)
+                                })
+                            }
+                        </select>
+                    </div>
+                    <div className="col-12 col-lg-5 inputField">
+                        <div className="d-flex col-12 align-items-center justify-content-between">
+                            <label htmlFor="sn">Usage <span className="text-danger">*</span></label>
+                            <button className="btn addBtn" onClick={() => openModal2(1005)}><FontAwesomeIcon icon={faGears} /></button>
+                        </div>
+                        <select ref={el => { formInputs.current[4] = el }} className="col-12 form-select" required>
+                            <option hidden value={-1} >Select aircraft Usage</option>
+                            {
+                                aircraftUsages.map((el, index) => {
+                                    return (<option value={el.usage_id} key={index}>{el.usage_name}</option>)
+                                })
+                            }
+                        </select>
+                    </div>
+                    <div className="col-12 col-lg-5 inputField">
+                        <label className="col-12" htmlFor="sn">Manufacturer Date </label>
+                        <input className="col-12 form-control" type="date" id="sn" ref={el => { formInputs.current[6] = el }} placeholder="Enter aircraft serial no" required />
+                    </div>
+                    <div className="col-12 col-lg-5 inputField">
+                        <label className="col-12" htmlFor="sn">Flight Hours </label>
+                        <input className="col-12 form-control" type="text" id="sn" ref={el => { formInputs.current[7] = el }} placeholder="Enter aircraft serial no" required />
+                    </div>
+                </div>
+            </main>
+            <footer className="col-12 p-3">
+                <p className="col-12" style={{ fontSize: "0.8rem" }}>All fields with <span className="text-danger">*</span> are required to complete register</p>
+            </footer>
+        </Modal>
+    )
+}

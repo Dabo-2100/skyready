@@ -1,10 +1,11 @@
 <?php
 // Routes
 $endpoints += [
-    '/api/aircraft'         => 'aircraft_index',
-    '/api/aircraft/\d+'    => 'aircraft_show',
-    '/api/aircraft/store'  => 'aircraft_store',
-    '/api/aircraft/update'  => 'aircraft_update',
+    '/api/aircraft'                 => 'aircraft_index',
+    '/api/aircraft/\d+'             => 'aircraft_show',
+    '/api/aircraft/store'           => 'aircraft_store',
+    '/api/aircraft/update'          => 'aircraft_update',
+    '/api/aircraft/applicability/\d+'   => 'aircraft_applicability',
 ];
 
 function aircraft_index()
@@ -110,18 +111,46 @@ function aircraft_update()
     global $method, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $aircraft_update = update_data();
-            if (isset($aircraft_update)) {
-                $response['err'] = false;
-                $response['msg'] = "Aircraft Updated Successfully";
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $aircraft_update = update_data();
+        if (isset($aircraft_update)) {
+            $response['err'] = false;
+            $response['msg'] = "Aircraft Updated Successfully";
         }
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+
+function aircraft_applicability($id)
+{
+    $aircraft_id = explode("/api/aircraft/applicability/", $id[0])[1];
+    global $method, $response, $pdo;
+    if ($method === "GET") {
+        $operator_info = checkAuth();
+        $sql = "SELECT package_id, 
+        (SELECT package_name FROM work_packages WHERE package_id = wpa.package_id) AS package_name ,
+        (SELECT package_issued_duration FROM work_packages WHERE package_id = wpa.package_id) AS package_issued_duration ,
+        (SELECT package_desc FROM work_packages WHERE package_id = wpa.package_id) AS package_desc ,
+        (SELECT package_id FROM work_packages WHERE package_id = (SELECT parent_id FROM work_packages WHERE package_id = wpa.package_id)) AS parent_id, 
+        (SELECT package_name FROM work_packages WHERE package_id = (SELECT parent_id FROM work_packages WHERE package_id = wpa.package_id)) AS parent_name,
+        (SELECT SUM(task_duration) FROM work_package_tasks WHERE package_id = wpa.package_id ) AS estimated_duration 
+        FROM work_package_applicability wpa 
+        WHERE aircraft_id = {$aircraft_id}
+        ORDER BY parent_name,package_name";
+        $statement = $pdo->prepare($sql);
+        $statement->execute();
+        $data = [];
+        if ($statement->rowCount() > 0) {
+            while ($el = $statement->fetch(PDO::FETCH_ASSOC)) {
+                array_push($data, $el);
+            }
+        }
+        $response['err'] = false;
+        $response['msg'] = 'Aircraft Data is Ready To View';
+        $response['data'] = $data;
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }

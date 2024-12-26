@@ -3,11 +3,10 @@
     height: 1vh;
     flex-grow: 1;
     order: 2;
-    // overflow: auto;
+
     .content {
       background-color: #171829;
       height: 100%;
-      // overflow-x: auto;
     }
 
     .filterIcon {
@@ -19,8 +18,10 @@
 
     .table-dark {
       border: 1px solid rgba(255, 255, 255, 0.2) !important;
+
       thead tr {
         border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+
         th,
         td {
           border: 0 !important;
@@ -28,9 +29,11 @@
           background-color: #10101c !important;
         }
       }
+
       tbody tr {
         border: 0 !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+
         th,
         td {
           transition: ease all 250ms;
@@ -114,6 +117,7 @@
             transform: scale(0.95);
           }
         }
+
         .editBtn {
           .Btn {
             position: relative;
@@ -162,6 +166,7 @@
         }
       }
     }
+
     .backSection {
       button {
         display: flex;
@@ -212,6 +217,7 @@
     color: grey !important;
     cursor: pointer;
   }
+
   #newDetailedPackage {
     .packageTasks {
       .form-control {

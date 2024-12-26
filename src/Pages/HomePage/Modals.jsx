@@ -1,11 +1,13 @@
 
 // Fleet App Modals
-import NewAircraft from "@/Apps/Fleet/Modals/NewAircraft";
+import NewAircraft from "../../features/aircraft-fleet/ui/modals/NewAircraft.jsx";
+import EditAircraft from "../../features/aircraft-fleet/ui/modals/EditAircraft.jsx";
+// import NewAircraft from "@/Apps/Fleet/Modals/NewAircraft";
 import NewStatus from "@/Apps/Fleet/Modals/NewStatus";
 import NewManufacturer from "@/Apps/Fleet/Modals/NewManufacturer";
 import NewModel from "@/Apps/Fleet/Modals/NewModel";
 import NewUsage from "@/Apps/Fleet/Modals/NewUsage";
-import EditAircraft from "@/Apps/Fleet/Modals/EditAircraft";
+
 import NewSpecailty from "@/Apps/Fleet/Modals/NewSpecialty";
 import NewPackageType from "@/Apps/Fleet/Modals/NewPackageType";
 import NewPackage from "@/Apps/Fleet/Modals/NewPackage";

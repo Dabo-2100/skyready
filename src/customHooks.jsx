@@ -339,14 +339,11 @@ export const getDueDate = (startDatetime, durationHours, workStartAt, workEndAt,
         let taskDurationDays = Math.floor(remainTime / workingMinsPerDay);
         let remainMins = (remainTime % workingMinsPerDay);
         // Move the dueDate forward while respecting the working days
-        let daysToSkip = 0;
         while (taskDurationDays >= 0) {
             dueDate.setDate(dueDate.getDate() + 1);
             let dayOfWeek = dueDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
             if (workingDays.includes(dayOfWeek)) {
                 taskDurationDays--;
-            } else {
-                daysToSkip++;
             }
         }
         dueDate.setHours(workStartHour, workStartMinute, 0, 0);
@@ -362,7 +359,6 @@ export const getDueDate = (startDatetime, durationHours, workStartAt, workEndAt,
 
 export const reOrderTasks = async (serverUrl, token, package_id_to_reorder = null) => {
     let final = [];
-    let pacakges = [];
     if (package_id_to_reorder == null) {
         alert('package_id_to_reorder is NULL')
     }
@@ -383,7 +379,7 @@ export const reOrderTasks = async (serverUrl, token, package_id_to_reorder = nul
                 let x = useUpdate(serverUrl, token, "work_package_tasks", `task_id = ${task.task_id}`, { task_order: index + 1 });
                 return x;
             });
-            Promise.all(taskPromises).then(res => { }).catch((err) => { console.log(err) });
+            Promise.all(taskPromises).catch((err) => { console.log(err) });
         })
     }
     return final;
