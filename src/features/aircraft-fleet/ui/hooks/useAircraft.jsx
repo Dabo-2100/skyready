@@ -11,7 +11,7 @@ export default function useAircraft() {
     const serverUrl = useRecoilValue($Server);
     const token = useRecoilValue($Token);
     const darkSwal = useRecoilState($SwalDark);
-    const { closeModal } = useContext(HomeContext);
+    const { closeModal, refresh } = useContext(HomeContext);
     const { editAircaft_id } = useContext(AircraftFleetContext);
 
     const getAircraftInfo = async () => {
@@ -139,9 +139,229 @@ export default function useAircraft() {
         }
     }
 
+    const addNewManufacturer = async (newName) => {
+        let data = {
+            manufacturer_name: newName.current.value,
+        }
+        let formErrors = formCheck([
+            { value: newName.current.value, options: { required: true } },
+        ])
+
+        if (formErrors == 0) {
+            AircraftRepo.add_new_manufacturer(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "New Manufacturer Registered to Your Fleet !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && refresh();
+                })
+            })
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                text: "Please Fill All Required Data",
+                customClass: darkSwal,
+                timer: 1500,
+                showConfirmButton: false,
+            })
+        }
+
+    }
+
+    const removeManufacturer = async (manufacturer_id) => {
+        let data = {
+            manufacturer_id: manufacturer_id,
+        }
+        Swal.fire({
+            icon: "question",
+            text: "Are you sure you want to delete this Manufacturer ?",
+            confirmButtonColor: "red",
+            confirmButtonText: "Yes, Delete",
+            showDenyButton: true,
+            denyButtonColor: "green",
+            denyButtonText: " No, Keep it",
+            customClass: darkSwal
+        }).then((res) => {
+            res.isConfirmed && AircraftRepo.delete_manufacturer(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "Manufacturer Deleted Successfully !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && refresh();
+                })
+            })
+        })
+    }
+
+    const addNewAircraftStatus = async (newName) => {
+        let data = { status_name: newName.current.value };
+        let formErrors = formCheck([{ value: newName.current.value, options: { required: true } }]);
+
+        if (formErrors == 0) {
+            AircraftRepo.add_new_aircraft_status(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "New Aircraft Status Registered to Your Fleet !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && refresh();
+                })
+            })
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                text: "Please Fill All Required Data",
+                customClass: darkSwal,
+                timer: 1500,
+                showConfirmButton: false,
+            })
+        }
+
+    }
+
+    const removeAircraftStatus = async (stauts_id) => {
+        let data = { status_id: +stauts_id }
+        Swal.fire({
+            icon: "question",
+            text: "Are you sure you want to delete this Stauts ?",
+            confirmButtonColor: "red",
+            confirmButtonText: "Yes, Delete",
+            showDenyButton: true,
+            denyButtonColor: "green",
+            denyButtonText: " No, Keep it",
+            customClass: darkSwal
+        }).then((res) => {
+            res.isConfirmed && AircraftRepo.delete_aircraft_status(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "Manufacturer Deleted Successfully !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && refresh();
+                })
+            })
+        })
+    }
+
+    const addNewAircraftModel = async (newName) => {
+        let data = { model_name: newName.current.value };
+        let formErrors = formCheck([{ value: newName.current.value, options: { required: true } }]);
+
+        if (formErrors == 0) {
+            AircraftRepo.add_new_aircraft_model(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "New Aircraft Model Registered to Your Fleet !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && refresh();
+                })
+            })
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                text: "Please Fill All Required Data",
+                customClass: darkSwal,
+                timer: 1500,
+                showConfirmButton: false,
+            })
+        }
+
+    }
+
+    const removeAircraftModel = async (model_id) => {
+        let data = { model_id: +model_id }
+        Swal.fire({
+            icon: "question",
+            text: "Are you sure you want to delete this Model ?",
+            confirmButtonColor: "red",
+            confirmButtonText: "Yes, Delete",
+            showDenyButton: true,
+            denyButtonColor: "green",
+            denyButtonText: " No, Keep it",
+            customClass: darkSwal
+        }).then((res) => {
+            res.isConfirmed && AircraftRepo.delete_aircraft_model(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "Manufacturer Deleted Successfully !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && refresh();
+                })
+            })
+        })
+    }
+
+
+    const addNewAircraftUsage = async (newName) => {
+        let data = { usage_name: newName.current.value };
+        let formErrors = formCheck([{ value: newName.current.value, options: { required: true } }]);
+
+        if (formErrors == 0) {
+            AircraftRepo.add_new_aircraft_usage(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "New Aircraft Model Registered to Your Fleet !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && refresh();
+                })
+            })
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                text: "Please Fill All Required Data",
+                customClass: darkSwal,
+                timer: 1500,
+                showConfirmButton: false,
+            })
+        }
+
+    }
+
+    const removeAircraftUsage = async (usage_id) => {
+        let data = { usage_id: +usage_id }
+        Swal.fire({
+            icon: "question",
+            text: "Are you sure you want to delete this Model ?",
+            confirmButtonColor: "red",
+            confirmButtonText: "Yes, Delete",
+            showDenyButton: true,
+            denyButtonColor: "green",
+            denyButtonText: " No, Keep it",
+            customClass: darkSwal
+        }).then((res) => {
+            res.isConfirmed && AircraftRepo.delete_aircraft_usgae(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "Manufacturer Deleted Successfully !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && refresh();
+                })
+            })
+        })
+    }
+
     return {
         getAircraftFleet, filterAircraftFleet, getAircraftManufacturers,
         getAircraftStatus, getAircraftModels, getAircraftUsages, addNewAircraftToFleet,
-        getAircraftInfo, getAircraftApplicableParts, updateAircraftInfo
+        getAircraftInfo, getAircraftApplicableParts, updateAircraftInfo, addNewAircraftModel, removeAircraftModel,
+        addNewManufacturer, removeManufacturer, addNewAircraftStatus, removeAircraftStatus, addNewAircraftUsage, removeAircraftUsage
     }
 }
