@@ -16,7 +16,7 @@ export default function Packages() {
     const [packages, setPackages] = useState([]);
     const [activeType, setActiveType] = useState(0);
     const { openModal, refreshIndex, } = useContext(HomeContext);
-    const { activePackageType, setActivePackageType, setParent_id } = useContext(FleetContext);
+    const { activeWorkPackaeTypeId, setActiveWorkPackaeTypeId, setParent_id } = useContext(FleetContext);
 
     const openType = (id) => {
         useWorkPackages(serverUrl, token, id).then((res) => {
@@ -26,7 +26,7 @@ export default function Packages() {
 
     useEffect(() => {
         useWorkPackageTypes(serverUrl, token).then((res) => { setPackageTypes(res) });
-        useWorkPackages(serverUrl, token, activePackageType).then((res) => { setPackages(buildTree(res).sort((a, b) => a.package_name.localeCompare(b.package_name))) });
+        useWorkPackages(serverUrl, token, activeWorkPackaeTypeId).then((res) => { setPackages(buildTree(res).sort((a, b) => a.package_name.localeCompare(b.package_name))) });
     }, [refreshIndex]);
 
     return (
@@ -41,10 +41,10 @@ export default function Packages() {
                                         key={index}
                                         onClick={() => {
                                             openType(el.package_type_id);
-                                            setActivePackageType(el.package_type_id)
+                                            setActiveWorkPackaeTypeId(el.package_type_id)
                                             setActiveType(packageTypes.findIndex((element) => { return element.package_type_id == el.package_type_id }))
                                         }}
-                                        className={`text-center tab p-3 ${el.package_type_id == activePackageType ? 'package-active' : 'package-inactvie'}`}>
+                                        className={`text-center tab p-3 ${el.package_type_id == activeWorkPackaeTypeId ? 'package-active' : 'package-inactvie'}`}>
                                         {el.package_type_name}
                                     </span>
                                 )
@@ -63,7 +63,7 @@ export default function Packages() {
                     </div>
                 </div>
                 {
-                    activePackageType != 0 && (
+                    activeWorkPackaeTypeId != 0 && (
                         <div className="col-12 d-flex flex-column" style={{ height: "1vh", flexGrow: 1 }}>
                             <header className="col-12 d-flex align-items-center justify-content-end " >
                                 <button
@@ -85,7 +85,6 @@ export default function Packages() {
                         </div>
                     )
                 }
-
             </div>
         </div>
     )

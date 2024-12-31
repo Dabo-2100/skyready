@@ -17,7 +17,7 @@ export default function NewDetailedPackage() {
 
     const [newApplicability, setNewApplicability] = useState([]);
     const { openModal, closeModal, openModal3, refresh, refreshIndex } = useContext(HomeContext);
-    const { parent_id, activePackageType } = useContext(FleetContext);
+    const { parent_id, activeWorkPackaeTypeId } = useContext(FleetContext);
 
     const [modelId, setModelId] = useState(-1);
     const new_model_id = useRef();
@@ -76,7 +76,7 @@ export default function NewDetailedPackage() {
             package_version: new_package_version.current.value,
             package_issued_duration: new_issued_duration.current.value,
             package_release_date: new_package_release_date.current.value,
-            package_type_id: activePackageType,
+            package_type_id: activeWorkPackaeTypeId,
             parent_id: parent_id,
             is_folder: 0,
         };

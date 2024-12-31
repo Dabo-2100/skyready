@@ -11,7 +11,7 @@ const FleetProvider = ({ children }) => {
     // Aircraft to Edit id State
     const [editAircaft_id, setEditAircart_id] = useState(0);
     // Active Package Type State
-    const [activePackageType, setActivePackageType] = useState(0);
+    const [activeWorkPackaeTypeId, setActiveWorkPackaeTypeId] = useState(0);
     const [editPackage_id, setEditPackage_id] = useState(0);
     // Parent Folder id (Work package)
     const [parent_id, setParent_id] = useState(0);
@@ -38,7 +38,7 @@ const FleetProvider = ({ children }) => {
         <FleetContext.Provider value={{
             tabIndex, setTabIndex,
             editAircaft_id, setEditAircart_id,
-            activePackageType, setActivePackageType,
+            activeWorkPackaeTypeId, setActiveWorkPackaeTypeId,
             editPackage_id, setEditPackage_id,
             parent_id, setParent_id,
             zoneParent, setZoneParent,

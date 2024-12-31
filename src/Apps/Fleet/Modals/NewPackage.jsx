@@ -14,7 +14,7 @@ export default function NewPackage() {
     const [token] = useRecoilState($Token);
     const [darkSwal] = useRecoilState($SwalDark);
     const { closeModal, refresh, openModal } = useContext(HomeContext);
-    const { parent_id, activePackageType } = useContext(FleetContext);
+    const { parent_id, activeWorkPackaeTypeId } = useContext(FleetContext);
     const [activeType, setActiveType] = useState(0);
     const [packgeTypes, setPackgeTypes] = useState([{ package_type_name: "null" }]);
     const [packages, setPackages] = useState([]);
@@ -25,7 +25,7 @@ export default function NewPackage() {
         event.preventDefault();
         let obj = {
             "package_name": new_package_name.current.value,
-            "package_type_id": activePackageType,
+            "package_type_id": activeWorkPackaeTypeId,
             "is_folder": 1,
             "parent_id": parent_id
         }
@@ -134,9 +134,9 @@ export default function NewPackage() {
     useEffect(() => {
         useWorkPackageTypes(serverUrl, token).then((res) => {
             setPackgeTypes(res);
-            setActiveType(res.findIndex((el) => { return el.package_type_id == activePackageType }));
+            setActiveType(res.findIndex((el) => { return el.package_type_id == activeWorkPackaeTypeId }));
         });
-        useWorkPackages(serverUrl, token, activePackageType).then((res) => {
+        useWorkPackages(serverUrl, token, activeWorkPackaeTypeId).then((res) => {
             setPackages(res);
         })
     }, [])
@@ -205,7 +205,7 @@ export default function NewPackage() {
                             </thead>
                             <tbody>
                                 {packages.map((el, index) => {
-                                    if (el.parent_id == parent_id && el.package_type_id == activePackageType) {
+                                    if (el.parent_id == parent_id && el.package_type_id == activeWorkPackaeTypeId) {
                                         return (
 
                                             <tr key={index}>

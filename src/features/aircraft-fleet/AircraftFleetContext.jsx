@@ -3,13 +3,13 @@ import { createContext, useState } from "react";
 
 const AircraftFleetContext = createContext();
 const AircraftFleetProvider = ({ children }) => {
-    
+
     // Tab Index State
     const [tabIndex, setTabIndex] = useState(0);
     // Aircraft to Edit id State
     const [editAircaft_id, setEditAircart_id] = useState(0);
     // Active Package Type State
-    const [activePackageType, setActivePackageType] = useState(0);
+    const [activeWorkPackaeTypeId, setActiveWorkPackaeTypeId] = useState(0);
     const [editPackage_id, setEditPackage_id] = useState(0);
     // Parent Folder id (Work package)
     const [parent_id, setParent_id] = useState(0);
@@ -36,7 +36,6 @@ const AircraftFleetProvider = ({ children }) => {
         <AircraftFleetContext.Provider value={{
             tabIndex, setTabIndex,
             editAircaft_id, setEditAircart_id,
-            activePackageType, setActivePackageType,
             editPackage_id, setEditPackage_id,
             parent_id, setParent_id,
             zoneParent, setZoneParent,
@@ -44,10 +43,8 @@ const AircraftFleetProvider = ({ children }) => {
             specialty_id, setSpecialty_id,
             openPackage_id, setOpenPackage_id,
             selectedZones, setSelectedZones,
-            removeSelectedZone,
-            selectedDesignators, setSelectedDesignators,
-            removeSelectedDesignator,
-            taskToEdit, setTaskToEdit,
+            removeSelectedZone, selectedDesignators, setSelectedDesignators,
+            removeSelectedDesignator, taskToEdit, setTaskToEdit, activeWorkPackaeTypeId, setActiveWorkPackaeTypeId,
         }}>
             {children}
         </AircraftFleetContext.Provider>

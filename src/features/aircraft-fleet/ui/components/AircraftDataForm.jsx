@@ -1,14 +1,14 @@
-import { faGears } from '@fortawesome/free-solid-svg-icons'
-import useAircraftData from '../hooks/useAircraftData'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import useAircraft from '../hooks/useAircraft';
 import { useContext, useEffect, useRef, useState } from 'react';
+import { faGears } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import useAircraftData from '../hooks/useAircraftData'
+import useAircraft from '../hooks/useAircraft';
 import SaveBtn from '../../../../Apps/Warehouse/UI/Components/SaveBtn';
 import { HomeContext } from '../../../../Pages/HomePage/HomeContext';
 
 export default function AircraftDataForm() {
     const { aircraftStatus, manufacturers, aircraftUsages, aircraftInfo, aircraftModels } = useAircraftData();
-    const { openModal2, refreshIndex } = useContext(HomeContext);
+    const { openModal2 } = useContext(HomeContext);
     const { updateAircraftInfo } = useAircraft();
     const formInputs = useRef([]);
     const [editIndex, setEditIndex] = useState(false);
@@ -17,7 +17,7 @@ export default function AircraftDataForm() {
         formInputs.current[3].value = aircraftInfo.manufacturer_id;
         formInputs.current[4].value = aircraftInfo.usage_id;
         formInputs.current[5].value = aircraftInfo.model_id;
-    }, [refreshIndex])
+    }, [aircraftInfo])
 
     return (
         <main className="col-12 d-flex flex-wrap p-0">
