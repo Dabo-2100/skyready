@@ -1,13 +1,15 @@
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
-import { AircraftFleetContext } from "../../AircraftFleetContext";
+// import { AircraftFleetContext } from "../../AircraftFleetContext";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { $LoaderIndex, $UserInfo } from "../../../../store";
 import NoData from "../../../../shared/ui/components/NoData";
 import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
 import useAircraft from "../hooks/useAircraft";
 import { User } from "../../../../shared/core/User";
+import { useDispatch } from "react-redux";
+import { setActiveId } from "../../state/activeAircraftIdSlice";
 export default function Aircraft() {
     const [view, setView] = useState([]);
     const [aircraft, setAircaft] = useState([]);
@@ -15,7 +17,9 @@ export default function Aircraft() {
     const userData = new User(useRecoilValue($UserInfo));
 
     const { openModal, refreshIndex } = useContext(HomeContext);
-    const { setEditAircart_id } = useContext(AircraftFleetContext);
+    const dispatch = useDispatch();
+
+    // const { setEditAircart_id } = useContext(AircraftFleetContext);
     const { appIndex } = useContext(HomeContext);
 
     const { getAircraftFleet, filterAircraftFleet } = useAircraft();
@@ -73,7 +77,7 @@ export default function Aircraft() {
                                         <tbody>
                                             {view.map((el, index) => {
                                                 return (
-                                                    <tr key={index} className="animate__animated animate__fadeIn" onClick={() => { setEditAircart_id(el.aircraft_id); openModal(2000) }}>
+                                                    <tr key={index} className="animate__animated animate__fadeIn" onClick={() => { dispatch(setActiveId(el.aircraft_id)); openModal(2000) }}>
                                                         <td>{index + 1}</td>
                                                         <td>{el.aircraft_serial_no}</td>
                                                         <td>{el.aircraft_register_no}</td>

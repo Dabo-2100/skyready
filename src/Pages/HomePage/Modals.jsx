@@ -6,12 +6,12 @@ import NewStatus from "../../features/aircraft-fleet/ui/modals/NewAircraftStatus
 import NewModel from "../../features/aircraft-fleet/ui/modals/NewModel.jsx";
 import NewUsage from "../../features/aircraft-fleet/ui/modals/NewUsage.jsx";
 import NewManufacturer from "../../features/aircraft-fleet/ui/modals/NewManufacturer.jsx";
+import NewPackageType from "../../features/aircraft-fleet/ui/modals/NewPackageType.jsx";
+import NewPackage from "../../features/aircraft-fleet/ui/modals/NewPackage.jsx";
+import EditDetailedPackage from "../../features/aircraft-fleet/ui/modals/EditDetailedPackage.jsx";
+import NewDetailedPackage from "../../features/aircraft-fleet/ui/modals/NewDetailedPackage.jsx";
 // ------------------------------------------------------------------>
 import NewSpecailty from "@/Apps/Fleet/Modals/NewSpecialty";
-import NewPackageType from "@/Apps/Fleet/Modals/NewPackageType";
-import NewPackage from "@/Apps/Fleet/Modals/NewPackage";
-import NewDetailedPackage from "@/Apps/Fleet/Modals/NewDetailedPackage";
-import EditDetailedPackage from "@/Apps/Fleet/Modals/EditDetailedPackage";
 import NewPackageTask from "@/Apps/Fleet/Modals/NewPackageTask";
 import NewPackageTaskType from "@/Apps/Fleet/Modals/NewPackageTaskType";
 import NewAircraftZone from "@/Apps/Fleet/Modals/NewAircraftZone";
@@ -25,7 +25,7 @@ import StartWorkPackage from "../../Apps/Projects/Modals/StartWorkPackage.jsx";
 import NewUser from "../../features/users/ui/modals/NewUser.jsx";
 import EditUser from "../../features/users/ui/modals/EditUser.jsx";
 import NewWarehouse from "../../Apps/Warehouse/UI/Modals/NewWarehouse.jsx";
-import AircraftZones from "../../Apps/Fleet/Modals/AircraftZones.jsx";
+// import AircraftZones from "../../Apps/Fleet/Modals/AircraftZones.jsx";
 import TasksVsZones from "../../Apps/Fleet/Modals/TasksVsZones.jsx";
 import NewLocation from "../../Apps/Warehouse/UI/Modals/NewLocation.jsx";
 import WarehouseDetails from "../../Apps/Warehouse/UI/Modals/WarehouseDetails.jsx";
@@ -44,7 +44,7 @@ export const allModals = [
     { index: 1006, component: <NewAircraftZone /> },
     { index: 1007, component: <Designators /> },
     { index: 2000, component: <EditAircraft /> },
-    { index: 2001, component: <AircraftZones /> },
+    // { index: 2001, component: <AircraftZones /> },
     { index: 2002, component: <TasksVsZones /> },
     { index: 3000, component: <NewPackageType /> },
     { index: 4000, component: <NewPackage /> },

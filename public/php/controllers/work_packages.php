@@ -1,10 +1,14 @@
 <?php
 // Routes
+
+use function PHPSTORM_META\map;
+
 $endpoints += [
-    '/api/packages'        => 'packages_index',
-    '/api/packages/\d+'    => 'packages_show',
-    '/api/packages/store'  => 'packages_store',
-    '/api/packages/delete' => 'packages_delete',
+    '/api/packages'             => 'packages_index',
+    '/api/packages/\d+'         => 'packages_show',
+    '/api/packages/store'       => 'packages_store',
+    '/api/packages/delete'      => 'packages_delete',
+    '/api/packages/update/\d+'  => 'packages_update',
 
     '/api/packages/types'        => 'packages_type_index',
     '/api/packages/types/\d+'    => 'packages_type_show',
@@ -56,6 +60,11 @@ function packages_store()
                 array_push($values, $model_id);
             }
             $package_id = insert_data("work_packages", $fields, $values);
+
+            delete_data("work_package_applicability", "package_id = {$package_id}");
+            foreach ($POST_data['work_package_applicability'] as $index => $el) {
+                insert_data("work_package_applicability", ["package_id", "aircraft_id"], [$package_id, $el['aircraft_id']]);
+            }
 
             if (is_null($package_id) == false) {
                 $response['err'] = false;
@@ -222,6 +231,30 @@ function packages_type_show($id)
         } else {
             $response['msg'] = 'Package Type id is wrong !';
         }
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function packages_update($id)
+{
+    $package_id = explode("/api/packages/update/", $id[0])[1];
+    global $method, $response, $POST_data;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        update_data("work_packages", "package_id = {$package_id}", [
+            'package_name' => $POST_data['package_name'],
+            'package_desc' => $POST_data['package_desc'],
+            'package_version' => $POST_data['package_version'],
+            'package_issued_duration' => $POST_data['package_issued_duration'],
+            'package_release_date' => $POST_data['package_release_date']
+        ]);
+        delete_data("work_package_applicability", "package_id = {$package_id}");
+        foreach ($POST_data['work_package_applicability'] as $index => $el) {
+            insert_data("work_package_applicability", ["package_id", "aircraft_id"], [$package_id, $el['aircraft_id']]);
+        }
+        $response['err'] = false;
         echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';

@@ -5,9 +5,13 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle.js";
 import "animate.css";
 import "./index.scss";
+import { Provider } from "react-redux";
+import store from "./redux-store/index.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <RecoilRoot>
-    <App />
-  </RecoilRoot>
+  <Provider store={store}>
+    <RecoilRoot>
+      <App />
+    </RecoilRoot>
+  </Provider>
 );

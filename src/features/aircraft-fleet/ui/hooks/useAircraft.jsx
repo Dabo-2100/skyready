@@ -1,18 +1,18 @@
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useContext } from "react";
+import { HomeContext } from "../../../../Pages/HomePage/HomeContext"
+import Swal from "sweetalert2";
+import { useRecoilValue } from "recoil";
 import { $Server, $SwalDark, $Token } from "../../../../store";
 import { AircraftRepo } from "../../data/repositories/AircraftRepo";
 import { formCheck } from "../../../../customHooks";
-import Swal from "sweetalert2";
-import { useContext } from "react";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext"
-import { AircraftFleetContext } from "../../AircraftFleetContext";
+import { useSelector } from "react-redux";
 
 export default function useAircraft() {
+    const { closeModal, refresh } = useContext(HomeContext);
+    const editAircaft_id = useSelector(state => state.aircraftFleet.activeAircraftId.value);
     const serverUrl = useRecoilValue($Server);
     const token = useRecoilValue($Token);
-    const darkSwal = useRecoilState($SwalDark);
-    const { closeModal, refresh } = useContext(HomeContext);
-    const { editAircaft_id } = useContext(AircraftFleetContext);
+    const darkSwal = useRecoilValue($SwalDark);
 
     const getAircraftInfo = async () => {
         return await AircraftRepo.aircraft_info(serverUrl, token, editAircaft_id);
@@ -20,6 +20,10 @@ export default function useAircraft() {
 
     const getAircraftFleet = async () => {
         return await AircraftRepo.all_aircraft_fleet(serverUrl, token);
+    }
+
+    const getAircraftFleetByModel = async (model_id) => {
+        return await AircraftRepo.all_aircraft_fleet_by_model(serverUrl, token, model_id);
     }
 
     const getAircraftManufacturers = async () => {
@@ -304,7 +308,6 @@ export default function useAircraft() {
         })
     }
 
-
     const addNewAircraftUsage = async (newName) => {
         let data = { usage_name: newName.current.value };
         let formErrors = formCheck([{ value: newName.current.value, options: { required: true } }]);
@@ -359,7 +362,7 @@ export default function useAircraft() {
     }
 
     return {
-        getAircraftFleet, filterAircraftFleet, getAircraftManufacturers,
+        getAircraftFleet, filterAircraftFleet, getAircraftManufacturers, getAircraftFleetByModel,
         getAircraftStatus, getAircraftModels, getAircraftUsages, addNewAircraftToFleet,
         getAircraftInfo, getAircraftApplicableParts, updateAircraftInfo, addNewAircraftModel, removeAircraftModel,
         addNewManufacturer, removeManufacturer, addNewAircraftStatus, removeAircraftStatus, addNewAircraftUsage, removeAircraftUsage

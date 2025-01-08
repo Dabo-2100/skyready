@@ -19,11 +19,16 @@ import { storeAircraftUsage } from "../api/store_aircraft_usage";
 import { storeManufacturer } from "../api/store_aircraft_manufacturer";
 
 import { updateAircraftInfo } from "../api/update_aircraft_info";
+import { indexAircraftFleetByModel } from "../api/index_aircraft_fleet_by_model";
 
 
 export const AircraftRepo = {
     all_aircraft_fleet: async (serverUrl, token) => {
         return await indexAircraftFleet(serverUrl, token);
+    },
+
+    all_aircraft_fleet_by_model: async (serverUrl, token, model_id) => {
+        return await indexAircraftFleetByModel(serverUrl, token, model_id);
     },
 
     all_aircraft_manufacturers: async (serverUrl, token) => {

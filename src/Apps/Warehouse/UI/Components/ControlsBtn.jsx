@@ -1,5 +1,3 @@
-import React from 'react'
-
 export default function ControlsBtn({ onClick }) {
     return (
         <button title="Controls" className="settingsButton" onClick={onClick}>

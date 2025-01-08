@@ -5,16 +5,14 @@ const AircraftFleetContext = createContext();
 const AircraftFleetProvider = ({ children }) => {
 
     // Tab Index State
-    const [tabIndex, setTabIndex] = useState(0);
-    // Aircraft to Edit id State
-    const [editAircaft_id, setEditAircart_id] = useState(0);
-    // Active Package Type State
+    // const [tabIndex, setTabIndex] = useState(0);
+    // const [editAircaft_id, setEditAircart_id] = useState(0);
     const [activeWorkPackaeTypeId, setActiveWorkPackaeTypeId] = useState(0);
     const [editPackage_id, setEditPackage_id] = useState(0);
-    // Parent Folder id (Work package)
     const [parent_id, setParent_id] = useState(0);
+    // Aircraft to Edit id State
     const [zoneParent, setZoneParent] = useState({ id: 0, name: "" });
-    const [removeZone_id, setRemoveZone_id,] = useState(0);
+    const [removeZone_id, setRemoveZone_id] = useState(0);
     const [specialty_id, setSpecialty_id] = useState(0);
     const [openPackage_id, setOpenPackage_id] = useState(0);
     const [selectedZones, setSelectedZones] = useState([]);
@@ -34,8 +32,6 @@ const AircraftFleetProvider = ({ children }) => {
     const [taskToEdit, setTaskToEdit] = useState(0);
     return (
         <AircraftFleetContext.Provider value={{
-            tabIndex, setTabIndex,
-            editAircaft_id, setEditAircart_id,
             editPackage_id, setEditPackage_id,
             parent_id, setParent_id,
             zoneParent, setZoneParent,
