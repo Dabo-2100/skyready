@@ -20,9 +20,17 @@ import { storeManufacturer } from "../api/store_aircraft_manufacturer";
 
 import { updateAircraftInfo } from "../api/update_aircraft_info";
 import { indexAircraftFleetByModel } from "../api/index_aircraft_fleet_by_model";
+import { indexAircraftSpecialties } from "../api/index_aircraft_specialties";
+import { storeAircraftSpeciality } from "../api/store_aircraft_speciality";
+import { deleteAircraftSpecaility } from "../api/delete_aircraft_speciality";
+import { indexAircraftZones } from "../api/index_aircraft_zones";
 
 
 export const AircraftRepo = {
+    all_aircraft_zones: async (serverUrl, token, model_id) => {
+        return await indexAircraftZones(serverUrl, token, model_id);
+    },
+
     all_aircraft_fleet: async (serverUrl, token) => {
         return await indexAircraftFleet(serverUrl, token);
     },
@@ -41,6 +49,10 @@ export const AircraftRepo = {
 
     all_aircraft_models: async (serverUrl, token) => {
         return await indexAircraftModels(serverUrl, token);
+    },
+
+    all_aircraft_specialties: async (serverUrl, token) => {
+        return await indexAircraftSpecialties(serverUrl, token);
     },
 
     all_aircraft_usages: async (serverUrl, token) => {
@@ -95,4 +107,11 @@ export const AircraftRepo = {
         return await deleteAircraftUsage(serverUrl, token, data);
     },
 
+    add_new_aircraft_speciality: async (serverUrl, token, data) => {
+        return await storeAircraftSpeciality(serverUrl, token, data);
+    },
+
+    delete_aircraft_speciality: async (serverUrl, token, data) => {
+        return await deleteAircraftSpecaility(serverUrl, token, data);
+    },
 }

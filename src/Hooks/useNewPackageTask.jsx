@@ -17,7 +17,6 @@ export default function useNewPackageTask() {
     const { dbInsert } = useDatabase();
 
     const handleSubmit = async (taskInputs) => {
-        console.log(taskInputs.current[3].props);
         let taskName = taskInputs.current[0].value;
         let taskDuration = taskInputs.current[1].value;
         let specialtyId = taskInputs.current[2].value;

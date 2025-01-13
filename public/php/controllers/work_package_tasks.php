@@ -5,6 +5,8 @@ $endpoints += [
     '/api/workpackage/tasks/\d+'        => 'workpackge_tasks_show',
     '/api/workpackage/tasks/store'      => 'workpackge_tasks_store',
     '/api/workpackage/tasks/delete'     => 'workpackge_tasks_delete',
+    '/api/workpackage/tasks/reorder'    => 'workpackge_tasks_reorder',
+
 ];
 
 function workpackge_tasks_index()
@@ -32,6 +34,9 @@ function workpackge_tasks_store()
             $task_duration = htmlspecialchars($POST_data["task_duration"]);
             $specialty_id = htmlspecialchars($POST_data["specialty_id"]);
             $task_type_id = htmlspecialchars($POST_data["task_type_id"]);
+            $task_zones = $POST_data["task_zones"];
+            $task_designators = $POST_data["task_designators"];
+
             $fields = ["package_id", "task_name", "task_duration", "specialty_id", "task_type_id"];
             $values = [$package_id, $task_name, $task_duration, $specialty_id, $task_type_id];
             if (isset($POST_data["parent_id"])) {
@@ -46,13 +51,24 @@ function workpackge_tasks_store()
                 array_push($fields, "task_order");
                 array_push($values, $POST_data["task_order"]);
             }
-            $status_id = insert_data("work_package_tasks", $fields, $values);
-            if (is_null($status_id) == false) {
-                $response['task_id'] =  $status_id;
+            $task_id = insert_data("work_package_tasks", $fields, $values);
+            if (is_null($task_id) == false) {
+                $response['task_id'] =  $task_id;
                 $response['err'] = false;
                 $response['msg'] = "New Task Added Successfully";
                 $response['data'] = getRows("work_package_tasks", "package_id = {$package_id} AND is_active = 1");
             }
+
+            foreach ($task_zones as $index => $zone) {
+                insert_data("tasks_x_zones", ['task_id', 'zone_id'], [$task_id, $zone['zone_id']]);
+            }
+
+            foreach ($task_designators as $index => $zone) {
+                insert_data("tasks_x_designators", ['task_id', 'designator_id'], [$task_id, $zone['designator_id']]);
+            }
+
+            workpackge_tasks_reorder($package_id);
+
             echo json_encode($response, true);
         } else {
             echo "Error : 401 | No Authority";
@@ -162,6 +178,47 @@ function workpackge_tasks_show($id)
             $response['msg'] = 'Task id is wrong !';
         }
         echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function workpackge_tasks_reorder($package_id = false)
+{
+    global $method, $POST_data, $pdo, $response;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        if ($operator_info) {
+            if ($package_id == false) {
+                $package_id = $POST_data['work_package_id'];
+            }
+            $sql = "
+                SELECT task_id , task_name FROM work_package_tasks
+                WHERE package_id = {$package_id}
+                ORDER BY 
+                CAST(SUBSTRING_INDEX(task_weight, '.', 1) AS UNSIGNED),
+                CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(task_weight, '.', 2), '.', -1) AS UNSIGNED),
+                CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(task_weight, '.', 3), '.', -1) AS UNSIGNED),
+                CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(task_weight, '.', 4), '.', -1) AS UNSIGNED),
+                CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(task_weight, '.', 5), '.', -1) AS UNSIGNED),
+                CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(task_weight, '.', 6), '.', -1) AS UNSIGNED)
+            ";
+            $statement = $pdo->prepare($sql);
+            $statement->execute();
+            $order = 0;
+            if ($statement->rowCount() > 0) {
+                while ($el = $statement->fetch(PDO::FETCH_ASSOC)) {
+                    update_data("work_package_tasks", "task_id = {$el['task_id']}", ['task_order' => ++$order]);
+                }
+            }
+            $response['err'] = false;
+            $response['msg'] = "Task Reordered Successfully";
+            echo json_encode($response, true);
+        } else {
+            echo "Error : 401 | No Authority";
+            http_response_code(401);
+            exit();
+        }
     } else {
         echo 'Method Not Allowed';
     }

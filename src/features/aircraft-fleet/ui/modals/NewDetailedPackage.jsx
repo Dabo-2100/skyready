@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 export default function NewDetailedPackage() {
     const activeWorkPackageFolderId = useSelector(state => state.aircraftFleet.activeWorkPackageFolderId.value);
     const activeWorkPackageTypeId = useSelector(state => state.aircraftFleet.activeWorkPackageTypeId.value);
-
     const formInputs = useRef([]);
     const { addNewDetailedWorkPackage } = usePackages()
     const { getAircraftFleetByModel } = useAircraft();

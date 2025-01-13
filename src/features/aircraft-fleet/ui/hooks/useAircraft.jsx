@@ -18,6 +18,10 @@ export default function useAircraft() {
         return await AircraftRepo.aircraft_info(serverUrl, token, editAircaft_id);
     }
 
+    const getAircraftZones = async (model_id) => {
+        return await AircraftRepo.all_aircraft_zones(serverUrl, token, model_id);
+    }
+
     const getAircraftFleet = async () => {
         return await AircraftRepo.all_aircraft_fleet(serverUrl, token);
     }
@@ -40,6 +44,10 @@ export default function useAircraft() {
 
     const getAircraftUsages = async () => {
         return await AircraftRepo.all_aircraft_usages(serverUrl, token);
+    }
+
+    const getAircraftSpecialties = async () => {
+        return await AircraftRepo.all_aircraft_specialties(serverUrl, token);
     }
 
     const getAircraftApplicableParts = async () => {
@@ -361,9 +369,63 @@ export default function useAircraft() {
         })
     }
 
+    const addNewAircraftSpeciality = async (newName) => {
+        let data = { specialty_name: newName.current.value };
+        let formErrors = formCheck([{ value: newName.current.value, options: { required: true } }]);
+
+        if (formErrors == 0) {
+            AircraftRepo.add_new_aircraft_speciality(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "New Aircraft Model Registered to Your Fleet !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && refresh();
+                })
+            })
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                text: "Please Fill All Required Data",
+                customClass: darkSwal,
+                timer: 1500,
+                showConfirmButton: false,
+            })
+        }
+
+    }
+
+    const removeAircraftSpeciality = async (specialty_id) => {
+        let data = { specialty_id: +specialty_id }
+        Swal.fire({
+            icon: "question",
+            text: "Are you sure you want to delete this Model ?",
+            confirmButtonColor: "red",
+            confirmButtonText: "Yes, Delete",
+            showDenyButton: true,
+            denyButtonColor: "green",
+            denyButtonText: " No, Keep it",
+            customClass: darkSwal
+        }).then((res) => {
+            res.isConfirmed && AircraftRepo.delete_aircraft_speciality(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "Manufacturer Deleted Successfully !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && refresh();
+                })
+            })
+        })
+    }
+
     return {
+        addNewAircraftSpeciality, removeAircraftSpeciality, getAircraftZones,
         getAircraftFleet, filterAircraftFleet, getAircraftManufacturers, getAircraftFleetByModel,
-        getAircraftStatus, getAircraftModels, getAircraftUsages, addNewAircraftToFleet,
+        getAircraftStatus, getAircraftModels, getAircraftUsages, addNewAircraftToFleet, getAircraftSpecialties,
         getAircraftInfo, getAircraftApplicableParts, updateAircraftInfo, addNewAircraftModel, removeAircraftModel,
         addNewManufacturer, removeManufacturer, addNewAircraftStatus, removeAircraftStatus, addNewAircraftUsage, removeAircraftUsage
     }

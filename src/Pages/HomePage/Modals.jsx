@@ -10,13 +10,13 @@ import NewPackageType from "../../features/aircraft-fleet/ui/modals/NewPackageTy
 import NewPackage from "../../features/aircraft-fleet/ui/modals/NewPackage.jsx";
 import EditDetailedPackage from "../../features/aircraft-fleet/ui/modals/EditDetailedPackage.jsx";
 import NewDetailedPackage from "../../features/aircraft-fleet/ui/modals/NewDetailedPackage.jsx";
+import NewPackageTask from "../../features/aircraft-fleet/ui/modals/NewPackageTask.jsx";
+import NewSpecailty from "../../features/aircraft-fleet/ui/modals/NewSpecialty.jsx";
+import NewPackageTaskType from "../../features/aircraft-fleet/ui/modals/NewPackageTaskType.jsx";
+import NewAircraftZone from "../../features/aircraft-fleet/ui/modals/NewAircraftZone.jsx";
+import EditPackageTask from "../../features/aircraft-fleet/ui/modals/EditPackageTask.jsx";
 // ------------------------------------------------------------------>
-import NewSpecailty from "@/Apps/Fleet/Modals/NewSpecialty";
-import NewPackageTask from "@/Apps/Fleet/Modals/NewPackageTask";
-import NewPackageTaskType from "@/Apps/Fleet/Modals/NewPackageTaskType";
-import NewAircraftZone from "@/Apps/Fleet/Modals/NewAircraftZone";
 import Designators from "@/Apps/Fleet/Modals/Designators";
-import EditPackageTask from "@/Apps/Fleet/Modals/EditPackageTask";
 // Projects App Modals
 import NewProject from "@/Apps/Projects/Modals/NewProject";
 import ProjectView from "@/Apps/Projects/Modals/ProjectView";

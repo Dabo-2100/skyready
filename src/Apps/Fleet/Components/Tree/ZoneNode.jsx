@@ -1,23 +1,22 @@
 import { useContext, useState } from "react";
 import { FleetContext } from "../../FleetContext";
+import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { setAllZones } from "../../../../features/aircraft-fleet/state/selectedZonesSlice";
 
 const ZoneNode = ({ node, action }) => {
-    const { setZoneParent, setRemoveZone_id, selectedZones, setSelectedZones } = useContext(FleetContext);
+    const hasChildren = node.children && node.children.length > 0;
+    const dispatch = useDispatch();
+    const selectedZones = useSelector(state => state.aircraftFleet.selectedZones.value);
+    const { setZoneParent, setRemoveZone_id } = useContext(FleetContext);
     const [expanded, setExpanded] = useState(false);
 
-    const hasChildren = node.children && node.children.length > 0;
     const toggleZone = () => {
-        // alert(node.zone_id);
-        let zone_obj = {
-            zone_id: node.zone_id,
-            zone_name: node.zone_name
-        }
-        let isHere = selectedZones.findIndex((el, index) => {
-            return el.zone_id == node.zone_id;
-        });
+        let zone_obj = { zone_id: node.zone_id, zone_name: node.zone_name }
+        let isHere = selectedZones.findIndex(el => el.zone_id == node.zone_id);
         let Orignal = [...selectedZones];
         isHere == -1 ? Orignal.push(zone_obj) : Orignal.splice(isHere, 1);
-        setSelectedZones(Orignal);
+        dispatch(setAllZones(Orignal));
     }
 
     return (
@@ -27,7 +26,7 @@ const ZoneNode = ({ node, action }) => {
                 onClick={() => { setExpanded(!expanded) }}
                 style={{ cursor: 'pointer' }}>
                 <div style={{ cursor: 'pointer' }} className="d-flex col-12 p-3 align-items-center justify-content-between" >
-                    <div className="d-flex gap-2">
+                    <div className="d-flex gap-2 align-items-center">
                         {hasChildren && (<span>{expanded ? '▼' : '▶'}</span>)}
                         {node.zone_name}
                     </div>
@@ -53,7 +52,7 @@ const ZoneNode = ({ node, action }) => {
                                         <input
                                             onClick={(event) => event.stopPropagation()}
                                             defaultChecked={
-                                                selectedZones.findIndex((el, index) => {
+                                                selectedZones.findIndex((el) => {
                                                     return el.zone_id == node.zone_id;
                                                 }) == -1 ? false : true
                                             }
@@ -82,3 +81,8 @@ const ZoneNode = ({ node, action }) => {
 };
 
 export default ZoneNode;
+
+ZoneNode.propTypes = {
+    action: PropTypes.string,
+    node: PropTypes.node,
+};

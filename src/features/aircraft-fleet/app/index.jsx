@@ -1,4 +1,4 @@
-import "./index.scss";
+import "./index.css";
 import NavTabs from "../../../Apps/Warehouse/UI/Components/NavTabs";
 import Aircraft from "../ui/tabs/Aircraft";
 import Packages from "../ui/tabs/Packages";

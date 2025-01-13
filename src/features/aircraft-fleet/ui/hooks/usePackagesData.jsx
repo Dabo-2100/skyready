@@ -4,19 +4,15 @@ import usePackages from './usePackages';
 import { useSelector } from 'react-redux';
 
 export default function usePackagesData() {
-
     const { refreshIndex } = useContext(HomeContext);
-
     const [workPackages, setWorkPackages] = useState([]);
     const [workPackageTypes, setWorkPackageType] = useState([]);
     const [workPackageTasks, setWorkPackageTasks] = useState([]);
     const [workPackageInfo, setWorkPackageInfo] = useState({});
     const [workPackageApplicablity, setWorkPackageApplicablity] = useState([]);
-
+    const { getWorkPackageTypes, getWorkPackages, getWorkPackageTasks } = usePackages();
     const activeWorkPackageTypeId = useSelector(state => state.aircraftFleet.activeWorkPackageTypeId.value);
     const active_work_package_id = useSelector(state => state.aircraftFleet.activeWorkPackageId.value);
-
-    const { getWorkPackageTypes, getWorkPackages, getWorkPackageTasks } = usePackages();
 
     useEffect(() => {
         getWorkPackageTypes().then(async (res) => {
@@ -33,7 +29,7 @@ export default function usePackagesData() {
                 setWorkPackageTasks(res.tasks);
                 setWorkPackageInfo(res.info);
                 setWorkPackageApplicablity(res.info.applicability);
-            })
+            });
         }
         // eslint-disable-next-line
     }, [active_work_package_id])
