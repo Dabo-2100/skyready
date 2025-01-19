@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useRecoilState } from 'recoil'
-import { $Server, $Token, $LoaderIndex } from '../../../../store'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { $Server, $Token, $LoaderIndex, $UserInfo } from '../../../../store'
 import { inventoryRepo } from '../../Data/Repos/inventoryRepo';
-import { User } from '../../Core/User';
 import { HomeContext } from '../../../../Pages/HomePage/HomeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { faAdd, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '../../Core/Store';
 import { WarehouseContext } from '../../warehouseContext';
+import { User } from '../../../../shared/core/User';
 
 export default function Warehouses() {
     const { refreshIndex, openModal } = useContext(HomeContext);
@@ -17,7 +17,8 @@ export default function Warehouses() {
     const [token] = useRecoilState($Token);
     const [, setLoaderIndex] = useRecoilState($LoaderIndex);
     const [warehouses, setWarehouses] = useState([]);
-    const user = new User();
+    const user = new User(useRecoilValue($UserInfo));
+    const appIndex = useSelector(state => state.home.activeAppIndex.value);
     useEffect(() => {
         setLoaderIndex(true);
         inventoryRepo.get_warehouses(serverUrl, token).then((res) => {
@@ -33,7 +34,7 @@ export default function Warehouses() {
             <header className='d-flex pb-3 flex-wrap align-items-center justify-content-between'>
                 <h5 className='m-0'>Warehouse List</h5>
                 {
-                    user.isAdmin() && (<button onClick={() => openModal(8000)} className='btn addBtn d-flex align-items-center gap-2'><FontAwesomeIcon icon={faAdd} /> New Warehouse</button>)
+                    user.isAppAdmin(appIndex) && (<button onClick={() => openModal(8000)} className='btn addBtn d-flex align-items-center gap-2'><FontAwesomeIcon icon={faAdd} /> New Warehouse</button>)
                 }
             </header>
             <main className='col-12 d-flex flex-flex-grow-1 overflow-auto'>

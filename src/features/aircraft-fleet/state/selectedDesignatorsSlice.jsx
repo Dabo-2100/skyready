@@ -9,7 +9,7 @@ const selectedDesignatorsSlice = createSlice({
             state.value.push(action.payload); // payload as Designator_id
         },
         removeDesignator: (state, action) => {
-            let Designator_index = state.value.findIndex(el => el.designator_id == action.payload.value);
+            let Designator_index = state.value.findIndex(el => el.designator_id == action.payload);
             Designator_index != -1 && state.value.splice(Designator_index, 1);
         },
 

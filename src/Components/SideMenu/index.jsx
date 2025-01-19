@@ -1,24 +1,25 @@
 import './index.scss';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Logo from "@/assets/IPACOLogo.png";
 import { useRecoilState } from 'recoil';
 import { $UserInfo, $Token, $SwalDark } from '@/store';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faCalendar, faGears, faHouse, faJetFighter, faListCheck, faPowerOff, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { HomeContext } from '@/Pages/HomePage/HomeContext';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setActiveIndex } from '../../shared/state/activeAppIndexSlice';
 export default function SideMenu() {
     const navigate = useNavigate();
     library.add(faUsers, faListCheck, faBook, faJetFighter, faCalendar, faHouse, faGears);
     const [userInfo] = useRecoilState($UserInfo);
     const [, setToken] = useRecoilState($Token);
     const [darkSwal] = useRecoilState($SwalDark);
-
     const [isPhone, setIsPhone] = useState(false);
-    const { appIndex, setAppIndex } = useContext(HomeContext);
-
+    const dispatch = useDispatch();
+    const appIndex = useSelector(state => state.home.activeAppIndex.value);
+    
     useEffect(() => {
         window.innerWidth <= '991' ? setIsPhone(true) : setIsPhone(false);
         window.addEventListener("resize", () => {
@@ -64,7 +65,7 @@ export default function SideMenu() {
                 {userInfo.user_roles.map((el, index) => {
                     return (
                         <div
-                            onClick={() => { setAppIndex(el['app_order']) }}
+                            onClick={() => dispatch(setActiveIndex(el['app_order']))}
                             key={index}
                             style={{
                                 order: `${el['app_order']}`,

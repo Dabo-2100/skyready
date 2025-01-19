@@ -1,23 +1,24 @@
 import "./index.scss";
-import { faAngleDoubleDown, faAngleDown, faAngleRight, faArrowDown, faArrowUp, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight, faArrowDown, faArrowUp, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react"
 import { ProjectsContext } from "../../ProjectContext";
-import { useRecoilState } from "recoil";
-import { $Server, $Token, $SwalDark } from "@/store";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { $Server, $Token } from "@/store";
 import PackageTask from "../PackageTask";
 import axios from "axios";
 import { HomeContext } from "@/Pages/HomePage/HomeContext";
 import { FleetContext } from "../../../Fleet/FleetContext";
-import { User } from "../../../Warehouse/Core/User";
+import { User } from "../../../../shared/core/User";
+import { $UserInfo } from "../../../../store";
+import { useSelector } from "react-redux";
 
 export default function WorkPackage(props) {
     const [serverUrl] = useRecoilState($Server);
     const [token] = useRecoilState($Token);
-    const [darkSwal] = useRecoilState($SwalDark);
-    const { openModal2, refresh, refreshIndex, } = useContext(HomeContext);
+    const { openModal2, refreshIndex, } = useContext(HomeContext);
     const { taskFilter, openedProject, multiSelect, setMultiSelect } = useContext(ProjectsContext);
     const { setOpenPackage_id } = useContext(FleetContext);
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -113,7 +114,8 @@ export default function WorkPackage(props) {
         }
     }
 
-    const user = new User();
+    const user = new User(useRecoilValue($UserInfo));
+    const appIndex = useSelector(state => state.home.activeAppIndex.value);
     return (
         <>
             <tr className="workPackage"
@@ -158,7 +160,7 @@ export default function WorkPackage(props) {
                 {taskFilter.tableView.dueDate && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>{props.end_at}</th>}
 
                 {
-                    user.isAdmin() && (
+                    user.isAppAdmin(appIndex) && (
                         <th onClick={event => event.stopPropagation()} >
                             <FontAwesomeIcon onClick={handleRightClick} icon={faEdit} className="text-warning" />
                         </th>

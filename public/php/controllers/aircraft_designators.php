@@ -6,6 +6,7 @@ $endpoints += [
     '/api/aircraft/designators/store'  => 'designators_store',
     '/api/aircraft/designators/delete' => 'designators_delete',
     '/api/aircraft/designators/search' => 'designators_search',
+    '/api/aircraft/designators/update' => 'designators_update',
 ];
 
 function designators_index()
@@ -84,21 +85,15 @@ function designators_delete()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $designator_id = htmlspecialchars($POST_data["designator_id"]);
-            $model_id = getOneField("aircraft_designators", "model_id", "designator_id = {$designator_id}");
-            $designator_id = delete_data("aircraft_designators", "designator_id = $designator_id");
-            if (is_null($designator_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "Status Deleted Successfully";
-                $response['data'] = getRows("aircraft_designators", "is_active = 1 AND model_id = {$model_id}");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $designator_id = htmlspecialchars($POST_data["designator_id"]);
+        $model_id = getOneField("aircraft_designators", "model_id", "designator_id = {$designator_id}");
+        $designator_id = delete_data("aircraft_designators", "designator_id = $designator_id");
+        if (is_null($designator_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "Desingator Deleted Successfully";
+            $response['data'] = getRows("aircraft_designators", "is_active = 1 AND model_id = {$model_id}");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -128,6 +123,22 @@ function designators_search()
             http_response_code(401);
             exit();
         }
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function designators_update()
+{
+    global $method, $POST_data, $response;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        $type_id = htmlspecialchars($POST_data["type_id"]);
+        $designator_id = htmlspecialchars($POST_data["designator_id"]);
+        update_data("aircraft_designators", "designator_id = {$designator_id}", ["type_id" => $type_id]);
+        $response['err'] = false;
+        $response['msg'] = "Designator Updated Successfully";
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }

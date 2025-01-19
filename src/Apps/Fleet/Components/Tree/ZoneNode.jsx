@@ -1,18 +1,19 @@
-import { useContext, useState } from "react";
-import { FleetContext } from "../../FleetContext";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { setAllZones } from "../../../../features/aircraft-fleet/state/selectedZonesSlice";
+import { setActiveId as setParentZone } from "../../../../features/aircraft-fleet/state/activeParentZoneSlice";
+import useAircraft from "../../../../features/aircraft-fleet/ui/hooks/useAircraft";
 
 const ZoneNode = ({ node, action }) => {
     const hasChildren = node.children && node.children.length > 0;
     const dispatch = useDispatch();
     const selectedZones = useSelector(state => state.aircraftFleet.selectedZones.value);
-    const { setZoneParent, setRemoveZone_id } = useContext(FleetContext);
     const [expanded, setExpanded] = useState(false);
+    const { removeAircraftZone } = useAircraft();
 
     const toggleZone = () => {
-        let zone_obj = { zone_id: node.zone_id, zone_name: node.zone_name }
+        let zone_obj = { zone_id: node.zone_id, zone_name: node.zone_name };
         let isHere = selectedZones.findIndex(el => el.zone_id == node.zone_id);
         let Orignal = [...selectedZones];
         isHere == -1 ? Orignal.push(zone_obj) : Orignal.splice(isHere, 1);
@@ -36,14 +37,13 @@ const ZoneNode = ({ node, action }) => {
                                 (
                                     <>
                                         {
-                                            !hasChildren && (
-                                                <button className="btn btn-danger" onClick={() => setRemoveZone_id(node.zone_id)}>Remove Zone</button>
-                                            )
+                                            !hasChildren &&
+                                            <button className="btn btn-danger" onClick={() => removeAircraftZone(node.zone_id)}>Remove Zone</button>
                                         }
-                                        <button className="btn addBtn"
+                                        <button type="button" className="btn addBtn"
                                             onClick={(event) => {
                                                 event.stopPropagation();
-                                                setZoneParent({ id: node.zone_id, name: node.zone_name })
+                                                dispatch(setParentZone({ id: node.zone_id, name: node.zone_name }))
                                             }}>Add Sub Zone</button>
                                     </>
                                 )
@@ -84,5 +84,5 @@ export default ZoneNode;
 
 ZoneNode.propTypes = {
     action: PropTypes.string,
-    node: PropTypes.node,
+    node: PropTypes.object,
 };

@@ -3,37 +3,43 @@ import Select from 'react-select';
 import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
 import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
 import usePackages from "../hooks/usePackages";
-import usePackagesData from "../hooks/usePackagesData";
-import useAircraftData from "../hooks/useAircraftData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGears } from "@fortawesome/free-solid-svg-icons";
 import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
-import { setActiveId } from "../../state/activeSpecialityIdSlice";
+import { setActiveId as setActiveSpeciality, resetActiveId } from "../../state/activeSpecialityIdSlice";
 import { resetDesignators } from "../../state/selectedDesignatorsSlice";
 import { resetZones } from "../../state/selectedZonesSlice";
 import { useDispatch, useSelector } from "react-redux";
 import TaskWorkingZone from "../components/TaskWorkingZone";
 import TaskWorkingDesignators from "../components/TaskWorkingDesignators";
+import useAircraft from "../hooks/useAircraft";
+import { setSpecialties } from "../../state/aircraftSpecialtiesSlice";
+
 
 export default function NewPackageTask() {
-    const { refreshIndex } = useContext(HomeContext);
+    const { openModal4 } = useContext(HomeContext);
+
     const dispatch = useDispatch();
+    const refreshIndex = useSelector(state => state.home.refreshIndex);
     const active_speciality_id = useSelector(state => state.aircraftFleet.activeSpecialityId.value);
     const active_work_package_id = useSelector(state => state.aircraftFleet.activeWorkPackageId.value);
     const selectedZones = useSelector(state => state.aircraftFleet.selectedZones.value);
     const selectedDesignators = useSelector(state => state.aircraftFleet.selectedDesignators.value);
+    const aircraftSpecialties = useSelector(state => state.aircraftFleet.aircraftSpecialties.value);
+    const packageInfo = useSelector(state => state.aircraftFleet.activeWorkPackageInfo.value);
 
-    const { openModal4 } = useContext(HomeContext);
     const { getWorkPackageTaskTypes, addNewWorkPackageTask } = usePackages();
-    const { workPackageInfo: packageInfo } = usePackagesData();
-    const { aircraftSpecialties } = useAircraftData();
+    const { getAircraftSpecialties } = useAircraft();
+
     const [workPackageTaskTypes, setWorkPackageTaskTypes] = useState([]);
+
     const taskInputs = useRef([]);
     const handleSubmit = () => {
         addNewWorkPackageTask(taskInputs, active_work_package_id, selectedZones, selectedDesignators);
     }
 
     useEffect(() => {
+        getAircraftSpecialties().then((res) => { dispatch(setSpecialties(res)) });
         if (active_speciality_id != 0) {
             getWorkPackageTaskTypes(active_speciality_id).then(setWorkPackageTaskTypes).then(() => {
                 taskInputs.current[3].setValue(-1);
@@ -42,11 +48,15 @@ export default function NewPackageTask() {
         else {
             setWorkPackageTaskTypes([]);
         }
-        //
+        // eslint-actov
     }, [active_speciality_id, refreshIndex]);
 
     useEffect(() => {
-        return () => { dispatch(resetZones()); dispatch(resetDesignators()) }
+        return () => {
+            dispatch(resetZones());
+            dispatch(resetDesignators());
+            dispatch(resetActiveId());
+        }
     }, [])
 
     return (
@@ -69,7 +79,7 @@ export default function NewPackageTask() {
                         <label htmlFor="sn">Specialty <span className="text-danger">*</span></label>
                         <FontAwesomeIcon type="button" className="btn addBtn" onClick={() => openModal4(5000)} icon={faGears} />
                     </div>
-                    <select ref={el => { taskInputs.current[2] = el }} className="col-12 form-select" onChange={() => dispatch(setActiveId(event.target.value))} required>
+                    <select ref={el => { taskInputs.current[2] = el }} className="col-12 form-select" onChange={() => dispatch(setActiveSpeciality(event.target.value))} required>
                         <option hidden value={-1}>Select Specialty</option>
                         {
                             aircraftSpecialties.map((el, index) => {

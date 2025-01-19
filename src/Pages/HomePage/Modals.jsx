@@ -15,8 +15,8 @@ import NewSpecailty from "../../features/aircraft-fleet/ui/modals/NewSpecialty.j
 import NewPackageTaskType from "../../features/aircraft-fleet/ui/modals/NewPackageTaskType.jsx";
 import NewAircraftZone from "../../features/aircraft-fleet/ui/modals/NewAircraftZone.jsx";
 import EditPackageTask from "../../features/aircraft-fleet/ui/modals/EditPackageTask.jsx";
+import TaskDesignators from "../../features/aircraft-fleet/ui/modals/TaskDesignators.jsx";
 // ------------------------------------------------------------------>
-import Designators from "@/Apps/Fleet/Modals/Designators";
 // Projects App Modals
 import NewProject from "@/Apps/Projects/Modals/NewProject";
 import ProjectView from "@/Apps/Projects/Modals/ProjectView";
@@ -24,9 +24,8 @@ import StartWorkPackage from "../../Apps/Projects/Modals/StartWorkPackage.jsx";
 // Users App Modals
 import NewUser from "../../features/users/ui/modals/NewUser.jsx";
 import EditUser from "../../features/users/ui/modals/EditUser.jsx";
+// Warehouse App Modals
 import NewWarehouse from "../../Apps/Warehouse/UI/Modals/NewWarehouse.jsx";
-// import AircraftZones from "../../Apps/Fleet/Modals/AircraftZones.jsx";
-import TasksVsZones from "../../Apps/Fleet/Modals/TasksVsZones.jsx";
 import NewLocation from "../../Apps/Warehouse/UI/Modals/NewLocation.jsx";
 import WarehouseDetails from "../../Apps/Warehouse/UI/Modals/WarehouseDetails.jsx";
 import NewItem from "../../Apps/Warehouse/UI/Modals/NewItem.jsx";
@@ -42,10 +41,8 @@ export const allModals = [
     { index: 1004, component: <NewModel /> },
     { index: 1005, component: <NewUsage /> },
     { index: 1006, component: <NewAircraftZone /> },
-    { index: 1007, component: <Designators /> },
+    { index: 1007, component: <TaskDesignators /> },
     { index: 2000, component: <EditAircraft /> },
-    // { index: 2001, component: <AircraftZones /> },
-    { index: 2002, component: <TasksVsZones /> },
     { index: 3000, component: <NewPackageType /> },
     { index: 4000, component: <NewPackage /> },
     { index: 4001, component: <NewDetailedPackage /> },

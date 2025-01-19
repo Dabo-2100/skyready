@@ -4,7 +4,6 @@ import { createContext, useState } from "react";
 const HomeContext = createContext();
 
 const HomeProvider = ({ children }) => {
-  const [appIndex, setAppIndex] = useState(0);
   // Modal Layer 1 Index State
   const [modalIndex, setModal] = useState(0);
   const openModal = (modalNo) => setModal(modalNo);
@@ -33,7 +32,6 @@ const HomeProvider = ({ children }) => {
 
   return (
     <HomeContext.Provider value={{
-      appIndex, setAppIndex,
       modalIndex, openModal,
       modal2Index, openModal2,
       modal3Index, openModal3,

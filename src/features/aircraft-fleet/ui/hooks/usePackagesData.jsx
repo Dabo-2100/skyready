@@ -1,14 +1,14 @@
-import { useContext, useEffect, useState } from 'react'
-import { HomeContext } from '../../../../Pages/HomePage/HomeContext';
+import { useEffect, useState } from 'react'
 import usePackages from './usePackages';
 import { useSelector } from 'react-redux';
 
 export default function usePackagesData() {
-    const { refreshIndex } = useContext(HomeContext);
+
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const [workPackages, setWorkPackages] = useState([]);
     const [workPackageTypes, setWorkPackageType] = useState([]);
-    const [workPackageTasks, setWorkPackageTasks] = useState([]);
     const [workPackageInfo, setWorkPackageInfo] = useState({});
+    const [workPackageTasks, setWorkPackageTasks] = useState([]);
     const [workPackageApplicablity, setWorkPackageApplicablity] = useState([]);
     const { getWorkPackageTypes, getWorkPackages, getWorkPackageTasks } = usePackages();
     const activeWorkPackageTypeId = useSelector(state => state.aircraftFleet.activeWorkPackageTypeId.value);

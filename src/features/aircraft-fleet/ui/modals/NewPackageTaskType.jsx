@@ -1,14 +1,14 @@
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import usePackages from "../hooks/usePackages";
 import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
 import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
+
 
 export default function NewPackageTaskType() {
-    const { refreshIndex } = useContext(HomeContext);
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const active_speciality_id = useSelector(state => state.aircraftFleet.activeSpecialityId.value);
     const { getWorkPackageTaskTypes } = usePackages();
     const [taskTypes, setTaskTypes] = useState([]);

@@ -10,7 +10,6 @@ import { WarehouseContext } from "../../warehouseContext";
 import SaveBtn from "../Components/SaveBtn";
 import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
 import { useAircraftFleet } from "../../../../customHooks";
-import { User } from "../../Core/User";
 
 export default function NewNotice() {
     const { activeWarehouse } = useContext(WarehouseContext);
@@ -19,7 +18,6 @@ export default function NewNotice() {
     const [token] = useRecoilState($Token);
     const [rowNo, setRowNo] = useState(1)
     const [noticeRows, setNoticeRows] = useState([1]);
-    const theUser = new User();
     // useRefs
     const dateInput = useRef();
     const itemsRefs = useRef([]);

@@ -2,29 +2,32 @@ import { deleteAircraftModel } from "../api/delete_aircraft_model";
 import { deleteAircraftStatus } from "../api/delete_aircraft_status";
 import { deleteManufacturer } from "../api/delete_aircraft_manufacturer";
 import { deleteAircraftUsage } from "../api/delete_aircraft_usage";
-
 import { indexAircarftApplicability } from "../api/index_aircarft_applicability";
 import { indexAircraftFleet } from "../api/index_aircraft_fleet";
 import { indexAircraftManufacturers } from "../api/index_aircraft_manufacturers";
 import { indexAircraftModels } from "../api/index_aircraft_models";
 import { indexAircraftStatus } from "../api/index_aircraft_status";
 import { indexAircraftUsages } from "../api/index_aircraft_usages";
-
 import { showAircraftInfo } from "../api/show_aircraft_info";
-
 import { storeAircraft } from "../api/store_aircraft";
 import { storeAircraftModel } from "../api/store_aircraft_model";
 import { storeAircraftStatus } from "../api/store_aircraft_status";
 import { storeAircraftUsage } from "../api/store_aircraft_usage";
 import { storeManufacturer } from "../api/store_aircraft_manufacturer";
-
 import { updateAircraftInfo } from "../api/update_aircraft_info";
 import { indexAircraftFleetByModel } from "../api/index_aircraft_fleet_by_model";
 import { indexAircraftSpecialties } from "../api/index_aircraft_specialties";
 import { storeAircraftSpeciality } from "../api/store_aircraft_speciality";
 import { deleteAircraftSpecaility } from "../api/delete_aircraft_speciality";
 import { indexAircraftZones } from "../api/index_aircraft_zones";
-
+import { storeAircraftZone } from "../api/store_aircraft_zone";
+import { deleteAircraftZone } from "../api/delete_aircraft_zone";
+import { showFilteredDesignators } from "../api/show_aircraft_filtered_designators";
+import { indexDesignatorTypes } from "../api/index_designator_types";
+import { storeAircraftDesignator } from "../api/store_aircraft_designator";
+import { indexAircraftDesignators } from "../api/index_aircraft_designators";
+import { updateAircraftDesignator } from "../api/update_aircraft_designator";
+import { deleteAircraftDesignator } from "../api/delete_aircraft_designator";
 
 export const AircraftRepo = {
     all_aircraft_zones: async (serverUrl, token, model_id) => {
@@ -114,4 +117,37 @@ export const AircraftRepo = {
     delete_aircraft_speciality: async (serverUrl, token, data) => {
         return await deleteAircraftSpecaility(serverUrl, token, data);
     },
+
+    add_new_aircraft_zone: async (serverUrl, token, data) => {
+        return await storeAircraftZone(serverUrl, token, data);
+    },
+
+    delete_aircraft_zone: async (serverUrl, token, data) => {
+        return await deleteAircraftZone(serverUrl, token, data);
+    },
+
+    filter_designators_by_name: async (serverUrl, token, data) => {
+        return await showFilteredDesignators(serverUrl, token, data);
+    },
+
+    all_designator_types: async (serverUrl, token) => {
+        return await indexDesignatorTypes(serverUrl, token);
+    },
+
+    all_aircraft_designators: async (serverUrl, token, model_id) => {
+        return await indexAircraftDesignators(serverUrl, token, model_id);
+    },
+
+    add_new_aircraft_designator: async (serverUrl, token, data) => {
+        return await storeAircraftDesignator(serverUrl, token, data);
+    },
+
+    update_designator_type: async (serverUrl, token, data) => {
+        return await updateAircraftDesignator(serverUrl, token, data);
+    },
+
+    delete_aircraft_designator: async (serverUrl, token, data) => {
+        return await deleteAircraftDesignator(serverUrl, token, data);
+    },
+
 }

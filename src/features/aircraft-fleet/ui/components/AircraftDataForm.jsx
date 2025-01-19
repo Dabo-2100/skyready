@@ -5,8 +5,15 @@ import useAircraftData from '../hooks/useAircraftData'
 import useAircraft from '../hooks/useAircraft';
 import SaveBtn from '../../../../Apps/Warehouse/UI/Components/SaveBtn';
 import { HomeContext } from '../../../../Pages/HomePage/HomeContext';
+import { useSelector } from 'react-redux';
+import { User } from '../../../../shared/core/User';
+import { useRecoilValue } from 'recoil';
+import { $UserInfo } from '../../../../store';
 
 export default function AircraftDataForm() {
+    // const userData = { isAppAdmin: () => false };
+    const userData = new User(useRecoilValue($UserInfo));
+    const appIndex = useSelector(state => state.home.activeAppIndex.value);
     const { aircraftStatus, manufacturers, aircraftUsages, aircraftInfo, aircraftModels } = useAircraftData();
     const { openModal2 } = useContext(HomeContext);
     const { updateAircraftInfo } = useAircraft();
@@ -21,7 +28,7 @@ export default function AircraftDataForm() {
 
     return (
         <main className="col-12 d-flex flex-wrap p-0">
-            <div className="col-12 d-flex justify-content-end mb-2">
+            {userData.isAppAdmin(appIndex) && <div className="col-12 d-flex justify-content-end mb-2">
                 {
                     !editIndex ?
                         (
@@ -34,7 +41,7 @@ export default function AircraftDataForm() {
                             <SaveBtn label="Save" onClick={() => { updateAircraftInfo(formInputs) }} />
                         )
                 }
-            </div>
+            </div>}
             <div className="col-12 d-flex flex-wrap gap-3 pb-3 justify-content-lg-between">
                 <div className="col-12 col-lg-5 inputField">
                     <label className="col-12" htmlFor="sn">Serial No</label>
@@ -47,7 +54,7 @@ export default function AircraftDataForm() {
                 <div className="col-12 col-lg-5 inputField">
                     <div className="d-flex col-12 align-items-center justify-content-between">
                         <label htmlFor="sn">Manufacturer</label>
-                        <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1002)} />
+                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1002)} />}
                     </div>
                     <select disabled={!editIndex} ref={el => { formInputs.current[3] = el }} className="col-12 form-select" >
                         {
@@ -61,7 +68,7 @@ export default function AircraftDataForm() {
 
                     <div className="d-flex col-12 align-items-center justify-content-between">
                         <label htmlFor="sn">Status</label>
-                        <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1003)} />
+                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1003)} />}
                     </div>
 
                     <select disabled={!editIndex} ref={el => { formInputs.current[2] = el }} className="col-12 form-select" >
@@ -75,7 +82,7 @@ export default function AircraftDataForm() {
                 <div className="col-12 col-lg-5 inputField">
                     <div className="d-flex col-12 align-items-center justify-content-between">
                         <label htmlFor="sn">Model</label>
-                        <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1004)} />
+                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1004)} />}
                     </div>
                     <select disabled={!editIndex} ref={el => { formInputs.current[5] = el }} className="col-12 form-select" >
                         {
@@ -88,7 +95,7 @@ export default function AircraftDataForm() {
                 <div className="col-12 col-lg-5 inputField">
                     <div className="d-flex col-12 align-items-center justify-content-between">
                         <label htmlFor="sn">Usage</label>
-                        <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1005)} />
+                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1005)} />}
                     </div>
                     <select disabled={!editIndex} ref={el => { formInputs.current[4] = el }} className="col-12 form-select" >
                         {

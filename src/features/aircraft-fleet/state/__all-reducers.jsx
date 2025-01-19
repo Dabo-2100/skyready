@@ -10,21 +10,34 @@ import selectedDesignatorsReducer from './selectedDesignatorsSlice';
 import aircraftZonesReducer from './aircraftZonesSlice';
 import activeZoneIdReducer from './activeZoneIdSlice';
 import activeWorkPackageTaskReducer from './activeWorkPackageTaskSlice';
+import activeAircraftModelIdReducer from './activeAircraftModelIdSlice';
+import activeParentZonekReducer from './activeParentZoneSlice';
+import workPackagesReducer from './workPackagesSlice';
+import workPackageTypesReducer from './workPackageTypesSlice';
+import aircraftSpecailtiesReducer from './aircraftSpecialtiesSlice';
+import activeWorkPackageInfoReducer from './activeWorkPackageInfoSlice';
+
 import { combineReducers } from '@reduxjs/toolkit';
 
 const aircraftFleetReducers = combineReducers({
     aircraftFleetTabIndex: aircraftFleetTabIndexReducer,
     activeAircraftId: activeAircraftIdReducer,
+    activeAircraftModelId: activeAircraftModelIdReducer,
     activeWorkPackageId: activePackageIdReducer,
     activeWorkPackageTypeId: activeWorkPackageTypeIdReducer,
     activeWorkPackageFolderId: activeWorkPackageFolderIdReducer,
+    activeWorkPackageTaskId: activeWorkPackageTaskIdReducer,
+    activeWorkPackageTask: activeWorkPackageTaskReducer,
+    activeWorkPackageInfo: activeWorkPackageInfoReducer,
     activeSpecialityId: activeSpecialityIdReducer,
     selectedZones: selectedZonesReducer,
     selectedDesignators: selectedDesignatorsReducer,
     aircraftZones: aircraftZonesReducer,
     activeZoneId: activeZoneIdReducer,
-    activeWorkPackageTaskId: activeWorkPackageTaskIdReducer,
-    activeWorkPackageTask: activeWorkPackageTaskReducer,
+    activeParentZone: activeParentZonekReducer,
+    workPackages: workPackagesReducer,
+    workPackageTypes: workPackageTypesReducer,
+    aircraftSpecialties: aircraftSpecailtiesReducer
 });
 
 export default aircraftFleetReducers;

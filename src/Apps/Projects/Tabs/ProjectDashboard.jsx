@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { ProjectsContext } from "../ProjectContext";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { $Server, $Token, $SwalDark, $UserInfo, $LoaderIndex } from "@/store";
 import BarChart from "../Components/BarChart";
 
@@ -9,14 +9,13 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import ProgressBar from "../Components/ProgressBar";
 import { HomeContext } from "../../../Pages/HomePage/HomeContext";
-import { User } from "../../Warehouse/Core/User";
+import { User } from "../../../shared/core/User";
+import { useSelector } from "react-redux";
 
 export default function ProjectDashboard() {
-    const {  closeModal, refreshIndex } = useContext(HomeContext);
+    const { closeModal, refreshIndex } = useContext(HomeContext);
     const [serverUrl] = useRecoilState($Server);
-    const [userInfo] = useRecoilState($UserInfo);
     const [token] = useRecoilState($Token);
-    const [darkSwal] = useRecoilState($SwalDark);
     const [, setLoaderIndex] = useRecoilState($LoaderIndex);
 
     const { openedProject } = useContext(ProjectsContext);
@@ -50,7 +49,8 @@ export default function ProjectDashboard() {
                 .catch((err) => { console.log(err); })
         })
     }
-    const user = new User();
+    const user = new User(useRecoilValue($UserInfo));
+    const appIndex = useSelector(state => state.home.activeAppIndex.value);
     useEffect(() => {
         setLoaderIndex(true);
         useDashboard(serverUrl, token, openedProject).then((res) => {
@@ -64,7 +64,7 @@ export default function ProjectDashboard() {
                 <header className="col-12 d-flex flex-wrap align-items-center justify-content-between">
                     <h1 className="fs-5">Project Info</h1>
                     {
-                        user.isAdmin() && (
+                        user.isAppAdmin(appIndex) && (
                             <div className="d-flex align-content-center gap-3">
                                 <button className="btn btn-danger" onClick={handelRemove}>Remove Project</button>
                                 <button className="editButton">Edit

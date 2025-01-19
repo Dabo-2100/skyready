@@ -1,14 +1,14 @@
 import { useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-import useAircraftData from "../hooks/useAircraftData";
 import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
 import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
 import useAircraft from "../hooks/useAircraft";
+import { useSelector } from "react-redux";
 
 export default function NewSpecailty() {
+    const specialties = useSelector(state => state.aircraftFleet.aircraftSpecialties.value);
     const { addNewAircraftSpeciality, removeAircraftSpeciality } = useAircraft();
-    const { aircraftSpecialties: specialties } = useAircraftData();
     const new_specialty_name = useRef();
     const handleSubmit = () => { addNewAircraftSpeciality(new_specialty_name).then(() => { new_specialty_name.current.value = "" }) }
     const handleDelete = (specialty_id) => { removeAircraftSpeciality(specialty_id) }

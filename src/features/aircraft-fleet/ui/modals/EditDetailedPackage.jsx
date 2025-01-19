@@ -33,6 +33,7 @@ export default function EditDetailedPackage() {
         getAircraftFleetByModel(event.target.value).then(setAircraftFleet);
         setSelectedApplicablity([]);
     }
+
     const handleSaveWPInfo = () => {
         updateWorkPackageInfo(formInputs, selectedApplicablity, packageInfo.package_id).then(() => setEditIndex(false))
     }
@@ -51,28 +52,9 @@ export default function EditDetailedPackage() {
     }, []);
 
     useEffect(() => {
-        workPackageApplicablity.length > 0 && setSelectedApplicablity(workPackageApplicablity)
+        workPackageApplicablity.length > 0 && setSelectedApplicablity(workPackageApplicablity);
     }, [workPackageApplicablity]);
 
-
-    // const [, setLoaderIndex] = useRecoilState($LoaderIndex);
-    // const [serverUrl] = useRecoilState($Server);
-    // const [token] = useRecoilState($Token);
-    // const [Defaults] = useRecoilState($Defaults);
-
-    // const { closeModal, openModal3, refresh, refreshIndex} = useContext(HomeContext);
-    // const { openPackage_id, setTaskToEdit } = useContext(FleetContext);
-    // const { openedProject } = useContext(ProjectsContext);
-
-    // const [packageInfo, setPackageInfo] = useState({ applicability: [] });
-    // const [packageTasks, setPackageTasks] = useState([]);
-    // const [aircraft, setAircraft] = useState([]);
-    // const [newApplicability, setNewApplicability] = useState([]);
-    // const [taskTypes, setTaskTypes] = useState([]);
-    // const [modelId, setModelId] = useState(0);
-    // const [models, setModels] = useState([]);
-    // const [packageStatus, setPackageStatus] = useState(1);
-    // const [packageStatusName, setPackageStatusName] = useState("Status");
 
     // const closeWP = () => {
     //     if (editIndex) {
@@ -100,7 +82,6 @@ export default function EditDetailedPackage() {
     // useEffect(() => {
     //     if (openedProject != 0) {
     //         useGetData(serverUrl, token, `
-    //             SELECT pwp.status_id FROM project_work_packages pwp WHERE pwp.work_package_id = ${openPackage_id}
     //         `).then((res) => {
     //             setPackageStatus(res[0].status_id);
     //             let x = Defaults.status.find(el => { return el.status_id == res[0].status_id });

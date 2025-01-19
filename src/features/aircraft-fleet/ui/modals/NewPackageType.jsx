@@ -2,17 +2,20 @@ import { useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
-import usePackagesData from "../hooks/usePackagesData";
 import usePackages from "../hooks/usePackages";
 import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
+import { useSelector } from "react-redux";
+
 
 export default function NewPackageType() {
+    const packgeTypes = useSelector(state => state.aircraftFleet.workPackageTypes.value);
     const { addNewWorkPackageType, removeWorkPackageType } = usePackages();
-    const { workPackageTypes: packgeTypes } = usePackagesData();
     const new_type_name = useRef();
-    const handleSubmit = () => { addNewWorkPackageType(new_type_name).then(() => { new_type_name.current.value = "" }) }
-    const handleDelete = (id) => { removeWorkPackageType(id) }
-
+    const handleSubmit = () => {
+        addNewWorkPackageType(new_type_name).then(() => { new_type_name.current.value = "" });
+    }
+    const handleDelete = (id) => { removeWorkPackageType(id) };
+    
     return (
         <Modal>
             <header className="col-12 d-flex border-0 p-0 py-2 px-3 align-content-center justify-content-between">

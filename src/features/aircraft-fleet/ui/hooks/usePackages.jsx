@@ -1,7 +1,6 @@
 import { useRecoilState, useRecoilValue } from "recoil";
 import { $LoaderIndex, $Server, $SwalDark, $Token } from "../../../../store";
 import { WorkPackagesRepo } from "../../data/repositories/WorkPackagesRepo";
-import { buildTree } from "../../../../shared/utilities/buildTree";
 import { formCheck } from "../../../../customHooks";
 import Swal from "sweetalert2";
 import { useContext } from "react";
@@ -9,13 +8,15 @@ import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
 import { useDispatch } from "react-redux";
 import { setAllDesignators } from "../../state/selectedDesignatorsSlice";
 import { setAllZones } from "../../state/selectedZonesSlice";
+import { refresh } from "../../../../shared/state/refreshIndexSlice";
+import { resetActiveType } from "../../state/activeWorkPackageTypeIdSlice";
 
 export default function usePackages() {
     const token = useRecoilValue($Token);
     const serverUrl = useRecoilValue($Server);
     const darkSwal = useRecoilValue($SwalDark);
     const [, setLoaderIndex] = useRecoilState($LoaderIndex);
-    const { refresh, closeModal } = useContext(HomeContext);
+    const { closeModal } = useContext(HomeContext);
     const dispatch = useDispatch();
 
     const getWorkPackageTypes = async () => {
@@ -24,7 +25,8 @@ export default function usePackages() {
 
     const getWorkPackages = async (workpackage_type_id) => {
         let workPackages = await WorkPackagesRepo.all_workpackages(serverUrl, token, workpackage_type_id);
-        return buildTree(workPackages).sort((a, b) => a.package_name.localeCompare(b.package_name))
+        return workPackages;
+        // return buildTree(workPackages).sort((a, b) => a.package_name.localeCompare(b.package_name))
     }
 
     const getWorkPackageTasks = async (work_package_id) => {
@@ -46,7 +48,7 @@ export default function usePackages() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && refresh();
+                    res == true && dispatch(refresh());
                 })
             })
         }
@@ -66,7 +68,7 @@ export default function usePackages() {
             package_name: newName.current.value,
             package_type_id: active_type_id,
             is_folder: 1,
-            parent_id: active_folder_id
+            parent_id: active_folder_id == 0 ? undefined : active_folder_id
         };
         let formErrors = formCheck([{ value: newName.current.value, options: { required: true } }]);
         if (formErrors == 0) {
@@ -77,7 +79,7 @@ export default function usePackages() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && refresh();
+                    res == true && dispatch(refresh());
                 })
             })
         }
@@ -161,7 +163,7 @@ export default function usePackages() {
                     customClass: darkSwal,
                 }).then(() => {
                     setLoaderIndex(false);
-                    res == true && refresh();
+                    res == true && dispatch(refresh());
                 })
             })
         }
@@ -195,7 +197,7 @@ export default function usePackages() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && refresh();
+                    res == true && dispatch(refresh());
                 })
             })
         })
@@ -221,7 +223,7 @@ export default function usePackages() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && refresh();
+                    res == true && dispatch(refresh()) && dispatch(resetActiveType());
                 })
             })
         })
@@ -241,7 +243,7 @@ export default function usePackages() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && refresh();
+                    res == true && dispatch(refresh());
                 })
             })
         }
@@ -275,7 +277,7 @@ export default function usePackages() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && refresh();
+                    res == true && dispatch(refresh());
                 })
             })
         })

@@ -3,35 +3,42 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
 import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
-import usePackagesData from "../hooks/usePackagesData";
 import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
 import usePackages from "../hooks/usePackages";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { resetActiveId } from "../../state/activeWorkPackageFolderIdSlice";
 export default function NewPackage() {
+    const dispatch = useDispatch();
     const { openModal2 } = useContext(HomeContext);
-
-    const { workPackages, workPackageTypes } = usePackagesData();
-    const { addNewFolderPackage, removeFolderPackage } = usePackages();
-
-    const [activePackage, setActivePackage] = useState();
-    const [is_folder, setIs_Folderolder] = useState(false);
-
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
+    const workPackages = useSelector(state => state.aircraftFleet.workPackages.value);
+    const workPackageTypes = useSelector(state => state.aircraftFleet.workPackageTypes.value);
     const activeFolderWorkPackageId = useSelector(state => state.aircraftFleet.activeWorkPackageFolderId.value);
     const activeWorkPackageTypeId = useSelector(state => state.aircraftFleet.activeWorkPackageTypeId.value);
-
+    const [activeChildren, setActiveChildren] = useState([]);
+    const [is_folder, setIs_Folderolder] = useState(false);
+    const { addNewFolderPackage, removeFolderPackage } = usePackages();
     const new_package_name = useRef();
 
     const handleDelete = (package_id) => { removeFolderPackage(package_id) }
-    const handleSubmit = () => { addNewFolderPackage(new_package_name) }
+    const handleSubmit = () => {
+        addNewFolderPackage(new_package_name, activeFolderWorkPackageId, activeWorkPackageTypeId).then(() => {
+            new_package_name.current.value = "";
+        })
+    }
 
     useEffect(() => {
         if (activeFolderWorkPackageId == 0) {
-            setActivePackage({ children: workPackages })
+            setActiveChildren(workPackages.filter(el => el.parent_id == null));
         } else {
-            setActivePackage(workPackages.find(el => el.package_id == activeFolderWorkPackageId));
+            setActiveChildren(workPackages.filter(el => el.parent_id == activeFolderWorkPackageId));
         }
-    }, [workPackages]);
+        // eslint-disable-next-line
+    }, [workPackages, refreshIndex]);
 
+    useEffect(() => {
+        return () => { dispatch(resetActiveId()) }
+    }, []);
     return (
         <Modal>
             <header className="col-12 p-0 pb-2 px-3 d-flex align-content-center justify-content-between">
@@ -71,10 +78,12 @@ export default function NewPackage() {
 
             </main>
             {
-                workPackages.length > 0 && (<footer className="col-12 d-flex gap-3 flex-wrap align-items-center align-content-center p-3">
+
+                activeChildren.length > 0
+                && (<footer className="col-12 d-flex gap-3 flex-wrap align-items-center align-content-center p-3">
                     <p className="col-12 fs-5 fw-medium">{
                         workPackageTypes.length > 0 && workPackageTypes.find(el => el.package_type_id == activeWorkPackageTypeId)['package_type_name']
-                    } list</p>
+                    } <span> list</span></p>
                     <table className="table table-bordered table-dark text-center">
                         <thead>
                             <tr>
@@ -85,7 +94,7 @@ export default function NewPackage() {
                         </thead>
                         <tbody>
                             {
-                                activePackage && activePackage.children.map((el, index) => {
+                                activeChildren.map((el, index) => {
                                     return (
                                         <tr key={index}>
                                             <td>{index + 1}</td>

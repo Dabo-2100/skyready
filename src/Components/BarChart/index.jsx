@@ -7,7 +7,6 @@ import {
     Title,
     Tooltip,
     Legend,
-    scales,
 } from 'chart.js';
 
 

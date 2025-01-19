@@ -7,6 +7,6 @@ export class User {
 
     isAppAdmin(appIndex) {
         let obj = this.roles.find(el => el.app_id == appIndex);
-        return obj.role_id == 1 ? true : false;
+        return (obj && obj.role_id == 1) ? true : false;
     }
 }

@@ -3,12 +3,14 @@ import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
 import { useDispatch } from "react-redux";
 import { setActiveId } from "../../../../features/aircraft-fleet/state/activeWorkPackageFolderIdSlice";
 import { setActiveId as setActivePackage } from "../../../../features/aircraft-fleet/state/activeWorkPackageIdSlice";
+import { setPackageInfo } from "../../../../features/aircraft-fleet/state/activeWorkPackageInfoSlice";
+import PropTypes from "prop-types";
 
 const TreeNode = ({ node }) => {
-    const [expanded, setExpanded] = useState(false);
-    const hasChildren = node.children && node.children.length > 0 && node.children.sort((a, b) => a.package_name.localeCompare(b.package_name));
     const { openModal } = useContext(HomeContext);
     const dispatch = useDispatch();
+    const [expanded, setExpanded] = useState(false);
+    const hasChildren = node.children && node.children.length > 0;
 
     const openWorkPackageFolder = (event) => {
         event.stopPropagation();
@@ -32,6 +34,7 @@ const TreeNode = ({ node }) => {
                         node['is_folder'] == 0 ? (
                             <span className="link" onClick={() => {
                                 dispatch(setActivePackage(node.package_id));
+                                dispatch(setPackageInfo(node));
                                 openModal(4002);
                             }}>{node.package_name}</span>
                         ) : (<span>{node.package_name}</span>)
@@ -74,3 +77,7 @@ const TreeNode = ({ node }) => {
 };
 
 export default TreeNode;
+
+TreeNode.propTypes = {
+    node: PropTypes.object.isRequired,
+};

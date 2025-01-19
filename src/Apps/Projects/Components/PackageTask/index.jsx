@@ -4,19 +4,23 @@ import ProgressBar from "../ProgressBar"
 import Status from "../Status"
 import { FleetContext } from "../../../Fleet/FleetContext"
 import { HomeContext } from "../../../../Pages/HomePage/HomeContext"
-import { faComment, faEdit, faEye, faMessage, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faComment, faEye, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Swal from "sweetalert2"
 import axios from "axios"
 import { $Server, $Token, $SwalDark } from "@/store";
 import { useRecoilValue } from "recoil"
-import { User } from "../../../Warehouse/Core/User"
+import { User } from "../../../../shared/core/User"
+import { $UserInfo } from "../../../../store"
+import { useSelector } from "react-redux"
 
 export default function PackageTask(props) {
+    const user = new User(useRecoilValue($UserInfo));
+    const appIndex = useSelector(state => state.home.activeAppIndex.value);
     const serverUrl = useRecoilValue($Server);
     const token = useRecoilValue($Token);
     const darkSwal = useRecoilValue($SwalDark);
-    const { openModal2, refresh, menu, setMenu } = useContext(HomeContext);
+    const { openModal2, refresh, setMenu } = useContext(HomeContext);
     const { taskFilter, multiSelect } = useContext(ProjectsContext)
     const { setTaskToEdit, setOpenPackage_id } = useContext(FleetContext);
     const openContextMenu = (event) => {
@@ -71,8 +75,6 @@ export default function PackageTask(props) {
             }
         })
     }
-
-    const user = new User();
 
     return (
         <tr onContextMenu={openContextMenu} className='task animate__animated animate__fadeIn'>
@@ -136,7 +138,7 @@ export default function PackageTask(props) {
             {taskFilter.tableView.startDate && <th style={{ whiteSpace: "nowrap" }}>{props.task_start_at && props.task_start_at.split("T")[0]} | {props.task_start_at && props.task_start_at.split("T")[1]} </th>}
             {taskFilter.tableView.dueDate && <th style={{ whiteSpace: "nowrap" }}>{props.task_end_at && props.task_end_at.split("T")[0]} | {props.task_end_at && props.task_end_at.split("T")[1]} </th>}
             {
-                user.isAdmin() && (
+                user.isAppAdmin(appIndex) && (
                     <th style={{ whiteSpace: "nowrap" }}>
                         <div className="col-12 d-flex align-items-center justify-content-center gap-3">
                             <FontAwesomeIcon style={{ cursor: "pointer" }} icon={faEye} className="text-secondary" onClick={handleRightClick} />

@@ -3,7 +3,7 @@ import WorkPackage from "../Components/WorkPackage";
 import NoImg from '@/assets/offline.png'
 import { ProjectsContext } from "../ProjectContext";
 import { $Server, $Token, $Defaults, $LoaderIndex } from "@/store";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { useProjectActivePackages, useSpecialties } from "@/customHooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp, faFilter, faX } from "@fortawesome/free-solid-svg-icons";
@@ -11,8 +11,10 @@ import axios from "axios";
 import { HomeContext } from "@/Pages/HomePage/HomeContext";
 import Status from "../Components/Status";
 import FilterBar from "../Components/FilterBar";
-import { User } from "../../Warehouse/Core/User";
 import TaskContextMenu from "../Modals/TaskContextMenu";
+import { User } from "../../../shared/core/User";
+import { $UserInfo } from "../../../store";
+import { useSelector } from "react-redux";
 
 export default function ProjectTasks() {
     const [serverUrl] = useRecoilState($Server);
@@ -130,7 +132,8 @@ export default function ProjectTasks() {
         }
     }, [specialty_id, status_id]);
 
-    const user = new User();
+    const user = new User(useRecoilValue($UserInfo));
+    const appIndex = useSelector(state => state.home.activeAppIndex.value);
 
     return (
         <div className="col-12 d-flex flex-column flex-grow-1 position-relative p-3 rounded-3"
@@ -240,7 +243,7 @@ export default function ProjectTasks() {
                         </div>
                     </div>
                     {
-                        user.isAdmin() && (
+                        user.isAppAdmin(appIndex) && (
                             <button style={{ fontSize: "14px" }} onClick={() => openModal2(6002)} className={`btn addBtn ${workpackages.length != 0 && 'rounded-bottom-0'} `}> + Start Work Package</button>
                         )
                     }
@@ -278,7 +281,7 @@ export default function ProjectTasks() {
                                     </th>}
                                     {taskFilter.tableView.startDate && <th >Start Date</th>}
                                     {taskFilter.tableView.dueDate && <th >Due Date</th>}
-                                    {taskFilter.tableView.task_tags && user.isAdmin() && <th>Actions</th>}
+                                    {taskFilter.tableView.task_tags && user.isAppAdmin(appIndex) && <th>Actions</th>}
                                 </tr>
                             </thead>
                             <tbody>

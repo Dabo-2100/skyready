@@ -3,10 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import { ProjectsContext } from "../ProjectContext";
 import { useProjects } from "@/customHooks";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { $Server, $Token, $SwalDark, $LoaderIndex } from "@/store";
 import { HomeContext } from "../../../Pages/HomePage/HomeContext";
-import { User } from "../../Warehouse/Core/User";
+import { User } from "../../../shared/core/User";
+import { $UserInfo } from "../../../store";
+import { useSelector } from "react-redux";
 
 export default function ProjectsList() {
   const [serverUrl] = useRecoilState($Server);
@@ -28,7 +30,8 @@ export default function ProjectsList() {
     })
   }, [refreshIndex]);
 
-  const user = new User();
+  const user = new User(useRecoilValue($UserInfo));
+  const appIndex = useSelector(state => state.home.activeAppIndex.value);
 
   return (
     <div className="col-12 d-flex flex-wrap p-3 Tab flex-grow-1" style={{ minHeight: "1vh" }} id="allProjectsTab">
@@ -36,7 +39,7 @@ export default function ProjectsList() {
         <header className="col-12 d-flex align-items-center justify-content-between">
           <h5 className="m-0">Projects List</h5>
           {
-            user.isAdmin() && (
+            user.isAppAdmin(appIndex) && (
               <button className="btn addBtn d-flex gap-2 align-items-center" onClick={() => openModal(6000)}>
                 <FontAwesomeIcon icon={faPlus} />
                 New Project
