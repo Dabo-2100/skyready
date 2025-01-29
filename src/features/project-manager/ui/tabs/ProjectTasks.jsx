@@ -41,31 +41,32 @@ export default function ProjectTasks() {
         setSort(obj);
     }
     useEffect(() => {
-        // let tasks = [...wpView];
-        // let commonkey = "";
-        // let commonVal = "";
-        // for (const key in sort) { if (sort[key] != 0) { commonkey = key; commonVal = sort[key] } }
-        // if (commonkey == "package_name") {
-        //     tasks.sort((a, b) => {
-        //         let t1 = a;
-        //         let t2 = b;
-        //         if (commonVal == 2) { t1 = b; t2 = a }
-        //         let val1 = t1.package_name;
-        //         let val2 = t2.package_name;
-        //         return val1.localeCompare(val2);
-        //     });
-        // } else {
-        //     tasks.sort((a, b) => {
-        //         let t1 = a;
-        //         let t2 = b;
-        //         if (commonVal == 2) { t1 = b; t2 = a }
-        //         let val1 = t1[commonkey];
-        //         let val2 = t2[commonkey];
-        //         return val1 - val2;
-        //         // return val1.localeCompare(val2);
-        //     });
-        // }
-        // setwpView(tasks);
+        let tasks = [...wpView];
+        let commonkey = "";
+        let commonVal = "";
+        for (const key in sort) { if (sort[key] != 0) { commonkey = key; commonVal = sort[key] } }
+        if (commonkey == "package_name") {
+            tasks.sort((a, b) => {
+                let t1 = a;
+                let t2 = b;
+                if (commonVal == 2) { t1 = b; t2 = a }
+                let val1 = t1.package_name;
+                let val2 = t2.package_name;
+                return val1.localeCompare(val2);
+            });
+        } else {
+            tasks.sort((a, b) => {
+                let t1 = a;
+                let t2 = b;
+                if (commonVal == 2) { t1 = b; t2 = a }
+                let val1 = t1[commonkey];
+                let val2 = t2[commonkey];
+                return val1 - val2;
+                // return val1.localeCompare(val2);
+            });
+        }
+        setwpView(tasks);
+        // eslint-disable-next-line
     }, [sort]);
     // Filter
 
@@ -162,14 +163,12 @@ export default function ProjectTasks() {
                                     wpView.map((wp, index) => {
                                         return (
                                             <WorkPackage
+                                                info={wp}
                                                 key={wp.work_package_id}
                                                 order={index}
                                                 package_id={wp.work_package_id}
                                                 package_name={wp.package_name}
-                                                work_package_progress={
-                                                    wp.work_package_progress
-                                                    // wp.total_done_time ? (wp.total_done_time / wp.estimated_duration) * 100 : wp.work_package_progress
-                                                }
+                                                work_package_progress={wp.work_package_progress}
                                                 status_name={wp.status_name}
                                                 estimated_duration={wp.estimated_duration}
                                                 start_at={(wp.start_at && wp.start_at.split("T")[0]) || "---"}

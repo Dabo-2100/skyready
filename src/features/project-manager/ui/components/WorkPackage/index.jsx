@@ -4,21 +4,22 @@ import { useContext, useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import { ProjectsContext } from "../../../../../Apps/Projects/ProjectContext";
 import PackageTask from "../../../../../Apps/Projects/Components/PackageTask";
-import { HomeContext } from "@/Pages/HomePage/HomeContext";
 import { User } from "../../../../../shared/core/User";
 import { $UserInfo } from "../../../../../store";
 import { useDispatch, useSelector } from "react-redux";
 import useProjects from "../../hooks/useProjects";
-import PropTypes from "prop-types";
 import { setActiveId } from "../../../../aircraft-fleet/state/activeWorkPackageIdSlice";
+import { HomeContext } from "@/Pages/HomePage/HomeContext";
+import PropTypes from "prop-types";
+import { setPackageInfo } from "../../../../aircraft-fleet/state/activeWorkPackageInfoSlice";
 
-export default function WorkPackage({ package_id, estimated_duration, package_name, start_at, end_at, work_package_progress }) {
+export default function WorkPackage({ package_id, estimated_duration, package_name, start_at, end_at, work_package_progress, info }) {
     const dispatch = useDispatch();
     const { openModal2 } = useContext(HomeContext);
     const { multiSelect, setMultiSelect } = useContext(ProjectsContext);
     const { getWorkPackageTasks } = useProjects();
     const refreshIndex = useSelector(state => state.home.refreshIndex);
-    const openedProject = useSelector(state => state.projects.activeProject.id);
+    const activeProjectId = useSelector(state => state.projects.activeProject.id);
     const projectTasksFilter = useSelector(state => state.projects.projectTasksFilter);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [packageTasks, setPackageTasks] = useState([]);
@@ -28,15 +29,13 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
     const openWorkPackageDetails = (event) => {
         event.stopPropagation();
         event.preventDefault();
-        dispatch(setActiveId(package_id))
+        dispatch(setPackageInfo(info));
+        dispatch(setActiveId(package_id));
         openModal2(4002);
     }
 
     useEffect(() => {
-        if (isCollapsed) {
-            let package_id = package_id;
-            getWorkPackageTasks(openedProject, package_id).then(setPackageTasks);
-        }
+        isCollapsed && getWorkPackageTasks(activeProjectId, package_id).then(setPackageTasks);
         // eslint-disable-next-line
     }, [isCollapsed, refreshIndex, estimated_duration]);
 
@@ -92,13 +91,12 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
     return (
         <>
-            <tr className={!isCollapsed ? "workPackage" : "activeWorkPackage"} style={{
-                position: "sticky",
-                top: 0,
-                zIndex: 250
-            }}
+            <tr
+                className={!isCollapsed ? "workPackage" : "activeWorkPackage"}
+                style={{ position: "sticky", top: 0, zIndex: 250 }}
                 onContextMenu={openWorkPackageDetails}
-                onClick={() => { setIsCollapsed(!isCollapsed) }}>
+                onClick={() => { setIsCollapsed(!isCollapsed) }}
+            >
 
                 <th className="text-center" onClick={(e) => isCollapsed && e.stopPropagation()}>
                     {!isCollapsed ?
@@ -109,9 +107,7 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
                     }
                 </th>
                 <th colSpan={projectTasksFilter.tableView.reduce((old, el, index) => {
-                    if (index < 4 && el.active) {
-                        return old + 1;
-                    }
+                    if (index < 4 && el.active) { return old + 1 }
                     return old;
                 }, 0)}>
                     {package_name}
@@ -148,16 +144,11 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
                         </th>
                     )
                 }
-
             </tr>
             {
                 isCollapsed && (packageTasks.length > 0) && (
                     <>
-                        <tr className="fixedRow" style={{
-                            position: "sticky",
-                            top: "37px",
-                            zIndex: 200
-                        }}>
+                        <tr className="fixedRow" style={{ position: "sticky", top: "37px", zIndex: 200 }}>
                             <td>-</td>
                             {
                                 projectTasksFilter.tableView.map((el, index) => {
@@ -209,10 +200,5 @@ WorkPackage.propTypes = {
     status_name: PropTypes.string,
     start_at: PropTypes.string,
     end_at: PropTypes.string,
+    info: PropTypes.object
 };
-
-
-
-
-
-

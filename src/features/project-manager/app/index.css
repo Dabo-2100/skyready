@@ -114,7 +114,7 @@
       font-weight: 600;
       background-color: #10101c !important;
       color: white;
-      padding:8px;
+      padding: 8px;
       text-align: center;
       border-bottom: 0 !important;
     }
@@ -135,6 +135,7 @@
     }
 
     .workPackage {
+
       td,
       th {
         font-size: 16px;
@@ -159,7 +160,7 @@
 
       td,
       th {
-        font-size: 14px;
+        /* font-size: 14px; */
         color: white;
         background-color: #607d8b !important;
         cursor: pointer;
