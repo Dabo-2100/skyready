@@ -16,6 +16,8 @@ import workPackagesReducer from './workPackagesSlice';
 import workPackageTypesReducer from './workPackageTypesSlice';
 import aircraftSpecailtiesReducer from './aircraftSpecialtiesSlice';
 import activeWorkPackageInfoReducer from './activeWorkPackageInfoSlice';
+import aircraftModelsReducer from './aircraftModelsSlice';
+import aircraftFleetReducer from './aircraftFleetSlice';
 
 import { combineReducers } from '@reduxjs/toolkit';
 
@@ -33,6 +35,8 @@ const aircraftFleetReducers = combineReducers({
     selectedZones: selectedZonesReducer,
     selectedDesignators: selectedDesignatorsReducer,
     aircraftZones: aircraftZonesReducer,
+    aircraftModels: aircraftModelsReducer,
+    aircraftFleet: aircraftFleetReducer,
     activeZoneId: activeZoneIdReducer,
     activeParentZone: activeParentZonekReducer,
     workPackages: workPackagesReducer,

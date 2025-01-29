@@ -176,11 +176,20 @@ function project_wps_filter($id)
         $operator_info = checkAuth();
         $project_info = getRows("app_projects", "project_id=" . htmlspecialchars($project_id));
         $condition = "";
-        $index = 0;
-        foreach ($POST_data as $key => $value) {
-            $condition .= ($index == 0 ? "" : " AND ")  . "{$key} = '$value'";
-            $index++;
+
+        if (count($POST_data['status_ids']) > 0) {
+            $ids = implode(",", $POST_data['status_ids']);
+            $condition = " pt.status_id IN ({$ids}) ";
+            if (count($POST_data['specialty_ids']) > 0) {
+                $condition .= ' AND ';
+            }
         }
+
+        if (count($POST_data['specialty_ids']) > 0) {
+            $ids = implode(",", $POST_data['specialty_ids']);
+            $condition .= " wpt.specialty_id IN ({$ids})";
+        }
+
         if (isset($project_info[0])) {
             $sql = "SELECT wp.package_id as work_package_id, wp.*, 
                     parent_wp.package_name AS parent_name, 
@@ -299,10 +308,21 @@ function project_tasks_filter($id)
         $project_info = getRows("app_projects", "project_id=" . htmlspecialchars($project_id));
         $condition = "";
         $index = 0;
-        foreach ($POST_data as $key => $value) {
-            $condition .= ($index == 0 ? "" : " AND ")  . "{$key} = '$value'";
-            $index++;
+
+        if (count($POST_data['status_ids']) > 0) {
+            $ids = implode(",", $POST_data['status_ids']);
+            $condition = " pt.status_id IN ({$ids}) ";
+            if (count($POST_data['specialty_ids']) > 0) {
+                $condition .= ' AND ';
+            }
         }
+
+        if (count($POST_data['specialty_ids']) > 0) {
+            $ids = implode(",", $POST_data['specialty_ids']);
+            $condition .= " wpt.specialty_id IN ({$ids})";
+        }
+
+
         if (isset($project_info[0])) {
             $sql = "SELECT pt.*, ps.status_name,
                         wpt.task_name,
@@ -340,7 +360,6 @@ function project_tasks_filter($id)
         echo 'Method Not Allowed';
     }
 }
-
 
 function project_remove_workpackage($id)
 {

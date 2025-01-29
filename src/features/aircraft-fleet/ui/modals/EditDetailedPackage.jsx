@@ -1,37 +1,45 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { Accordion } from "react-bootstrap";
-import usePackagesData from "../hooks/usePackagesData";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
 import { useContext, useEffect, useRef, useState } from "react";
 import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { resetActiveId } from "../../state/activeWorkPackageIdSlice";
-
 import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
-import useAircraftData from "../hooks/useAircraftData";
 import useAircraft from "../hooks/useAircraft";
 import EditBtn from "../../../../shared/ui/components/EditBtn";
 import TasksTable from "../components/TasksTable";
 import usePackages from "../hooks/usePackages";
+import { setAircraftFleet } from "../../state/aircraftFleetSlice"
+import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
+// import { useRecoilState } from "recoil";
+// import { $LoaderIndex } from "../../../../store";
+import { setAircraftModels } from "../../state/aircraftModelsSlice";
+import { setPackageInfo } from "../../state/activeWorkPackageInfoSlice";
 
 export default function EditDetailedPackage() {
-    const dispatch = useDispatch();
+    // const [, setLoaderIndex] = useRecoilState($LoaderIndex);
     const { openModal3 } = useContext(HomeContext);
-    const { getAircraftFleetByModel } = useAircraft();
-    const { aircraftModels: models, aircraftFleet: aircraftFleet, setAircraftFleet } = useAircraftData();
-    const { updateWorkPackageInfo } = usePackages();
-    const { workPackageTasks, workPackageInfo: packageInfo, workPackageApplicablity } = usePackagesData();
+
+    const dispatch = useDispatch();
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
+    const packageInfo = useSelector(state => state.aircraftFleet.activeWorkPackageInfo.value);
+    const active_work_package_id = useSelector(state => state.aircraftFleet.activeWorkPackageId.value);
+    const models = useSelector(state => state.aircraftFleet.aircraftModels.value);
+    const aircraftFleet = useSelector(state => state.aircraftFleet.aircraftFleet.value);
+
+    const { getAircraftFleetByModel, getAircraftModels } = useAircraft();
+    const { updateWorkPackageInfo, getWorkPackageTasks } = usePackages();
     // Local States 
     const [editIndex, setEditIndex] = useState(false);
+    const [workPackageTasks, setWorkPackageTasks] = useState([]);
+    const [, setWorkPackageApplicablity] = useState([]);
     const [selectedApplicablity, setSelectedApplicablity] = useState([]);
     // Refs
     const formInputs = useRef([]);
-    // Component Methods 
 
     const handleModelChange = (event) => {
-        getAircraftFleetByModel(event.target.value).then(setAircraftFleet);
-        setSelectedApplicablity([]);
+        getAircraftFleetByModel(event.target.value).then((res) => dispatch(setAircraftFleet(res)));
     }
 
     const handleSaveWPInfo = () => {
@@ -48,13 +56,30 @@ export default function EditDetailedPackage() {
     const handleReOrder = () => { }
 
     useEffect(() => {
+        getAircraftModels().then((res) => dispatch(setAircraftModels(res))).then(() => {
+            formInputs.current[5].value = packageInfo.model_id;
+        });
+
+        getWorkPackageTasks(active_work_package_id).then((res) => {
+            setPackageInfo(res.info);
+            setWorkPackageTasks(res.tasks);
+            setWorkPackageApplicablity(res.info.applicability);
+            setSelectedApplicablity(res.info.applicability)
+        });
+        // eslint-disable-next-line
+    }, [active_work_package_id, refreshIndex])
+
+    useEffect(() => {
         return () => dispatch(resetActiveId()); // eslint-disable-next-line
     }, []);
 
-    useEffect(() => {
-        workPackageApplicablity.length > 0 && setSelectedApplicablity(workPackageApplicablity);
-    }, [workPackageApplicablity]);
-
+    // const handleReOrder = () => {
+    //     setLoaderIndex(true);
+    //     reOrderTasks(serverUrl, token, packageInfo.package_id).then(() => {
+    //         setLoaderIndex(false)
+    //         refresh();
+    //     })
+    // }
 
     // const closeWP = () => {
     //     if (editIndex) {
@@ -71,13 +96,7 @@ export default function EditDetailedPackage() {
     //     }
     // }
 
-    // const handleReOrder = () => {
-    //     setLoaderIndex(true);
-    //     reOrderTasks(serverUrl, token, packageInfo.package_id).then(() => {
-    //         setLoaderIndex(false)
-    //         refresh();
-    //     })
-    // }
+
 
     // useEffect(() => {
     //     if (openedProject != 0) {
@@ -205,23 +224,28 @@ export default function EditDetailedPackage() {
                             </div>
 
                             <div className="col-12 col-md-6 border d-flex flex-wrap justify-content-between myCheck gap-0">
-                                <div className="col-12 p-2 border-bottom d-flex flex-wrap align-content-center mb-3">
-                                    <label className="col-12 mb-2">Model Name</label>
-                                    <select
-                                        ref={el => { formInputs.current[5] = el }}
-                                        className="form-select"
-                                        onChange={handleModelChange}
-                                        disabled={!editIndex}
-                                        defaultValue={packageInfo.model_id}
-                                    >
-                                        {
-                                            models.map((el, index) => {
-                                                return (<option key={index} value={el.model_id}>{el.model_name}</option>)
-                                            })
-                                        }
-                                    </select>
-                                </div>
-                                <p className="col-12 pb-2 px-2">Applicaplity</p>
+                                {
+                                    editIndex &&
+                                    <div className="col-12 p-2 border-bottom d-flex flex-wrap align-content-center">
+                                        <label className="col-12 mb-2">Model Name</label>
+                                        <select
+                                            ref={el => { formInputs.current[5] = el }}
+                                            className="form-select"
+                                            onChange={handleModelChange}
+                                            disabled={!editIndex}
+                                        >
+                                            {
+                                                models.map((el, index) => {
+                                                    return (<option key={index} value={el.model_id}>{el.model_name}</option>)
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+                                }
+
+
+
+                                <p className="col-12 pb-2 px-2 pt-2">Applicaplity</p>
                                 <div className="col-12 d-flex flex-wrap gap-0">
                                     {
                                         !editIndex ?
@@ -244,7 +268,7 @@ export default function EditDetailedPackage() {
                                                         <input
                                                             id={`check-${el.aircraft_id}`}
                                                             type="checkbox"
-                                                            defaultChecked={selectedApplicablity.some(x => x == el.aircraft_id)}
+                                                            defaultChecked={selectedApplicablity.some(x => x.aircraft_id == el.aircraft_id)}
                                                             onChange={() => toggleApp(el.aircraft_id)}
                                                             disabled={!editIndex}
                                                         />

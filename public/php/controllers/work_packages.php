@@ -9,7 +9,6 @@ $endpoints += [
     '/api/packages/store'       => 'packages_store',
     '/api/packages/delete'      => 'packages_delete',
     '/api/packages/update/\d+'  => 'packages_update',
-
     '/api/packages/types'        => 'packages_type_index',
     '/api/packages/types/\d+'    => 'packages_type_show',
     '/api/packages/types/store'  => 'packages_type_store',

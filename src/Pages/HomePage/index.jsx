@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { HomeContext } from "./HomeContext.jsx";
 // System Apps
 import FleetApp from "../../features/aircraft-fleet/app";
-import ProjectsApp from "@/Apps/Projects/index.jsx";
+import ProjectsApp from "../../features/project-manager/app/index.jsx";
 import UsersApp from "../../features/users/app";
 import WelcomePage from "@/Components/WelcomePage/index.jsx";
 import SideMenu from "@/Components/SideMenu";

@@ -5,9 +5,9 @@ import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
 import { setActiveId } from "../../state/activeWorkPackageTaskIdSlice"
 
 export default function TasksTable({ workPackageTasks }) {
-    const dispatch = useDispatch();
     const { openModal3 } = useContext(HomeContext);
 
+    const dispatch = useDispatch();
     const showTask = (task_id) => {
         dispatch(setActiveId(task_id));
         openModal3(4005);
@@ -44,5 +44,5 @@ export default function TasksTable({ workPackageTasks }) {
 }
 
 TasksTable.propTypes = {
-    workPackageTasks: PropTypes.array.isRequired,
+    workPackageTasks: PropTypes.array,
 };

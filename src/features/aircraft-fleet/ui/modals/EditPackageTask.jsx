@@ -1,5 +1,4 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { FleetContext } from "../../../../Apps/Fleet/FleetContext"
 import { useRecoilState } from "recoil";
 import { ProjectsContext } from "../../../../Apps/Projects/ProjectContext";
 import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
@@ -10,8 +9,6 @@ import Select from 'react-select'
 import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem } from "react-bootstrap";
 import { $LoaderIndex } from "../../../../store";
-import useEditPackageTask from "../../../../Hooks/useEditPackageTask";
-import useWorkPackage from "../../../../Hooks/useWorkPackage";
 import { useDispatch, useSelector } from "react-redux";
 import usePackages from "../hooks/usePackages";
 import TaskWorkingZone from "../components/TaskWorkingZone";
@@ -36,7 +33,13 @@ export default function EditPackageTask() {
     const [editIndex, setEditIndex] = useState(true);
     const [taskInfo, setTaskInfo] = useState({ task_name: "" });
 
-    const { getComments, saveComment, updateTask, removeTask, areArraysEqual } = useEditPackageTask();
+    const getComments = () => { }
+    const saveComment = () => { }
+    const updateTask = () => { }
+    const removeTask = () => { }
+    const areArraysEqual = () => { }
+
+    // const { getComments, saveComment, updateTask, removeTask, areArraysEqual } = useEditPackageTask();
 
     const saveChanges = async (event) => {
         event.preventDefault();
@@ -67,12 +70,7 @@ export default function EditPackageTask() {
     }, [aircraftSpecialties]);
 
     useEffect(() => {
-        //     getComments().then(setComments);
-        //     taskInputs.current[2] && taskInputs.current[2].value != -1 &&
-        return () => {
-            dispatch(resetDesignators());
-            dispatch(resetZones());
-        }
+        return () => { dispatch(resetDesignators()); dispatch(resetZones()) }
     }, [])
 
     return (

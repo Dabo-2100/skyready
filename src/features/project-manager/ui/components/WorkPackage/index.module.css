@@ -1,0 +1,9 @@
+.workPackage {
+  overflow-x: auto;
+
+  td,
+  th {
+    background-color: #00033b !important;
+  }
+
+}

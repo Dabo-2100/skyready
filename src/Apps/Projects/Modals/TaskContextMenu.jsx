@@ -1,14 +1,13 @@
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { HomeContext } from '../../../Pages/HomePage/HomeContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdd, faArrowsLeftRight, faEdit } from '@fortawesome/free-solid-svg-icons';
-import { FleetContext } from '../../Fleet/FleetContext';
-
 export default function TaskContextMenu() {
-    const { setTaskToEdit, setOpenPackage_id } = useContext(FleetContext);
     const { menu, setMenu, openModal2 } = useContext(HomeContext);
+    // const contextMenu = useSelector(state => state.projects.multiTasksSelector);
     useEffect(() => {
-        return () => {// setTaskToEdit(0); setOpenPackage_id(0);
+        return () => {
+            // setTaskToEdit(0); setOpenPackage_id(0)
         }
     }, [])
     return (

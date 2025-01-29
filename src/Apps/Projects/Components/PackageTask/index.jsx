@@ -2,78 +2,44 @@ import { useContext } from "react"
 import { ProjectsContext } from "../../ProjectContext"
 import ProgressBar from "../ProgressBar"
 import Status from "../Status"
-import { FleetContext } from "../../../Fleet/FleetContext"
 import { HomeContext } from "../../../../Pages/HomePage/HomeContext"
 import { faComment, faEye, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import Swal from "sweetalert2"
-import axios from "axios"
-import { $Server, $Token, $SwalDark } from "@/store";
 import { useRecoilValue } from "recoil"
 import { User } from "../../../../shared/core/User"
 import { $UserInfo } from "../../../../store"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { setActiveId } from "../../../../features/aircraft-fleet/state/activeWorkPackageTaskIdSlice"
+import PropTypes from "prop-types"
+import useProjects from "../../../../features/project-manager/ui/hooks/useProjects"
 
 export default function PackageTask(props) {
+    const dispatch = useDispatch();
+    const { removeWorkPackageTask } = useProjects();
     const user = new User(useRecoilValue($UserInfo));
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
-    const serverUrl = useRecoilValue($Server);
-    const token = useRecoilValue($Token);
-    const darkSwal = useRecoilValue($SwalDark);
-    const { openModal2, refresh, setMenu } = useContext(HomeContext);
-    const { taskFilter, multiSelect } = useContext(ProjectsContext)
-    const { setTaskToEdit, setOpenPackage_id } = useContext(FleetContext);
+    const taskFilter = useSelector(state => state.projects.projectTasksFilter);
+    const { openModal2, setMenu } = useContext(HomeContext);
+    const { multiSelect } = useContext(ProjectsContext)
+
     const openContextMenu = (event) => {
         event.preventDefault()
         setMenu({ index: true, posX: event.clientX, posY: event.clientY })
-        setOpenPackage_id(props.package_id);
-        setTaskToEdit(props.task_id);
+        dispatch(setActiveId(props.task_id));
+        // setOpenPackage_id(props.package_id);
+        // setTaskToEdit(props.task_id);
     }
 
-    const handleRightClick = (event) => {
+    const openTaskDetails = (event) => {
         event.preventDefault()
-        setTaskToEdit(props.task_id);
-        setOpenPackage_id(props.package_id);
+        dispatch(setActiveId(props.task_id));
         openModal2(4005);
+        // setTaskToEdit(props.task_id);
+        // setOpenPackage_id(props.package_id);
     }
 
     const handleRemove = async () => {
-        Swal.fire({
-            icon: "question",
-            html: `
-                <div className="d-flex flex-wrap gap-3">
-                    <p className="text-danger">Are you sure you want to remove this task from the workpackage ?</p>
-                    <ul className="text-start fs-6">
-                        <li>This Will Affect All Related Projects Progress</li>
-                        <li>This Will Affect Workpackage Progress</li>
-                        <li>This Will Remove All Task Comments</li>
-                    </ul>
-                </div>
-            `,
-            showConfirmButton: true,
-            showDenyButton: true,
-            confirmButtonText: "Yes , Remove it",
-            denyButtonText: "Not Now !",
-            customClass: darkSwal,
-        }).then((res) => {
-            if (res.isConfirmed) {
-                axios.post(`${serverUrl}/php/index.php/api/workpackage/tasks/delete`,
-                    { "task_id": props.task_id },
-                    { headers: { Authorization: `Bearer ${token}` } }
-                ).then((res) => {
-                    Swal.fire({
-                        icon: "success",
-                        text: "Task Removed Succesfully",
-                        timer: 1500,
-                        customClass: darkSwal
-                    }).then(() => {
-                        refresh();
-                    })
-                }).catch((err) => {
-                    console.log(err);
-                })
-            }
-        })
+        removeWorkPackageTask(props.task_id);
     }
 
     return (
@@ -99,49 +65,49 @@ export default function PackageTask(props) {
             </td>
             <th style={{ whiteSpace: "nowrap" }}>
                 <div className="col-12 gap-3 p-2 d-flex align-items-center justify-content-center">
-                    {props.task_name} {props.comments_no != 0 && <FontAwesomeIcon onClick={handleRightClick} icon={faComment} />}
+                    {props.task_name} {props.comments_no != 0 && <FontAwesomeIcon onClick={openTaskDetails} icon={faComment} />}
                 </div>
             </th>
-            {taskFilter.tableView.taskType &&
+            {taskFilter.tableView[1].active &&
                 <th>
                     <div style={{ minWidth: "200px" }}>
                         {props.task_type_name}
                     </div>
                 </th>
             }
-            {taskFilter.tableView.task_desc &&
+            {taskFilter.tableView[2].active &&
                 <th>
                     <div style={{ minWidth: "250px" }}>
                         {props.task_desc}
                     </div>
                 </th>
             }
-            {taskFilter.tableView.speciality &&
+            {taskFilter.tableView[3].active &&
                 <th style={{ whiteSpace: "nowrap" }}>
                     {props.specialty_name}
                 </th>
             }
-            {taskFilter.tableView.progress &&
+            {taskFilter.tableView[4].active &&
                 <th className="px-2" style={{ whiteSpace: "nowrap" }}>
                     <div style={{ minWidth: "150px" }}>
                         <ProgressBar log_id={props.log_id} status_id={props.status_id} percentage={props.task_progress} canEdit="true" />
                     </div>
                 </th>}
-            {taskFilter.tableView.status &&
+            {taskFilter.tableView[5].active &&
                 <th style={{ whiteSpace: "nowrap" }}>
                     <div style={{ minWidth: "150px" }}>
                         <Status log_id={props.log_id} status_id={props.status_id} percentage={props.task_progress} status_name={props.status_name} />
                     </div>
                 </th>
             }
-            {taskFilter.tableView.duration && <th style={{ whiteSpace: "nowrap" }}>{props.task_duration}</th>}
-            {taskFilter.tableView.startDate && <th style={{ whiteSpace: "nowrap" }}>{props.task_start_at && props.task_start_at.split("T")[0]} | {props.task_start_at && props.task_start_at.split("T")[1]} </th>}
-            {taskFilter.tableView.dueDate && <th style={{ whiteSpace: "nowrap" }}>{props.task_end_at && props.task_end_at.split("T")[0]} | {props.task_end_at && props.task_end_at.split("T")[1]} </th>}
+            {taskFilter.tableView[6].active && <th style={{ whiteSpace: "nowrap" }}>{props.task_duration}</th>}
+            {taskFilter.tableView[7].active && <th style={{ whiteSpace: "nowrap" }}>{props.task_start_at && props.task_start_at.split("T")[0]} | {props.task_start_at && props.task_start_at.split("T")[1]} </th>}
+            {taskFilter.tableView[8].active && <th style={{ whiteSpace: "nowrap" }}>{props.task_end_at && props.task_end_at.split("T")[0]} | {props.task_end_at && props.task_end_at.split("T")[1]} </th>}
             {
-                user.isAppAdmin(appIndex) && (
+                user.isAppAdmin(appIndex) && taskFilter.tableView[9].active && (
                     <th style={{ whiteSpace: "nowrap" }}>
                         <div className="col-12 d-flex align-items-center justify-content-center gap-3">
-                            <FontAwesomeIcon style={{ cursor: "pointer" }} icon={faEye} className="text-secondary" onClick={handleRightClick} />
+                            <FontAwesomeIcon style={{ cursor: "pointer" }} icon={faEye} className="text-secondary" onClick={openTaskDetails} />
                             <FontAwesomeIcon style={{ cursor: "pointer" }} icon={faTrash} className="text-danger" onClick={handleRemove} />
                         </div>
                     </th>
@@ -150,3 +116,9 @@ export default function PackageTask(props) {
         </tr>
     )
 }
+
+PackageTask.propTypes = {
+    status_id: PropTypes.number,
+    props: PropTypes.object,
+};
+

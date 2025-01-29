@@ -8,12 +8,13 @@
   line-height: normal;
   font-optical-sizing: auto;
   font-family: "Lexend", sans-serif;
-  scroll-behavior: smooth;
+  scroll-behavior: smooth !important;
 }
 
 html {
   scroll-behavior: smooth;
 }
+
 
 body,
 #root,

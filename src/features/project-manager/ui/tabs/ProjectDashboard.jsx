@@ -1,15 +1,15 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { ProjectsContext } from "../ProjectContext";
+import { ProjectsContext } from "../../../../Apps/Projects/ProjectContext";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { $Server, $Token, $SwalDark, $UserInfo, $LoaderIndex } from "@/store";
-import BarChart from "../Components/BarChart";
+import BarChart from "../../../../Apps/Projects/Components/BarChart";
 
 import { useDashboard, useAircraftStatus, getAircraftByModel, useAircraftModels, useAircraftUsages, formCheck } from "@/customHooks";
 import axios from "axios";
 import Swal from "sweetalert2";
-import ProgressBar from "../Components/ProgressBar";
-import { HomeContext } from "../../../Pages/HomePage/HomeContext";
-import { User } from "../../../shared/core/User";
+import ProgressBar from "../../../../Apps/Projects/Components/ProgressBar";
+import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
+import { User } from "../../../../shared/core/User";
 import { useSelector } from "react-redux";
 
 export default function ProjectDashboard() {

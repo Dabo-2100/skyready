@@ -1,15 +1,12 @@
 import Swal from "sweetalert2";
-import { useContext } from "react";
 import { useRecoilValue } from "recoil";
 import { useDispatch, useSelector } from "react-redux";
 import { $Server, $SwalDark, $Token } from "../../../../store";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext"
 import { AircraftRepo } from "../../data/repositories/AircraftRepo";
 import { formCheck } from "../../../../customHooks";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
 
 export default function useAircraft() {
-    const { closeModal } = useContext(HomeContext);
     const dispatch = useDispatch();
     const editAircaft_id = useSelector(state => state.aircraftFleet.activeAircraftId.value);
     const activeWorkPackageInfo = useSelector(state => state.aircraftFleet.activeWorkPackageInfo.value);
@@ -86,7 +83,7 @@ export default function useAircraft() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && closeModal();
+                    res == true && dispatch(refresh());
                 })
             })
         }
@@ -140,7 +137,7 @@ export default function useAircraft() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && closeModal();
+                    res == true && dispatch(refresh());
                 })
             })
         }

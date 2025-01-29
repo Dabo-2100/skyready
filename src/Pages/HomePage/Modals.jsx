@@ -19,7 +19,7 @@ import TaskDesignators from "../../features/aircraft-fleet/ui/modals/TaskDesigna
 // ------------------------------------------------------------------>
 // Projects App Modals
 import NewProject from "@/Apps/Projects/Modals/NewProject";
-import ProjectView from "@/Apps/Projects/Modals/ProjectView";
+import ProjectView from "../../features/project-manager/ui/modals/ProjectView.jsx";
 import StartWorkPackage from "../../Apps/Projects/Modals/StartWorkPackage.jsx";
 // Users App Modals
 import NewUser from "../../features/users/ui/modals/NewUser.jsx";

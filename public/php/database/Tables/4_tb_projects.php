@@ -2,6 +2,8 @@
 $statements = array_merge($statements, [
     'CREATE TABLE IF NOT EXISTS project_status( 
         status_id               INT(20) AUTO_INCREMENT PRIMARY KEY,
+        affect_progress         BOOLEAN NOT NULL,
+        act_like_done           BOOLEAN DEFAULT False,
         status_name             VARCHAR(255) NOT NULL,      
         status_color_code       VARCHAR(255) NULL,
         status_bg_code          VARCHAR(255) NULL,

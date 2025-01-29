@@ -1,33 +1,49 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
-import { ProjectsContext } from "../ProjectContext";
-import { useProjects } from "@/customHooks";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { $Server, $Token, $SwalDark, $LoaderIndex } from "@/store";
-import { HomeContext } from "../../../Pages/HomePage/HomeContext";
-import { User } from "../../../shared/core/User";
-import { $UserInfo } from "../../../store";
-import { useSelector } from "react-redux";
+import { $LoaderIndex } from "@/store";
+import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
+import { User } from "../../../../shared/core/User";
+import { $UserInfo } from "../../../../store";
+import { useDispatch, useSelector } from "react-redux";
+import useProjects from "../hooks/useProjects";
+import { setActiveId, setProjectInfo, setActivePackages, setAvailablePackages } from "../../state/activeProjectSlice";
+import { resetTableView, setTableView } from "../../state/projectTasksFilterSlice";
 
 export default function ProjectsList() {
-  const [serverUrl] = useRecoilState($Server);
-  const [token] = useRecoilState($Token);
-  const [darkSwal] = useRecoilState($SwalDark);
   const [, setLoaderIndex] = useRecoilState($LoaderIndex);
+  const { openModal } = useContext(HomeContext);
+  const refreshIndex = useSelector(state => state.home.refreshIndex.value);
+  const dispatch = useDispatch();
+  const { getAllProjects, getProjectPackages } = useProjects();
   const [projects, setProjects] = useState([]);
-  const { openModal, refreshIndex } = useContext(HomeContext);
-  const { setOpenedProject } = useContext(ProjectsContext);
+
   const openProject = (id) => {
-    setOpenedProject(id)
-    openModal(6001);
+    (
+      localStorage.getItem("tableView")
+      && dispatch(setTableView(JSON.parse(localStorage.getItem("tableView"))))
+    ) || dispatch(resetTableView())
+    dispatch(setActiveId(id));
+    dispatch(setProjectInfo(projects.find((el) => { return el.project_id == id })));
+    getProjectPackages(id).then((result) => {
+      let res = result[0];
+      let x = res.applicable_work_packages.map((el) => {
+        let index = res.active_work_packages.findIndex((wp) => {
+          return wp.work_package_id == el.package_id;
+        })
+        return (index == -1) && el
+      })
+      let final = x.filter(item => typeof item === 'object' && item !== null);
+      dispatch(setActivePackages(res.active_work_packages));
+      dispatch(setAvailablePackages(final));
+    }).then(() => openModal(6001))
   }
+
   useEffect(() => {
     setLoaderIndex(true);
-    useProjects(serverUrl, token).then((res) => {
-      setProjects(res);
-      setLoaderIndex(false)
-    })
+    getAllProjects().then(setProjects).then(() => setLoaderIndex(false));
+    // eslint-disable-next-line
   }, [refreshIndex]);
 
   const user = new User(useRecoilValue($UserInfo));
@@ -46,7 +62,6 @@ export default function ProjectsList() {
               </button>
             )
           }
-
         </header>
         <div className="col-12 d-flex overflow-auto align-items-start flex-grow-1" style={{ height: "1vh" }}>
           <table className="table table-dark table-bordered table-hover text-center">

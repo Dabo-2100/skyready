@@ -3,6 +3,7 @@ import TreeNode from './TreeNode';
 import ZoneNode from './ZoneNode';
 import "./index.scss";
 import { HomeContext } from '@/Pages/HomePage/HomeContext';
+import PropTypes from 'prop-types';
 
 export default function TreeView({ data, type, action }) {
     const { refreshIndex } = useContext(HomeContext);
@@ -41,4 +42,11 @@ export default function TreeView({ data, type, action }) {
             }
         </div>
     );
+};
+
+
+TreeView.propTypes = {
+    data: PropTypes.object.isRequired,
+    type: PropTypes.object.isRequired,
+    action: PropTypes.object.isRequired,
 };

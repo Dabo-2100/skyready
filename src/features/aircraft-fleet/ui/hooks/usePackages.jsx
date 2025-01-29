@@ -122,7 +122,7 @@ export default function usePackages() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && closeModal();
+                    res == true && dispatch(refresh()) && closeModal();
                 })
             })
         }
@@ -151,7 +151,6 @@ export default function usePackages() {
         let formErrors = formCheck([
             { value: formInputs.current[0].value, options: { required: true } },
             { value: formInputs.current[5].value, options: { required: true, notEqual: -1 } },
-            { value: work_package_applicability, options: { arrayNotEmpty: true } },
         ])
 
         if (formErrors == 0) {
@@ -234,6 +233,7 @@ export default function usePackages() {
             specialty_id: specialty_id,
             type_name: newName.current.value
         };
+
         let formErrors = formCheck([{ value: newName.current.value, options: { required: true } }]);
         if (formErrors == 0) {
             await WorkPackagesRepo.add_new_work_package_task_type(serverUrl, token, data).then((res) => {
@@ -312,7 +312,7 @@ export default function usePackages() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && closeModal();
+                    res == true && dispatch(refresh()) && closeModal()
                 })
             })
         }

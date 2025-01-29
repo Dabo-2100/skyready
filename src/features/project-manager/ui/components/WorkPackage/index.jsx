@@ -1,71 +1,44 @@
-import "./index.scss";
 import { faAngleRight, faArrowDown, faArrowUp, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext } from "react";
-import { useEffect } from "react";
-import { useState } from "react"
-import { ProjectsContext } from "../../ProjectContext";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { $Server, $Token } from "@/store";
-import PackageTask from "../PackageTask";
-import axios from "axios";
+import { useContext, useState, useEffect } from "react";
+import { useRecoilValue } from "recoil";
+import { ProjectsContext } from "../../../../../Apps/Projects/ProjectContext";
+import PackageTask from "../../../../../Apps/Projects/Components/PackageTask";
 import { HomeContext } from "@/Pages/HomePage/HomeContext";
-import { FleetContext } from "../../../Fleet/FleetContext";
-import { User } from "../../../../shared/core/User";
-import { $UserInfo } from "../../../../store";
-import { useSelector } from "react-redux";
+import { User } from "../../../../../shared/core/User";
+import { $UserInfo } from "../../../../../store";
+import { useDispatch, useSelector } from "react-redux";
+import useProjects from "../../hooks/useProjects";
+import PropTypes from "prop-types";
+import { setActiveId } from "../../../../aircraft-fleet/state/activeWorkPackageIdSlice";
 
-export default function WorkPackage(props) {
-    const [serverUrl] = useRecoilState($Server);
-    const [token] = useRecoilState($Token);
-    const { openModal2, refreshIndex, } = useContext(HomeContext);
-    const { taskFilter, openedProject, multiSelect, setMultiSelect } = useContext(ProjectsContext);
-    const { setOpenPackage_id } = useContext(FleetContext);
+export default function WorkPackage({ package_id, estimated_duration, package_name, start_at, end_at, work_package_progress }) {
+    const dispatch = useDispatch();
+    const { openModal2 } = useContext(HomeContext);
+    const { multiSelect, setMultiSelect } = useContext(ProjectsContext);
+    const { getWorkPackageTasks } = useProjects();
+    const refreshIndex = useSelector(state => state.home.refreshIndex);
+    const openedProject = useSelector(state => state.projects.activeProject.id);
+    const projectTasksFilter = useSelector(state => state.projects.projectTasksFilter);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [packageTasks, setPackageTasks] = useState([]);
     const [selectAllIndex, setSelectAllIndex] = useState(false);
-    const [sort, setSort] = useState({
-        task_order: 0,
-        task_progress: 0,
-    })
+    const [sort, setSort] = useState({ task_order: 0, task_progress: 0 })
 
-    const getPackageTasks = async (serverUrl, token, openedProject, package_id) => {
-        let final = [];
-        if (Object.keys(taskFilter.filters).length == 0) {
-            await axios.get(`${serverUrl}/php/index.php/api/project/${openedProject}/workpackages/${package_id}/tasks`, { headers: { Authorization: `Bearer ${token}` } })
-                .then((res) => {
-                    if (res.data.data) { final = res.data.data }
-                })
-                .catch((err) => { console.log(err); })
-        }
-        else {
-            let obj = taskFilter.filters;
-            await axios.post(`${serverUrl}/php/index.php/api/project/${openedProject}/workpackages/filter/${package_id}/tasks`, obj, { headers: { Authorization: `Bearer ${token}` } })
-                .then((res) => {
-                    if (res.data.data) { final = res.data.data }
-                })
-                .catch((err) => { console.log(err); })
-        }
-        return final;
-    }
-
-    const handleRightClick = (event) => {
+    const openWorkPackageDetails = (event) => {
         event.stopPropagation();
         event.preventDefault();
-        let package_id = props.package_id;
-        setOpenPackage_id(package_id);
+        dispatch(setActiveId(package_id))
         openModal2(4002);
-
     }
 
     useEffect(() => {
         if (isCollapsed) {
-            let package_id = props.package_id;
-            getPackageTasks(serverUrl, token, openedProject, package_id).then((res) => {
-                setPackageTasks(res);
-            })
+            let package_id = package_id;
+            getWorkPackageTasks(openedProject, package_id).then(setPackageTasks);
         }
-    }, [isCollapsed, refreshIndex, props.estimated_duration]);
+        // eslint-disable-next-line
+    }, [isCollapsed, refreshIndex, estimated_duration]);
 
     useEffect(() => {
         let tasks = [...packageTasks];
@@ -84,6 +57,7 @@ export default function WorkPackage(props) {
             return t1.task_name.localeCompare(t2.task_order);
         });
         setPackageTasks(tasks);
+        // eslint-disable-next-line
     }, [sort]);
 
     const filterBy = (filter) => {
@@ -118,9 +92,14 @@ export default function WorkPackage(props) {
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
     return (
         <>
-            <tr className="workPackage"
-                onContextMenu={handleRightClick}
+            <tr className={!isCollapsed ? "workPackage" : "activeWorkPackage"} style={{
+                position: "sticky",
+                top: 0,
+                zIndex: 250
+            }}
+                onContextMenu={openWorkPackageDetails}
                 onClick={() => { setIsCollapsed(!isCollapsed) }}>
+
                 <th className="text-center" onClick={(e) => isCollapsed && e.stopPropagation()}>
                     {!isCollapsed ?
                         <FontAwesomeIcon icon={faAngleRight} /> :
@@ -129,40 +108,43 @@ export default function WorkPackage(props) {
                         </div>
                     }
                 </th>
-                <th colSpan={1 + taskFilter.tableView.taskType + taskFilter.tableView.task_desc + taskFilter.tableView.speciality}>
-                    <div className="d-flex gap-3 justify-content-center">
-                        {props.package_name}
-                    </div>
+                <th colSpan={projectTasksFilter.tableView.reduce((old, el, index) => {
+                    if (index < 4 && el.active) {
+                        return old + 1;
+                    }
+                    return old;
+                }, 0)}>
+                    {package_name}
                 </th>
-                {taskFilter.tableView.progress &&
+
+                {projectTasksFilter.tableView[4].active &&
                     <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>
                         <div className="d-flex gap-3 justify-content-center">
-                            <span>{props.work_package_progress && props.work_package_progress.toFixed(1)} %</span>
+                            <span>{work_package_progress && work_package_progress.toFixed(1)} %</span>
                             {sort.task_progress != 1 && isCollapsed && <FontAwesomeIcon icon={faArrowUp} onClick={(event) => { event.stopPropagation(); filterBy("task_progress") }} />}
                             {sort.task_progress == 1 && isCollapsed && <FontAwesomeIcon icon={faArrowDown} onClick={(event) => { event.stopPropagation(); filterBy("task_progress") }} />}
                         </div>
                     </th>
                 }
-                {taskFilter.tableView.status && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>
-                    {/* {props.status_name} */}
+                {projectTasksFilter.tableView[5].active && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>
+                    {/* {status_name} */}
                     -
                 </th>}
-                {taskFilter.tableView.duration && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>
+                {projectTasksFilter.tableView[6].active && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>
                     <div className="d-flex gap-3 justify-content-center">
-
-                        <span>{Math.round(props.estimated_duration)} HRs</span>
+                        <span>{Math.round(estimated_duration)} HRs</span>
                         {sort.task_duration != 1 && isCollapsed && <FontAwesomeIcon icon={faArrowUp} onClick={(event) => { event.stopPropagation(); filterBy("task_duration") }} />}
                         {sort.task_duration == 1 && isCollapsed && <FontAwesomeIcon icon={faArrowDown} onClick={(event) => { event.stopPropagation(); filterBy("task_duration") }} />}
 
                     </div>
                 </th>}
-                {taskFilter.tableView.startDate && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>{props.start_at}</th>}
-                {taskFilter.tableView.dueDate && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>{props.end_at}</th>}
+                {projectTasksFilter.tableView[7].active && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>{start_at}</th>}
+                {projectTasksFilter.tableView[8].active && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>{end_at}</th>}
 
                 {
-                    user.isAppAdmin(appIndex) && (
+                    user.isAppAdmin(appIndex) && projectTasksFilter.tableView[9].active && (
                         <th onClick={event => event.stopPropagation()} >
-                            <FontAwesomeIcon onClick={handleRightClick} icon={faEdit} className="text-warning" />
+                            <FontAwesomeIcon onClick={openWorkPackageDetails} icon={faEdit} className="text-warning" />
                         </th>
                     )
                 }
@@ -171,26 +153,26 @@ export default function WorkPackage(props) {
             {
                 isCollapsed && (packageTasks.length > 0) && (
                     <>
-                        {/* <tr style={{ color: "white !important" }}>
+                        <tr className="fixedRow" style={{
+                            position: "sticky",
+                            top: "37px",
+                            zIndex: 200
+                        }}>
                             <td>-</td>
-                            <td>Name</td>
-                            <td>Type</td>
-                            <td>Description</td>
-                            <td>Specialty</td>
-                            <td>Progress</td>
-                            <td>Status</td>
-                            <td>Durtation</td>
-                            <td>Start</td>
-                            <td>End</td>
-                            <td>Actions</td>
-                        </tr> */}
+                            {
+                                projectTasksFilter.tableView.map((el, index) => {
+                                    return el.active && <th key={index}>{el.name}</th>
+                                })
+                            }
+                        </tr>
                         {
                             packageTasks.map((el, index) => {
                                 return (
                                     <PackageTask
-                                        selectAllIndex={selectAllIndex}
-                                        package_id={props.package_id}
                                         task_index={index}
+                                        package_id={package_id}
+                                        taskInfo={el}
+                                        selectAllIndex={selectAllIndex}
                                         key={el.log_id}
                                         log_id={el.log_id}
                                         task_id={el.task_id}
@@ -218,3 +200,19 @@ export default function WorkPackage(props) {
         </>
     )
 }
+
+WorkPackage.propTypes = {
+    package_id: PropTypes.number,
+    estimated_duration: PropTypes.number,
+    work_package_progress: PropTypes.number,
+    package_name: PropTypes.string,
+    status_name: PropTypes.string,
+    start_at: PropTypes.string,
+    end_at: PropTypes.string,
+};
+
+
+
+
+
+
