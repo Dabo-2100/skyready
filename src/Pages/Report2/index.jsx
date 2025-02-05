@@ -13,7 +13,6 @@ export default function Report2() {
         setLoaderIndex(true);
         useReport().getData(serverUrl, token).then((res) => {
             let data = useReport().groupPackages(res);
-            console.log(data);
             setData(data);
             setTimeout(() => { setLoaderIndex(false) }, 500)
 

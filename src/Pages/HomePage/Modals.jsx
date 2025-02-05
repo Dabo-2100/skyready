@@ -18,9 +18,9 @@ import EditPackageTask from "../../features/aircraft-fleet/ui/modals/EditPackage
 import TaskDesignators from "../../features/aircraft-fleet/ui/modals/TaskDesignators.jsx";
 // ------------------------------------------------------------------>
 // Projects App Modals
-import NewProject from "@/Apps/Projects/Modals/NewProject";
+import NewProject from "../../features/project-manager/ui/modals/NewProject.jsx";
 import ProjectView from "../../features/project-manager/ui/modals/ProjectView.jsx";
-import StartWorkPackage from "../../Apps/Projects/Modals/StartWorkPackage.jsx";
+import StartWorkPackage from "../../features/project-manager/ui/modals/StartWorkPackage.jsx";
 // Users App Modals
 import NewUser from "../../features/users/ui/modals/NewUser.jsx";
 import EditUser from "../../features/users/ui/modals/EditUser.jsx";

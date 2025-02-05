@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styles from "./CloseBtn.module.css"
 export default function CloseBtn({ onClick, label }) {
     return (
@@ -7,3 +8,8 @@ export default function CloseBtn({ onClick, label }) {
         </button>
     )
 }
+
+CloseBtn.propTypes = {
+    onClick: PropTypes.func,
+    label: PropTypes.string,
+};

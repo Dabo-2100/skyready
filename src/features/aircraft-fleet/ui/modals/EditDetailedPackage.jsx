@@ -16,17 +16,19 @@ import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
 // import { $LoaderIndex } from "../../../../store";
 import { setAircraftModels } from "../../state/aircraftModelsSlice";
 import { setPackageInfo } from "../../state/activeWorkPackageInfoSlice";
+import useProjects from "../../../project-manager/ui/hooks/useProjects";
 
 export default function EditDetailedPackage() {
     // const [, setLoaderIndex] = useRecoilState($LoaderIndex);
     const { openModal3 } = useContext(HomeContext);
-
     const dispatch = useDispatch();
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const packageInfo = useSelector(state => state.aircraftFleet.activeWorkPackageInfo.value);
     const active_work_package_id = useSelector(state => state.aircraftFleet.activeWorkPackageId.value);
     const models = useSelector(state => state.aircraftFleet.aircraftModels.value);
     const aircraftFleet = useSelector(state => state.aircraftFleet.aircraftFleet.value);
+    const activeProject = useSelector(state => state.projects.activeProject);
+    const { removeWorkPackageFromProject } = useProjects();
 
     const { getAircraftFleetByModel, getAircraftModels } = useAircraft();
     const { updateWorkPackageInfo, getWorkPackageTasks } = usePackages();
@@ -109,44 +111,21 @@ export default function EditDetailedPackage() {
     //     }
     // }, [openedProject]);
 
-    // const removeWP = () => {
-    //     Swal.fire({
-    //         icon: "question",
-    //         html: `
-    //             <div class="d-flex flex-wrap gap-3">
-    //                 <p class="text-danger">Are you sure you want to unregister this workpackage from the project ?</p>
-    //                 <ul class="text-start fs-6">
-    //                     <li>This Will Affect Project Progress</li>
-    //                     <li>This Will Remove All Task Comments</li>
-    //                 </ul>
-    //             </div>
-    //         `,
-    //         showConfirmButton: true,
-    //         showDenyButton: true,
-    //         confirmButtonText: "Yes , Remove it",
-    //         denyButtonText: "Not Now !"
-    //     }).then((res) => {
-    //         if (res.isConfirmed) {
-    //             axios.post(`${serverUrl}/php/index.php/api/project/${openedProject}/workpackages/${openPackage_id}/remove`, {}, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
-    //                 Swal.fire({
-    //                     icon: "success",
-    //                     text: "Workpacakge Removed Succesfully",
-    //                     timer: 1500
-    //                 }).then(() => {
-    //                     closeModal();
-    //                 })
-    //             }).catch((err) => {
-    //                 console.log(err);
-    //             })
-    //         }
-    //     })
-    // }
+    const removeWP = (event) => {
+        event.stopPropagation();
+        removeWorkPackageFromProject(activeProject.id, packageInfo.work_package_id);
+    }
 
     return (
         <Modal id="newDetailedPackage">
             <Accordion className="col-12" defaultActiveKey={1} alwaysOpen>
                 <Accordion.Item eventKey="0">
-                    <Accordion.Header><h5>Work Package Tasks</h5></Accordion.Header>
+                    <Accordion.Header >
+                        <div className="col-11 d-flex align-items-center justify-content-between">
+                            <h5>Work Package Tasks</h5>
+                            {(activeProject.id != 0) && <button className="btn btn-danger" onClick={removeWP}>Remove From Project</button>}
+                        </div>
+                    </Accordion.Header>
                     <Accordion.Body>
                         <div className="d-flex justify-content-end pb-2 align-items-center gap-3">
                             <button className="btn bg-dark text-white" onClick={handleReOrder}>Reorder WorkPacakage</button>
@@ -157,38 +136,6 @@ export default function EditDetailedPackage() {
                         <TasksTable workPackageTasks={workPackageTasks} />
                     </Accordion.Body>
                 </Accordion.Item>
-                {/* {(openedProject != 0) && (
-                    <Accordion.Item eventKey="2">
-                        <Accordion.Header>
-                            <h5>Project Info</h5>
-                        </Accordion.Header>
-                        <Accordion.Body>
-                            <div className="col-12 bg-white rounded mb-3 shadow p-3 border">
-                                <div className="d-flex justify-content-between align-items-center">
-                                    <h5>Project Actions</h5>
-                                    <button className="btn btn-danger" onClick={removeWP
-                                    }>Remove From Project</button>
-                                </div>
-                                <table className="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Edit Work Package Status</th>
-                                            <td>
-                                                <Status
-                                                    status_id={packageStatus}
-                                                    status_name={packageStatusName}
-                                                    project_id={openedProject}
-                                                    package_id={openPackage_id}
-                                                    is_package={true}
-                                                />
-                                            </td>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </Accordion.Body>
-                    </Accordion.Item>
-                )} */}
                 <Accordion.Item eventKey="1">
                     <Accordion.Header>
                         <h5>Work Package Info : {packageInfo.parent_name && (packageInfo.parent_name + " | ")} {packageInfo.package_name}</h5>

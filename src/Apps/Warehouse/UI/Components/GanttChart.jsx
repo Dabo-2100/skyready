@@ -21,14 +21,12 @@ export default function GanttChart({ head, children }) {
     const resetView = (cols, eq) => {
         setColumns(cols);
         setViewEq(eq);
-        console.log(mainView.current.offsetWidth);
     }
 
 
     useEffect(() => {
         setViewWidth(mainView.current.scrollWidth * 1 / viewEq);
         window.addEventListener("resize", handleResize);
-        console.log(mainView.current.offsetWidth);
         setOWidth(mainView.current.width);
         return () => { window.removeEventListener("resize", handleResize); }
     }, []);

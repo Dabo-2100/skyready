@@ -60,6 +60,43 @@ function getUserIP()
 }
 
 
+function getDueDate($startDatetime, $durationHours, $workStartAt, $workEndAt, $workingDays)
+{
+    $taskDurationMins = $durationHours * 60;
+    $startDate = strtotime($startDatetime);
+    list($workStartHour, $workStartMinute) = explode(':', $workStartAt);
+    list($workEndHour, $workEndMinute) = explode(':', $workEndAt);
+    $workStart = strtotime(date('Y-m-d', $startDate) . " $workStartHour:$workStartMinute:00");
+    $workEnd = strtotime(date('Y-m-d', $startDate) . " $workEndHour:$workEndMinute:00");
+    $workDiff = $workEnd - $workStart;
+    $workingMinsPerDay = $workDiff / 60;
+    $remainWorkMins = ($workEnd - $startDate) / 60;
+    $dueDate = $startDate;
+
+    if ($taskDurationMins <= $remainWorkMins) {
+        $dueDate += $taskDurationMins * 60;
+    } else {
+        $remainTime = $taskDurationMins - $remainWorkMins;
+        $taskDurationDays = floor($remainTime / $workingMinsPerDay);
+        $remainMins = $remainTime % $workingMinsPerDay;
+
+        while ($taskDurationDays >= 0) {
+            $dueDate = strtotime('+1 day', $dueDate);
+            $dayOfWeek = date('w', $dueDate);
+
+            if (in_array($dayOfWeek, $workingDays)) {
+                $taskDurationDays--;
+            }
+        }
+
+        $dueDate = strtotime(date('Y-m-d', $dueDate) . " $workStartHour:$workStartMinute:00");
+        $dueDate += $remainMins * 60;
+    }
+
+    $final = date('Y-m-d\TH:i', $dueDate);
+    return $final;
+}
+
 // function upload_items()
 // {
 //     global $method;

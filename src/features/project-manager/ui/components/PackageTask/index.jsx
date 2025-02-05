@@ -1,17 +1,17 @@
 import { useContext } from "react"
-import { ProjectsContext } from "../../ProjectContext"
+import { ProjectsContext } from "../../../../../Apps/Projects/ProjectContext"
 import ProgressBar from "../ProgressBar"
 import Status from "../Status"
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext"
+import { HomeContext } from "../../../../../Pages/HomePage/HomeContext"
 import { faComment, faEye, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRecoilValue } from "recoil"
-import { User } from "../../../../shared/core/User"
-import { $UserInfo } from "../../../../store"
+import { User } from "../../../../../shared/core/User"
+import { $UserInfo } from "../../../../../store"
 import { useDispatch, useSelector } from "react-redux"
-import { setActiveId } from "../../../../features/aircraft-fleet/state/activeWorkPackageTaskIdSlice"
+import { setActiveId } from "../../../../aircraft-fleet/state/activeWorkPackageTaskIdSlice"
 import PropTypes from "prop-types"
-import useProjects from "../../../../features/project-manager/ui/hooks/useProjects"
+import useProjects from "../../hooks/useProjects"
 
 export default function PackageTask(props) {
     const dispatch = useDispatch();
@@ -26,16 +26,12 @@ export default function PackageTask(props) {
         event.preventDefault()
         setMenu({ index: true, posX: event.clientX, posY: event.clientY })
         dispatch(setActiveId(props.task_id));
-        // setOpenPackage_id(props.package_id);
-        // setTaskToEdit(props.task_id);
     }
 
     const openTaskDetails = (event) => {
         event.preventDefault()
         dispatch(setActiveId(props.task_id));
         openModal2(4005);
-        // setTaskToEdit(props.task_id);
-        // setOpenPackage_id(props.package_id);
     }
 
     const handleRemove = async () => {

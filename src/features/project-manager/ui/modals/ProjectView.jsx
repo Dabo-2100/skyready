@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 
 export default function ProjectView() {
     const activeProject = useSelector(state => state.projects.activeProject);
-    console.log(activeProject);
     return (
         <FullModal name={activeProject.info.project_name}>
             <ProjectTasks />

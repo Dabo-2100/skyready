@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import { ProjectsContext } from "../../../../../Apps/Projects/ProjectContext";
-import PackageTask from "../../../../../Apps/Projects/Components/PackageTask";
+import PackageTask from "../PackageTask";
 import { User } from "../../../../../shared/core/User";
 import { $UserInfo } from "../../../../../store";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +18,7 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
     const { openModal2 } = useContext(HomeContext);
     const { multiSelect, setMultiSelect } = useContext(ProjectsContext);
     const { getWorkPackageTasks } = useProjects();
-    const refreshIndex = useSelector(state => state.home.refreshIndex);
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const activeProjectId = useSelector(state => state.projects.activeProject.id);
     const projectTasksFilter = useSelector(state => state.projects.projectTasksFilter);
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -37,7 +37,7 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
     useEffect(() => {
         isCollapsed && getWorkPackageTasks(activeProjectId, package_id).then(setPackageTasks);
         // eslint-disable-next-line
-    }, [isCollapsed, refreshIndex, estimated_duration]);
+    }, [refreshIndex, isCollapsed]);
 
     useEffect(() => {
         let tasks = [...packageTasks];

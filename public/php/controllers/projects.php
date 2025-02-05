@@ -11,6 +11,7 @@ $endpoints += [
     '/api/project/workpackages/filter/\d+'              => 'project_wps_filter',
     '/api/project/\d+/workpackages/filter/\d+/tasks'    => 'project_tasks_filter',
     '/api/project/\d+/workpackages/\d+/remove'          => 'project_remove_workpackage',
+    '/api/project/workpackages/store'                   => 'project_workpackage_store',
 ];
 
 function projects_index()
@@ -364,8 +365,11 @@ function project_tasks_filter($id)
 function project_remove_workpackage($id)
 {
     global $method, $response, $POST_data, $pdo;
-    $project_id = explode("/api/projects/remove", (explode("/api/project/", $id[0])[1]))[0];
-    $package_id = explode("/remove", (explode("workpackages/", $id[0])[1]))[0];
+    $path = $id[0];
+    $activePath = explode('/api/project/', $path)[1];
+    $project_id = explode('/workpackages/', $activePath)[0];
+    $remainPath = explode('/workpackages/', $activePath)[1];
+    $package_id = explode('/remove', $remainPath)[0];
     if ($method === "POST") {
         $operator_info = checkAuth();
         $project_info = getRows("app_projects", "project_id=" . htmlspecialchars($project_id));
@@ -396,8 +400,8 @@ function project_remove_workpackage($id)
             FROM work_package_progress_tracker wpt
             WHERE wpt.work_packages_log_id = (SELECT log_id FROM project_work_packages 
             WHERE work_package_id = {$package_id} AND project_id = {$project_id});
-            
-            
+
+
             DELETE wpst
             FROM work_package_status_tracker wpst
             WHERE wpst.work_package_log_id = (SELECT log_id FROM project_work_packages 
@@ -503,6 +507,44 @@ function projects_remove($id)
             $response['data'] = $final;
         } else {
             $response['msg'] = 'Project id is wrong !';
+        }
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function project_workpackage_store()
+{
+    global $method, $POST_data, $response, $pdo;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        $package_id = htmlspecialchars($POST_data["package_id"]);
+        $project_id = htmlspecialchars($POST_data["project_id"]);
+        $package_start_date = htmlspecialchars($POST_data["package_start_date"]);
+        $work_start_at = getOneField("app_projects", "work_start_at", "project_id = {$project_id}");
+        $work_end_at = getOneField("app_projects", "work_end_at", "project_id = {$project_id}");
+        $working_days = getOneField("app_projects", "working_days", "project_id = {$project_id}");
+        // Add The Work Package to Project
+        $sql = "INSERT INTO project_work_packages (work_package_id,project_id,status_id) VALUES ({$package_id},{$project_id},1)";
+        $statement = $pdo->prepare($sql);
+        $statement->execute();
+        $sql2 = "SELECT task_id,task_duration FROM work_package_tasks WHERE package_id = {$package_id} ORDER BY task_order";
+        $statement2 = $pdo->prepare($sql2);
+        $statement2->execute();
+        $task_start_at = $package_start_date;
+        if ($statement2->rowCount() > 0) {
+            while ($el = $statement2->fetch(PDO::FETCH_ASSOC)) {
+                $task_id = $el['task_id'];
+                $task_duration = $el['task_duration'];
+                $task_end_at = getDueDate($task_start_at, $task_duration, $work_start_at, $work_end_at, explode(",", $working_days));
+                print_r([$task_id, $project_id, $task_start_at, $task_end_at, 1]);
+                insert_data("project_tasks", ["task_id", "project_id", "task_start_at", "task_end_at", "status_id"], [$task_id, $project_id, $task_start_at, $task_end_at, 1]);
+                $task_start_at = $task_end_at;
+            }
+            $response['err'] = false;
+            $response['msg'] = "Tasks Added To Project";
+            echo json_encode($response, true);
         }
         echo json_encode($response, true);
     } else {

@@ -1,54 +1,29 @@
 import "./index.scss";
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRecoilState } from "recoil";
 import { $Server, $Token, $SwalDark } from "@/store";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { useUpdate } from "@/customHooks";
-import { ProjectsContext } from "../../ProjectContext";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
+import { refresh } from "../../../../../shared/state/refreshIndexSlice";
+import { useDispatch } from "react-redux";
 
 export default function ProgressBar(props) {
+    const dispatch = useDispatch();
     const [serverUrl] = useRecoilState($Server);
     const [token] = useRecoilState($Token);
     const [darkSwal] = useRecoilState($SwalDark);
     const [editIndex, setEditIndex] = useState(false);
     const [ratios] = useState([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
-    const { refresh } = useContext(HomeContext);
-
     const theSelect = useRef();
 
     const updateProgress = (event) => {
         let newProgress = event.target.value;
-        let oStatus = props.status_id;
+        let current_status_id = props.status_id;
         let log_id = props.log_id;
-        let obj = {}
-        if (oStatus == 1 || oStatus == 4) {
-            obj.task_progress = newProgress;
-            if (newProgress == 100) {
-                obj.status_id = 4;
-            } else {
-                obj.status_id = 2;
-            }
-        }
-        else if (oStatus == 2) {
-            if (newProgress == 100) {
-                obj.status_id = 4;
-            }
-            obj.task_progress = newProgress;
-
-        }
-        else if (oStatus == 3) {
-            obj.task_progress = newProgress;
-        }
-        else if (oStatus == 5) {
-
-        }
-        else {
-            obj.task_progress = newProgress;
-            if (newProgress == 100) {
-                obj.status_id = 4;
-            }
+        let obj = {
+            log_id: log_id,
+            task_progress: newProgress,
+            status_id: newProgress == 100 && (current_status_id == 1 || current_status_id == 4) ? 2 : current_status_id,
         }
         useUpdate(serverUrl, token, "project_tasks", `log_id = ${log_id}`, obj).then(() => {
             Swal.fire({
@@ -56,20 +31,18 @@ export default function ProgressBar(props) {
                 text: "Task Progress Updated !",
                 customClass: darkSwal,
                 position: "top-end",
-                timer: 800,
+                timer: 400,
                 showCloseButton: false,
                 showConfirmButton: false,
             }).then(() => {
-                refresh();
+                dispatch(refresh());
                 setEditIndex(false);
             })
         })
     }
 
     useEffect(() => {
-        if (editIndex) {
-            theSelect.current.focus();
-        }
+        editIndex && theSelect.current.focus();
     }, [editIndex]);
 
     return (

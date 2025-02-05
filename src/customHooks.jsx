@@ -216,7 +216,8 @@ export const validateValue = (value, options = {}) => {
     let hasError = false;
     // Check if value is not null and not just spaces
     if (options.required) {
-        if (!value || (value && value.trim() === '')) {
+        console.log(value);
+        if (value && value.trim() === "") {
             hasError = true;
         }
     }

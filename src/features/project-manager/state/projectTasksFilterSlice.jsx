@@ -17,7 +17,6 @@ const projectTasksFilterSlice = createSlice({
 
         toggleSpeciality: (state, action) => {
             let specialty_id = action.payload.specialty_id;
-            console.log(action.payload);
             let index = state.selectedSpecialties.findIndex(el => { return el.specialty_id == specialty_id });
             index == -1 ? state.selectedSpecialties.push({ ...action.payload }) : state.selectedSpecialties.splice(index, 1);
         },

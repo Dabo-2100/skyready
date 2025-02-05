@@ -78,7 +78,6 @@ export default function NewNotice() {
     const removeRow = (index) => {
         let rows = [...noticeRows];
         rows.splice(index, 1);
-        console.log(rows);
         setNoticeRows([...rows]);
     }
 
@@ -102,7 +101,6 @@ export default function NewNotice() {
             rows.push(obj);
         });
         final.rows = rows;
-        console.log(final);
     }
 
     return (

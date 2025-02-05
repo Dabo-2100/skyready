@@ -37,7 +37,7 @@ export default function ProjectDashboard() {
             showConfirmButton: true,
         }).then(async (res) => {
             res.isConfirmed && await axios.get(`${serverUrl}/php/index.php/api/projects/remove/${openedProject}`, { headers: { Authorization: `Bearer ${token}` } })
-                .then((res) => {
+                .then(() => {
                     Swal.fire({
                         icon: "success",
                         text: "Project removed Successfully !",

@@ -20,23 +20,18 @@ export default function ProjectsList() {
   const [projects, setProjects] = useState([]);
 
   const openProject = (id) => {
-    (
-      localStorage.getItem("tableView")
-      && dispatch(setTableView(JSON.parse(localStorage.getItem("tableView"))))
-    ) || dispatch(resetTableView())
+    (localStorage.getItem("tableView") && dispatch(setTableView(JSON.parse(localStorage.getItem("tableView"))))) || dispatch(resetTableView())
     dispatch(setActiveId(id));
     dispatch(setProjectInfo(projects.find((el) => { return el.project_id == id })));
     getProjectPackages(id).then((result) => {
       let res = result[0];
       let x = res.applicable_work_packages.map((el) => {
-        let index = res.active_work_packages.findIndex((wp) => {
-          return wp.work_package_id == el.package_id;
-        })
+        let index = res.active_work_packages.findIndex((wp) => { return wp.work_package_id == el.package_id })
         return (index == -1) && el
       })
       let final = x.filter(item => typeof item === 'object' && item !== null);
-      dispatch(setActivePackages(res.active_work_packages));
       dispatch(setAvailablePackages(final));
+      dispatch(setActivePackages(res.active_work_packages));
     }).then(() => openModal(6001))
   }
 
@@ -57,8 +52,7 @@ export default function ProjectsList() {
           {
             user.isAppAdmin(appIndex) && (
               <button className="btn addBtn d-flex gap-2 align-items-center" onClick={() => openModal(6000)}>
-                <FontAwesomeIcon icon={faPlus} />
-                New Project
+                <FontAwesomeIcon icon={faPlus} /> New Project
               </button>
             )
           }

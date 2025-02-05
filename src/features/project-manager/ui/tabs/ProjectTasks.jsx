@@ -4,7 +4,7 @@ import { ProjectsContext } from "../../../../Apps/Projects/ProjectContext";
 import { useRecoilValue } from "recoil";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp, faX } from "@fortawesome/free-solid-svg-icons";
-import Status from "../../../../Apps/Projects/Components/Status";
+import Status from "../components/Status";
 import TaskContextMenu from "../../../../Apps/Projects/Modals/TaskContextMenu";
 import { User } from "../../../../shared/core/User";
 import { $UserInfo } from "../../../../store";
@@ -12,26 +12,28 @@ import { useDispatch, useSelector } from "react-redux";
 import ProjectTasksFilter from "../components/ProjectTasksFilter";
 import useProjects from "../hooks/useProjects";
 import { searchByName } from "../../state/projectTasksFilterSlice";
+import { setAvailablePackages, setActivePackages } from "../../state/activeProjectSlice";
 import WorkPackage from "../components/WorkPackage";
 
 export default function ProjectTasks() {
     const { multiSelect } = useContext(ProjectsContext);
-    const { filterWorkPackages } = useProjects();
-    const user = new User(useRecoilValue($UserInfo));
+    const { filterWorkPackages, getProjectPackages } = useProjects();
+
     const contextMenu = useSelector(state => state.home.contextMenu);
-    const appIndex = useSelector(state => state.home.activeAppIndex.value);
     const filterName = useSelector(state => state.projects.projectTasksFilter.workPackageNameFilter);
     const activeProject = useSelector(state => state.projects.activeProject);
     const projectTasksFilters = useSelector(state => state.projects.projectTasksFilter);
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
+
+    const user = new User(useRecoilValue($UserInfo));
+    const appIndex = useSelector(state => state.home.activeAppIndex.value);
+
     const dispatch = useDispatch();
-    // const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const [workpackages, setWorkPackaes] = useState([]);
     const [wpView, setwpView] = useState([]);
 
     const [sort, setSort] = useState({
-        package_name: 0,
-        estimated_duration: 0,
-        work_package_progress: 0,
+        package_name: 0, estimated_duration: 0, work_package_progress: 0,
     });
 
     //Sort
@@ -40,6 +42,7 @@ export default function ProjectTasks() {
         sort[filter] == 1 ? obj[filter] = 2 : obj[filter] = 1;
         setSort(obj);
     }
+
     useEffect(() => {
         let tasks = [...wpView];
         let commonkey = "";
@@ -68,6 +71,7 @@ export default function ProjectTasks() {
         setwpView(tasks);
         // eslint-disable-next-line
     }, [sort]);
+
     // Filter
 
     useEffect(() => {
@@ -95,17 +99,27 @@ export default function ProjectTasks() {
             let final = workpackages.filter((el) => {
                 return el.package_name.toLowerCase().includes(filterName.toLowerCase());
             });
-            console.log(final);
             setwpView(final);
         }
         // eslint-disable-next-line
     }, [filterName]);
 
     useEffect(() => {
-        setWorkPackaes(activeProject.activePackages);
-        setwpView(activeProject.activePackages);
+        getProjectPackages(activeProject.id).then((result) => {
+            let res = result[0];
+            let x = res.applicable_work_packages.map((el) => {
+                let index = res.active_work_packages.findIndex((wp) => { return wp.work_package_id == el.package_id })
+                return (index == -1) && el
+            })
+            let final = x.filter(item => typeof item === 'object' && item !== null);
+
+            dispatch(setAvailablePackages(final));
+            dispatch(setActivePackages(res.active_work_packages));
+            setwpView(res.active_work_packages);
+            setWorkPackaes(res.active_work_packages);
+        })
         // eslint-disable-next-line
-    }, []);
+    }, [refreshIndex]);
 
     return (
         <div className="col-12 d-flex flex-column flex-grow-1 position-relative p-3 pt-2"
@@ -163,8 +177,8 @@ export default function ProjectTasks() {
                                     wpView.map((wp, index) => {
                                         return (
                                             <WorkPackage
+                                                key={wp.log_id}
                                                 info={wp}
-                                                key={wp.work_package_id}
                                                 order={index}
                                                 package_id={wp.work_package_id}
                                                 package_name={wp.package_name}
