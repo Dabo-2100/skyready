@@ -1,10 +1,10 @@
 import { useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
-import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
 import useAircraft from "../hooks/useAircraft";
 import { useSelector } from "react-redux";
+import Modal from "../../../../shared/ui/modals/Modal";
+import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 
 export default function NewSpecailty() {
     const specialties = useSelector(state => state.aircraftFleet.aircraftSpecialties.value);

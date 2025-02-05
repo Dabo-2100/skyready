@@ -1,5 +1,5 @@
 import styles from "./index.module.css"
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import useAircraft from "../../../../aircraft-fleet/ui/hooks/useAircraft";
 import { setSpecialties } from "../../../../aircraft-fleet/state/aircraftSpecialtiesSlice";
@@ -10,10 +10,9 @@ import { FaFilter } from "react-icons/fa";
 import { TiDelete } from "react-icons/ti";
 import { toggleStatus, toggleSpeciality, searchByName, toggleView, clearFilters } from "../../../state/projectTasksFilterSlice";
 import { FaFilterCircleXmark } from "react-icons/fa6";
-import { HomeContext } from "../../../../../Pages/HomePage/HomeContext";
+import { openModal3 } from "../../../../../shared/state/modalSlice";
 
 export default function ProjectTasksFilter() {
-    const { openModal3 } = useContext(HomeContext);
     const dispatch = useDispatch(() => { });
     const activeProject = useSelector(state => state.projects.activeProject);
     const projectTaskStatus = useSelector(state => state.projects.projectTaskStatus.value);
@@ -67,7 +66,7 @@ export default function ProjectTasksFilter() {
                         <FaFilterCircleXmark />
                     </button>
                 }
-                {activeProject.availablePackages.length > 0 && <button className="btn addBtn" onClick={() => { openModal3(6002) }}>+ Add Package</button>}
+                {activeProject.availablePackages.length > 0 && <button className="btn addBtn" onClick={() => { dispatch(openModal3(6002)) }}>+ Add Package</button>}
             </div>
 
             {canvasIndex &&

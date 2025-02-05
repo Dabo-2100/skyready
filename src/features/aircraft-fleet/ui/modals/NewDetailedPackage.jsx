@@ -1,10 +1,12 @@
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
-import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
+
+
 import { useRef, useState } from "react";
 import usePackages from "../hooks/usePackages";
 import useAircraft from "../hooks/useAircraft";
 import useAircraftData from "../hooks/useAircraftData";
 import { useSelector } from "react-redux";
+import Modal from "../../../../shared/ui/modals/Modal";
+import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 
 
 export default function NewDetailedPackage() {

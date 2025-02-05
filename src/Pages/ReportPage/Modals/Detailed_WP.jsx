@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { useRecoilState } from "recoil";
-import { $Server, $Token, $SwalDark } from "@/store";
+import { $Server, $Token, $SwalDark } from "@/store-recoil";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { ReportContext } from "../ReportContext";

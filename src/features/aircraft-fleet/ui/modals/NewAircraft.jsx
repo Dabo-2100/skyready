@@ -1,13 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGears } from "@fortawesome/free-solid-svg-icons";
-import { useContext, useEffect, useRef, useState } from "react"
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
-import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
-import useAircraft from "../hooks/useAircraft";
+import { useEffect, useRef, useState } from "react"
 
+import useAircraft from "../hooks/useAircraft";
+import { openModal2 } from "../../../../shared/state/modalSlice";
+import { useDispatch, useSelector } from "react-redux";
+import Modal from "../../../../shared/ui/modals/Modal";
+import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 export default function NewAircraft() {
-    const { openModal2, refreshIndex } = useContext(HomeContext);
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
+    const dispatch = useDispatch();
     const { getAircraftManufacturers, getAircraftStatus, getAircraftModels, getAircraftUsages, addNewAircraftToFleet } = useAircraft();
     const formInputs = useRef([]);
     const [manufacturers, setManufacturers] = useState([]);
@@ -19,7 +21,8 @@ export default function NewAircraft() {
         getAircraftManufacturers().then(setManufacturers);
         getAircraftStatus().then(setAircraftStatus);
         getAircraftModels().then(setAircraftModels);
-        getAircraftUsages().then(setAircraftUsages)
+        getAircraftUsages().then(setAircraftUsages);
+        // eslint-disable-next-line
     }, [refreshIndex]);
 
     return (
@@ -42,7 +45,7 @@ export default function NewAircraft() {
 
                         <div className="col-12 d-flex align-items-center justify-content-between">
                             <label htmlFor="sn">Model <span className="text-danger">*</span></label>
-                            <button className="btn addBtn" onClick={() => openModal2(1004)}><FontAwesomeIcon icon={faGears} /></button>
+                            <button className="btn addBtn" onClick={() => dispatch(openModal2(1004))}><FontAwesomeIcon icon={faGears} /></button>
                         </div>
 
                         <select ref={el => { formInputs.current[5] = el }} className="col-12 form-select" required>
@@ -57,7 +60,7 @@ export default function NewAircraft() {
                     <div className="col-12 col-lg-5 inputField">
                         <div className="d-flex col-12 align-items-center justify-content-between">
                             <label htmlFor="sn">Status <span className="text-danger">*</span></label>
-                            <button className="btn addBtn" onClick={() => openModal2(1003)}><FontAwesomeIcon icon={faGears} /></button>
+                            <button className="btn addBtn" onClick={() => dispatch(openModal2(1003))}><FontAwesomeIcon icon={faGears} /></button>
 
                         </div>
                         <select ref={el => { formInputs.current[2] = el }} className="col-12 form-select" required>
@@ -72,7 +75,7 @@ export default function NewAircraft() {
                     <div className="col-12 col-lg-5 inputField">
                         <div className="d-flex col-12 align-items-center justify-content-between">
                             <label htmlFor="sn">Manufacturer <span className="text-danger">*</span></label>
-                            <button className="btn addBtn" onClick={() => openModal2(1002)}><FontAwesomeIcon icon={faGears} /></button>
+                            <button className="btn addBtn" onClick={() => dispatch(openModal2(1002))}><FontAwesomeIcon icon={faGears} /></button>
                         </div>
                         <select ref={el => { formInputs.current[3] = el }} className="col-12 form-select" required>
                             <option hidden value={-1}>Select aircraft Manufacturer</option>
@@ -86,7 +89,7 @@ export default function NewAircraft() {
                     <div className="col-12 col-lg-5 inputField">
                         <div className="d-flex col-12 align-items-center justify-content-between">
                             <label htmlFor="sn">Usage <span className="text-danger">*</span></label>
-                            <button className="btn addBtn" onClick={() => openModal2(1005)}><FontAwesomeIcon icon={faGears} /></button>
+                            <button className="btn addBtn" onClick={() => dispatch(openModal2(1005))}><FontAwesomeIcon icon={faGears} /></button>
                         </div>
                         <select ref={el => { formInputs.current[4] = el }} className="col-12 form-select" required>
                             <option hidden value={-1} >Select aircraft Usage</option>

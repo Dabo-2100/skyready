@@ -1,7 +1,7 @@
 import "./index.css";
-import NavTabs from "../../../Apps/Warehouse/UI/Components/NavTabs";
 import Aircraft from "../ui/tabs/Aircraft";
 import Packages from "../ui/tabs/Packages";
+import NavTabs from "../../../shared/ui/components/NavTabs";
 
 export default function FleetApp() {
     return (

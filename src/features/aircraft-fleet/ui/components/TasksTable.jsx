@@ -1,16 +1,13 @@
 import PropTypes from "prop-types";
-import { useContext } from "react";
 import { useDispatch } from "react-redux";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
 import { setActiveId } from "../../state/activeWorkPackageTaskIdSlice"
+import { openModal3 } from "../../../../shared/state/modalSlice";
 
 export default function TasksTable({ workPackageTasks }) {
-    const { openModal3 } = useContext(HomeContext);
-
     const dispatch = useDispatch();
     const showTask = (task_id) => {
         dispatch(setActiveId(task_id));
-        openModal3(4005);
+        dispatch(openModal3(4005));
     }
 
     return (

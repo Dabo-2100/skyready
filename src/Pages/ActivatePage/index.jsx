@@ -3,7 +3,7 @@ import "./index.scss";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
-import { $LoaderIndex, $Token, $Server, $SwalDark } from "@/store";
+import { $LoaderIndex, $Token, $Server, $SwalDark } from "@/store-recoil";
 import axios from "axios";
 import Swal from "sweetalert2";
 export default function ActivatePage() {

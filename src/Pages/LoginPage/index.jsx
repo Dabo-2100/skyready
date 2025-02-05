@@ -1,6 +1,6 @@
 import "./index.scss";
 import { useRecoilState } from "recoil";
-import { $Server, $Token, $SwalDark, $LoaderIndex, $UserInfo } from "@/store";
+import { $Server, $Token, $SwalDark, $LoaderIndex, $UserInfo } from "@/store-recoil";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/assets/IPACOLogo.png";
 import { useEffect, useRef, useState } from "react";

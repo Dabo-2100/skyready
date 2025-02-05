@@ -6,7 +6,7 @@ import "bootstrap/dist/js/bootstrap.bundle.js";
 import "animate.css";
 import "./index.scss";
 import { Provider } from "react-redux";
-import store from "./redux-store/index.jsx";
+import store from "./store-redux";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>

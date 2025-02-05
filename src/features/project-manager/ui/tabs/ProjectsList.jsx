@@ -1,19 +1,18 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { $LoaderIndex } from "@/store";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
+import { $LoaderIndex } from "@/store-recoil";
 import { User } from "../../../../shared/core/User";
-import { $UserInfo } from "../../../../store";
+import { $UserInfo } from "../../../../store-recoil";
 import { useDispatch, useSelector } from "react-redux";
 import useProjects from "../hooks/useProjects";
 import { setActiveId, setProjectInfo, setActivePackages, setAvailablePackages } from "../../state/activeProjectSlice";
 import { resetTableView, setTableView } from "../../state/projectTasksFilterSlice";
+import { openModal } from "../../../../shared/state/modalSlice";
 
 export default function ProjectsList() {
   const [, setLoaderIndex] = useRecoilState($LoaderIndex);
-  const { openModal } = useContext(HomeContext);
   const refreshIndex = useSelector(state => state.home.refreshIndex.value);
   const dispatch = useDispatch();
   const { getAllProjects, getProjectPackages } = useProjects();
@@ -32,7 +31,7 @@ export default function ProjectsList() {
       let final = x.filter(item => typeof item === 'object' && item !== null);
       dispatch(setAvailablePackages(final));
       dispatch(setActivePackages(res.active_work_packages));
-    }).then(() => openModal(6001))
+    }).then(() => dispatch(openModal(6001)))
   }
 
   useEffect(() => {
@@ -51,7 +50,7 @@ export default function ProjectsList() {
           <h5 className="m-0">Projects List</h5>
           {
             user.isAppAdmin(appIndex) && (
-              <button className="btn addBtn d-flex gap-2 align-items-center" onClick={() => openModal(6000)}>
+              <button className="btn addBtn d-flex gap-2 align-items-center" onClick={() => dispatch(openModal(6000))}>
                 <FontAwesomeIcon icon={faPlus} /> New Project
               </button>
             )

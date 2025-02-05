@@ -1,24 +1,24 @@
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { $LoaderIndex, $UserInfo } from "../../../../store";
+import { $LoaderIndex, $UserInfo } from "../../../../store-recoil";
 import NoData from "../../../../shared/ui/components/NoData";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
 import useAircraft from "../hooks/useAircraft";
 import { User } from "../../../../shared/core/User";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveId } from "../../state/activeAircraftIdSlice";
 import PrintBtn from "../../../../shared/ui/components/PrintBtn";
+import { openModal } from "../../../../shared/state/modalSlice";
 
 export default function Aircraft() {
     // const userData = { isAppAdmin: () => false };
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const aircraftFleetTable = useRef();
     const userData = new User(useRecoilValue($UserInfo));
     const [view, setView] = useState([]);
     const [aircraft, setAircaft] = useState([]);
     const [loaderIndex, setLoaderIndex] = useRecoilState($LoaderIndex);
-    const { openModal, refreshIndex } = useContext(HomeContext);
     const dispatch = useDispatch();
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
     const { getAircraftFleet, filterAircraftFleet } = useAircraft();
@@ -47,7 +47,7 @@ export default function Aircraft() {
                         <PrintBtn contentRef={aircraftFleetTable} />
                         {
                             userData.isAppAdmin(appIndex) &&
-                            <button className="btn btn-danger addBtn" onClick={() => { openModal(1001) }}>
+                            <button className="btn btn-danger addBtn" onClick={() => { dispatch(openModal(1001)) }}>
                                 <FontAwesomeIcon icon={faAdd} /> Add Aircraft
                             </button>
                         }
@@ -75,7 +75,7 @@ export default function Aircraft() {
                                         <tbody>
                                             {view.map((el, index) => {
                                                 return (
-                                                    <tr key={index} className="animate__animated animate__fadeIn" onClick={() => { dispatch(setActiveId(el.aircraft_id)); openModal(2000) }}>
+                                                    <tr key={index} className="animate__animated animate__fadeIn" onClick={() => { dispatch(setActiveId(el.aircraft_id)); dispatch(openModal(2000)) }}>
                                                         <td>{index + 1}</td>
                                                         <td>{el.aircraft_serial_no}</td>
                                                         <td>{el.aircraft_register_no}</td>

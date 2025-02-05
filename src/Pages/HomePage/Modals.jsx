@@ -25,14 +25,6 @@ import StartWorkPackage from "../../features/project-manager/ui/modals/StartWork
 import NewUser from "../../features/users/ui/modals/NewUser.jsx";
 import EditUser from "../../features/users/ui/modals/EditUser.jsx";
 // Warehouse App Modals
-import NewWarehouse from "../../Apps/Warehouse/UI/Modals/NewWarehouse.jsx";
-import NewLocation from "../../Apps/Warehouse/UI/Modals/NewLocation.jsx";
-import WarehouseDetails from "../../Apps/Warehouse/UI/Modals/WarehouseDetails.jsx";
-import NewItem from "../../Apps/Warehouse/UI/Modals/NewItem.jsx";
-import ItemCategories from "../../Apps/Warehouse/UI/Modals/ItemCategories.jsx";
-import UnitsControl from "../../Apps/Warehouse/UI/Modals/UnitsControl.jsx";
-import NewNotice from "../../Apps/Warehouse/UI/Modals/NewNotice.jsx";
-import NewPacklist from "../../Apps/Warehouse/UI/Modals/NewPacklist.jsx";
 
 export const allModals = [
     { index: 1001, component: <NewAircraft /> },
@@ -56,12 +48,4 @@ export const allModals = [
     { index: 6002, component: <StartWorkPackage /> },
     { index: 7000, component: <NewUser /> },
     { index: 7001, component: <EditUser /> },
-    { index: 8000, component: <NewWarehouse /> },
-    { index: 8001, component: <WarehouseDetails /> },
-    { index: 8002, component: <NewLocation /> },
-    { index: 8003, component: <NewItem /> },
-    { index: 8004, component: <ItemCategories /> },
-    { index: 8005, component: <UnitsControl /> },
-    { index: 8006, component: <NewNotice /> },
-    { index: 8007, component: <NewPacklist /> },
 ];

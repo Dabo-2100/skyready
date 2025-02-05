@@ -1,42 +1,42 @@
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRecoilState } from "recoil";
-import { ProjectsContext } from "../../../../Apps/Projects/ProjectContext";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
-import CommentsTree from "../../../../Apps/Projects/Components/CommentTree";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGears, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Select from 'react-select'
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem } from "react-bootstrap";
-import { $LoaderIndex } from "../../../../store";
+import { $LoaderIndex } from "../../../../store-recoil";
 import { useDispatch, useSelector } from "react-redux";
 import usePackages from "../hooks/usePackages";
 import TaskWorkingZone from "../components/TaskWorkingZone";
 import TaskWorkingDesignators from "../components/TaskWorkingDesignators";
-import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
+
 import useAircraftData from "../hooks/useAircraftData";
 import { setActiveId as setSpecialty_id } from "../../state/activeSpecialityIdSlice";
 import { resetDesignators } from "../../state/selectedDesignatorsSlice";
 import { resetZones } from "../../state/selectedZonesSlice";
+import { openModal4 } from "../../../../shared/state/modalSlice";
+import Modal from "../../../../shared/ui/modals/Modal";
+import SaveBtn from "../../../../shared/ui/components/SaveBtn";
+import CommentsTree from "../../../../shared/ui/components/CommentTree";
 
 export default function EditPackageTask() {
+    const openedProject = useSelector(state => state.projects.activeProject.id);
     const dispatch = useDispatch();
     const { getWorkPackageTaskInfo, getWorkPackageTaskTypes } = usePackages();
     const { aircraftSpecialties } = useAircraftData();
     const active_work_package_task_id = useSelector(state => state.aircraftFleet.activeWorkPackageTaskId.value);
-    const { openModal4 } = useContext(HomeContext);
+
     const [, setLoaderIndex] = useRecoilState($LoaderIndex);
-    const { openedProject } = useContext(ProjectsContext);
     const taskInputs = useRef([]);
     const [comments, setComments] = useState([]);
     const [taskTypes, setTaskTypes] = useState([]);
     const [editIndex, setEditIndex] = useState(true);
     const [taskInfo, setTaskInfo] = useState({ task_name: "" });
 
-    const getComments = () => { }
     const saveComment = () => { }
     const updateTask = () => { }
     const removeTask = () => { }
+    const getComments = () => { }
     const areArraysEqual = () => { }
 
     // const { getComments, saveComment, updateTask, removeTask, areArraysEqual } = useEditPackageTask();
@@ -124,7 +124,7 @@ export default function EditPackageTask() {
                             <div className="col-12 col-lg-5 inputField">
                                 <div className="col-12 d-flex align-items-center justify-content-between">
                                     <label htmlFor="sn">Specialty <span className="text-danger">*</span></label>
-                                    <FontAwesomeIcon type="button" className="btn addBtn" onClick={() => openModal4(5000)} icon={faGears} />
+                                    <FontAwesomeIcon type="button" className="btn addBtn" onClick={() => dispatch(openModal4(5000))} icon={faGears} />
                                 </div>
                                 <select onChange={(e) => {
                                     e.target.value != taskInfo.task_type_id && getWorkPackageTaskTypes(e.target.value).then(setTaskTypes);
@@ -144,7 +144,7 @@ export default function EditPackageTask() {
                                 <label className="col-12 d-flex align-items-center justify-content-between" htmlFor="sn">
                                     <div className="d-flex align-items-center gap-2">Task Type <span className="text-danger">*</span></div>
                                     {
-                                        editIndex && <FontAwesomeIcon type="button" className="btn addBtn" onClick={() => openModal4(4004)} icon={faGears} />
+                                        editIndex && <FontAwesomeIcon type="button" className="btn addBtn" onClick={() => dispatch(openModal4(4004))} icon={faGears} />
                                     }
                                 </label>
                                 <Select

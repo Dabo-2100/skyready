@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import useAircraft from "../hooks/useAircraft";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
-import ControlsBtn from "../../../../Apps/Warehouse/UI/Components/ControlsBtn";
+import ControlsBtn from "../../../../shared/ui/components/ControlsBtn";
 import { setAircraftZones } from "../../state/aircraftZonesSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { buildTree } from "../../../../shared/utilities/buildTree";
-import TreeView from "../../../../Apps/Fleet/Components/Tree";
-import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
 import { resetActiveId } from "../../state/activeParentZoneSlice";
+import Modal from "../../../../shared/ui/modals/Modal";
+import TreeView from "../../../../shared/ui/components/Tree";
+import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 
 export default function NewAircraftZone() {
     const dispatch = useDispatch();
@@ -25,6 +25,7 @@ export default function NewAircraftZone() {
         getAircraftZones(activeWorkPackageInfo.model_id).then((res) => {
             dispatch(setAircraftZones(buildTree(res, "zone_id")));
         })
+        // eslint-disable-next-line
     }, [aircraftZones, refreshIndex]);
 
     useEffect(() => { return () => { dispatch(resetActiveId()) } }, [])
@@ -69,6 +70,5 @@ export default function NewAircraftZone() {
                 </footer>
             }
         </Modal>
-
     )
 }

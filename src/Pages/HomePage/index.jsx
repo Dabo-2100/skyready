@@ -1,31 +1,27 @@
 import "./index.scss";
-import { useContext, useEffect, useState } from "react";
-import { HomeContext } from "./HomeContext.jsx";
+import { useEffect, useState } from "react";
 // System Apps
 import FleetApp from "../../features/aircraft-fleet/app";
 import ProjectsApp from "../../features/project-manager/app/index.jsx";
 import UsersApp from "../../features/users/app";
-import WelcomePage from "@/Components/WelcomePage/index.jsx";
-import SideMenu from "@/Components/SideMenu";
 import { useRecoilState } from "recoil";
-
-import { ProjectsProvider } from "@/Apps/Projects/ProjectContext.jsx";
-import { FleetProvider } from "@/Apps/Fleet/FleetContext.jsx";
 import { UserProvider } from "../../features/users/UserContext.jsx";
-import WarehouseApp from "../../Apps/Warehouse/App/index.jsx";
-import { WarehouseProvider } from "../../Apps/Warehouse/warehouseContext.jsx";
 import { allModals } from "./Modals.jsx";
 import useAuthentication from "../../shared/ui/hooks/useAuthentication.jsx";
-import { $UserInfo } from "../../store/index.js";
+import { $UserInfo } from "../../store-recoil";
 import { useSelector } from "react-redux";
-
+import SideMenu from "../../shared/ui/components/SideMenu/index.jsx";
+import WelcomePage from "../../shared/ui/components/WelcomePage/index.jsx";
 
 export default function HomePage() {
     const [, setUserInfo] = useRecoilState($UserInfo);
     const [isChecked, setIsChecked] = useState(false);
     const { checkUserToken } = useAuthentication();
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
-    const { modalIndex, modal2Index, modal3Index, modal4Index } = useContext(HomeContext);
+    const modalIndex = useSelector(state => state.home.modals.layerOneIndex);
+    const modal2Index = useSelector(state => state.home.modals.layerTwoIndex);
+    const modal3Index = useSelector(state => state.home.modals.layerThreeIndex);
+    const modal4Index = useSelector(state => state.home.modals.layerFourIndex);
 
     const modals = [...allModals];
 
@@ -55,12 +51,6 @@ export default function HomePage() {
                 return <FleetApp />;
             case 2:
                 return <ProjectsApp />;
-            case 3:
-                return <WarehouseApp />;
-            case 4:
-                return <ProjectsApp />;
-            case 5:
-                return <ProjectsApp />;
             case 6:
                 return <UsersApp />;
             default:
@@ -70,28 +60,19 @@ export default function HomePage() {
 
     useEffect(() => {
         checkUserToken().then((res) => { setUserInfo(res); setIsChecked(true) })
+        // eslint-disable-next-line
     }, []);
 
     return (
-        <>
-            {
-                <div className="col-12 d-flex flex-column flex-lg-row" id="HomePage">
-                    <SideMenu />
-                    <FleetProvider>
-                        <ProjectsProvider>
-                            <UserProvider>
-                                <WarehouseProvider>
-                                    {isChecked && renderContent()}
-                                    {renderModalLayer1()}
-                                    {renderModalLayer2()}
-                                    {renderModalLayer3()}
-                                    {renderModalLayer4()}
-                                </WarehouseProvider>
-                            </UserProvider>
-                        </ProjectsProvider>
-                    </FleetProvider>
-                </div >
-            }
-        </>
+        <div className="col-12 d-flex flex-column flex-lg-row" id="HomePage">
+            <SideMenu />
+            <UserProvider>
+                {isChecked && renderContent()}
+                {renderModalLayer1()}
+                {renderModalLayer2()}
+                {renderModalLayer3()}
+                {renderModalLayer4()}
+            </UserProvider>
+        </div >
     )
 }

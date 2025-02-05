@@ -3,7 +3,7 @@ import "./index.scss";
 import logo from "@/assets/IPACOLogo.png";
 import { useGetData } from "@/customHooks";
 import { useRecoilState } from "recoil";
-import { $LoaderIndex, $Server, $Token } from "@/store";
+import { $LoaderIndex, $Server, $Token } from "@/store-recoil";
 import WP_Progress from "./Components/WP_Progress";
 import { ReportContext } from "./ReportContext";
 import Detailed_WP from "./Modals/Detailed_WP";

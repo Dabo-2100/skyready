@@ -1,17 +1,17 @@
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import useUsers from "../hooks/useUsers";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
-import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
+import { useSelector } from "react-redux";
+import Modal from "../../../../shared/ui/modals/Modal";
+import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 
 export default function EditUser() {
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const { getSystemDefaults, getUserFeatures, toggleRoleFromArray, updateUserFeatuers, activateUser, removeUser } = useUsers();
     const [systemFeatures, setSystemFeatures] = useState([]);
     const [systemRoles, setSystemRoles] = useState([]);
     const [specialties, setSpecialties] = useState([]);
     const [userInfo, setUserInfo] = useState([]);
     const [selectedRoles, setSelectedRoles] = useState([]);
-    const { refreshIndex } = useContext(HomeContext);
 
     const formInputs = useRef([]);
     const featuerRoleSelects = useRef([]);

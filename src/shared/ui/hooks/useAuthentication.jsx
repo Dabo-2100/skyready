@@ -1,7 +1,7 @@
 import { useRecoilValue } from "recoil"
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { $Server, $Token } from "../../../store";
+import { $Server, $Token } from "../../../store-recoil";
 
 export default function useAuthentication() {
     const serverUrl = useRecoilValue($Server);

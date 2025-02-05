@@ -1,7 +1,7 @@
 import "./index.scss";
 import { useEffect, useRef, useState } from 'react';
 import { useRecoilState } from "recoil";
-import { $Server, $Token, $SwalDark } from "@/store";
+import { $Server, $Token, $SwalDark } from "@/store-recoil";
 import Swal from "sweetalert2";
 import { useUpdate } from "@/customHooks";
 import { refresh } from "../../../../../shared/state/refreshIndexSlice";

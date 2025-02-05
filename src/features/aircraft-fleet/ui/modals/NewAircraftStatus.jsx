@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import useAircraft from "../hooks/useAircraft";
 import useAircraftData from "../hooks/useAircraftData";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
+import Modal from "../../../../shared/ui/modals/Modal";
 
 export default function NewStatus() {
     const { addNewAircraftStatus, removeAircraftStatus } = useAircraft();

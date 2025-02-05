@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import useUsers from "../hooks/useUsers";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
+import Modal from "../../../../shared/ui/modals/Modal";
 
 export default function NewUser() {
     const { getSystemDefaults, toggleRoleFromArray, registerNewUser } = useUsers();

@@ -1,9 +1,8 @@
-import { HomeContext } from '../../../../Pages/HomePage/HomeContext';
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import useAircraft from './useAircraft';
-
+import { useSelector } from 'react-redux';
 export default function useAircraftData() {
-    const { refreshIndex } = useContext(HomeContext);
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value)
     const { getAircraftManufacturers, getAircraftStatus, getAircraftSpecialties, getAircraftModels, getAircraftUsages, getAircraftInfo, getAircraftApplicableParts, getAircraftFleet } = useAircraft();
     const [aircraftFleet, setAircraftFleet] = useState([]);
     const [manufacturers, setManufacturers] = useState([]);

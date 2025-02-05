@@ -1,12 +1,12 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
-import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
 import { setAircraftFleet } from "../../../aircraft-fleet/state/aircraftFleetSlice";
 import useAircraft from "../../../aircraft-fleet/ui/hooks/useAircraft";
 import useProjects from "../hooks/useProjects";
 import { setAircraftModels } from "../../../aircraft-fleet/state/aircraftModelsSlice";
+import Modal from "../../../../shared/ui/modals/Modal";
+import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 
 export default function NewProject() {
     const dispatch = useDispatch();

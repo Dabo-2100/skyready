@@ -1,15 +1,15 @@
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
-import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
+
 import usePackages from "../hooks/usePackages";
 import { useDispatch, useSelector } from "react-redux";
 import { resetActiveId } from "../../state/activeWorkPackageFolderIdSlice";
+import { openModal2 } from "../../../../shared/state/modalSlice";
+import Modal from "../../../../shared/ui/modals/Modal";
+import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 export default function NewPackage() {
     const dispatch = useDispatch();
-    const { openModal2 } = useContext(HomeContext);
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const workPackages = useSelector(state => state.aircraftFleet.workPackages.value);
     const workPackageTypes = useSelector(state => state.aircraftFleet.workPackageTypes.value);
@@ -55,7 +55,7 @@ export default function NewPackage() {
                     <span className="lable">Folder Package</span>
                 </button>
 
-                <button className="fileButton col-5" onClick={() => openModal2(4001)}>
+                <button className="fileButton col-5" onClick={() => dispatch(openModal2(4001))}>
                     <svg aria-hidden="true" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path strokeWidth="2" stroke="#fffffff" d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125" strokeLinejoin="round" strokeLinecap="round"></path>
                         <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" stroke="#fffffff" d="M17 15V18M17 21V18M17 18H14M17 18H20"></path>

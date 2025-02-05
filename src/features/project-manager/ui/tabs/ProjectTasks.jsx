@@ -1,40 +1,33 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NoImg from '@/assets/offline.png'
-import { ProjectsContext } from "../../../../Apps/Projects/ProjectContext";
 import { useRecoilValue } from "recoil";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp, faX } from "@fortawesome/free-solid-svg-icons";
 import Status from "../components/Status";
-import TaskContextMenu from "../../../../Apps/Projects/Modals/TaskContextMenu";
 import { User } from "../../../../shared/core/User";
-import { $UserInfo } from "../../../../store";
+import { $UserInfo } from "../../../../store-recoil";
 import { useDispatch, useSelector } from "react-redux";
 import ProjectTasksFilter from "../components/ProjectTasksFilter";
 import useProjects from "../hooks/useProjects";
 import { searchByName } from "../../state/projectTasksFilterSlice";
 import { setAvailablePackages, setActivePackages } from "../../state/activeProjectSlice";
 import WorkPackage from "../components/WorkPackage";
+import { toggleSeletor } from "../../state/multiTasksSelectorSlice";
 
 export default function ProjectTasks() {
-    const { multiSelect } = useContext(ProjectsContext);
+    const multiSelect = useSelector(state => state.projects.multiTasksSelector);
     const { filterWorkPackages, getProjectPackages } = useProjects();
-
-    const contextMenu = useSelector(state => state.home.contextMenu);
     const filterName = useSelector(state => state.projects.projectTasksFilter.workPackageNameFilter);
     const activeProject = useSelector(state => state.projects.activeProject);
     const projectTasksFilters = useSelector(state => state.projects.projectTasksFilter);
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
-
     const user = new User(useRecoilValue($UserInfo));
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
-
     const dispatch = useDispatch();
     const [workpackages, setWorkPackaes] = useState([]);
     const [wpView, setwpView] = useState([]);
 
-    const [sort, setSort] = useState({
-        package_name: 0, estimated_duration: 0, work_package_progress: 0,
-    });
+    const [sort, setSort] = useState({ package_name: 0, estimated_duration: 0, work_package_progress: 0 });
 
     //Sort
     const filterBy = (filter) => {
@@ -71,8 +64,6 @@ export default function ProjectTasks() {
         setwpView(tasks);
         // eslint-disable-next-line
     }, [sort]);
-
-    // Filter
 
     useEffect(() => {
         let project_id = activeProject.id;
@@ -125,18 +116,17 @@ export default function ProjectTasks() {
         <div className="col-12 d-flex flex-column flex-grow-1 position-relative p-3 pt-2"
             style={{ background: "#171829", borderTop: "1px solid grey" }}
         >
-            {contextMenu.index && <TaskContextMenu />}
 
             {
                 multiSelect.index && (
                     <div className="col-12 position-fixed top-0 animate__animated animate__fadeInDown "
                         style={{ left: 0, zIndex: "200", background: "#2c2e6e", boxShadow: "0 0 10px 4px #3F51B5" }}>
                         <div className="col-12 container d-flex align-items-center justify-content-between py-3" >
-                            <h5 className="m-0" style={{ visibility: multiSelect.ids.length == 0 ? "hidden" : null }}>Selected Tasks : {multiSelect.ids.length}</h5>
+                            <h5 className="m-0" style={{ visibility: multiSelect.tasks.length == 0 ? "hidden" : null }}>Selected Tasks : {multiSelect.tasks.length}</h5>
                             <div className="col-4">
                                 <Status isMulti={true} status_name="Change Status" status_id="-1" />
                             </div>
-                            <FontAwesomeIcon className="bg-danger p-2 rounded-2" style={{ fontSize: "12px", }} icon={faX} onClick={() => { multiSelect.close() }} />
+                            <FontAwesomeIcon className="bg-danger p-2 rounded-2" style={{ fontSize: "12px", }} icon={faX} onClick={() => { dispatch(toggleSeletor()) }} />
                         </div>
                     </div>
                 )

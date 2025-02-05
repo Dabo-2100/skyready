@@ -1,26 +1,23 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { Accordion } from "react-bootstrap";
-import { useContext, useEffect, useRef, useState } from "react";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { resetActiveId } from "../../state/activeWorkPackageIdSlice";
-import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
+
 import useAircraft from "../hooks/useAircraft";
 import EditBtn from "../../../../shared/ui/components/EditBtn";
 import TasksTable from "../components/TasksTable";
 import usePackages from "../hooks/usePackages";
 import { setAircraftFleet } from "../../state/aircraftFleetSlice"
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
-// import { useRecoilState } from "recoil";
-// import { $LoaderIndex } from "../../../../store";
 import { setAircraftModels } from "../../state/aircraftModelsSlice";
 import { setPackageInfo } from "../../state/activeWorkPackageInfoSlice";
 import useProjects from "../../../project-manager/ui/hooks/useProjects";
+import { openModal3 } from "../../../../shared/state/modalSlice";
+import Modal from "../../../../shared/ui/modals/Modal";
+import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 
 export default function EditDetailedPackage() {
-    // const [, setLoaderIndex] = useRecoilState($LoaderIndex);
-    const { openModal3 } = useContext(HomeContext);
     const dispatch = useDispatch();
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const packageInfo = useSelector(state => state.aircraftFleet.activeWorkPackageInfo.value);
@@ -29,7 +26,6 @@ export default function EditDetailedPackage() {
     const aircraftFleet = useSelector(state => state.aircraftFleet.aircraftFleet.value);
     const activeProject = useSelector(state => state.projects.activeProject);
     const { removeWorkPackageFromProject } = useProjects();
-
     const { getAircraftFleetByModel, getAircraftModels } = useAircraft();
     const { updateWorkPackageInfo, getWorkPackageTasks } = usePackages();
     // Local States 
@@ -129,7 +125,7 @@ export default function EditDetailedPackage() {
                     <Accordion.Body>
                         <div className="d-flex justify-content-end pb-2 align-items-center gap-3">
                             <button className="btn bg-dark text-white" onClick={handleReOrder}>Reorder WorkPacakage</button>
-                            <button className="btn addBtn d-flex align-items-center gap-2" onClick={() => { openModal3(4003) }}>
+                            <button className="btn addBtn d-flex align-items-center gap-2" onClick={() => { dispatch(openModal3(4003)) }}>
                                 <FontAwesomeIcon icon={faAdd} /> New Task
                             </button>
                         </div>

@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react"
 import NoImg from '@/assets/offline.png'
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
 import useAircraft from "../hooks/useAircraft";
 import { useDispatch, useSelector } from "react-redux";
 import { addDesignator, removeDesignator } from "../../state/selectedDesignatorsSlice";
 import { useRecoilState } from "recoil";
-import { $LoaderIndex } from "../../../../store";
+import { $LoaderIndex } from "../../../../store-recoil";
+import Modal from "../../../../shared/ui/modals/Modal";
 
 export default function TaskDesignators() {
     const dispatch = useDispatch();

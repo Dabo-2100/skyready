@@ -1,9 +1,9 @@
 import { useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
 import useAircraftData from "../hooks/useAircraftData";
 import useAircraft from "../hooks/useAircraft";
+import Modal from "../../../../shared/ui/modals/Modal";
 
 export default function NewManufacturer() {
     const { addNewManufacturer, removeManufacturer } = useAircraft();

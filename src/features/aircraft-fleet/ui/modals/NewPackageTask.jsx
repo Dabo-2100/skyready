@@ -1,11 +1,9 @@
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Select from 'react-select';
-import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
+
 import usePackages from "../hooks/usePackages";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGears } from "@fortawesome/free-solid-svg-icons";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
 import { setActiveId as setActiveSpeciality, resetActiveId } from "../../state/activeSpecialityIdSlice";
 import { resetDesignators } from "../../state/selectedDesignatorsSlice";
 import { resetZones } from "../../state/selectedZonesSlice";
@@ -14,11 +12,11 @@ import TaskWorkingZone from "../components/TaskWorkingZone";
 import TaskWorkingDesignators from "../components/TaskWorkingDesignators";
 import useAircraft from "../hooks/useAircraft";
 import { setSpecialties } from "../../state/aircraftSpecialtiesSlice";
-
+import { openModal4 } from "../../../../shared/state/modalSlice";
+import Modal from "../../../../shared/ui/modals/Modal";
+import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 
 export default function NewPackageTask() {
-    const { openModal4 } = useContext(HomeContext);
-
     const dispatch = useDispatch();
     const refreshIndex = useSelector(state => state.home.refreshIndex);
     const active_speciality_id = useSelector(state => state.aircraftFleet.activeSpecialityId.value);
@@ -77,7 +75,7 @@ export default function NewPackageTask() {
                 <div className="col-12 col-lg-6 p-2 inputField">
                     <div className="col-12 d-flex align-items-center justify-content-between">
                         <label htmlFor="sn">Specialty <span className="text-danger">*</span></label>
-                        <FontAwesomeIcon type="button" className="btn addBtn" onClick={() => openModal4(5000)} icon={faGears} />
+                        <FontAwesomeIcon type="button" className="btn addBtn" onClick={() => dispatch(openModal4(5000))} icon={faGears} />
                     </div>
                     <select ref={el => { taskInputs.current[2] = el }} className="col-12 form-select" onChange={() => dispatch(setActiveSpeciality(event.target.value))} required>
                         <option hidden value={-1}>Select Specialty</option>
@@ -94,7 +92,7 @@ export default function NewPackageTask() {
                             <>
                                 <div className="col-12 d-flex align-items-center justify-content-between">
                                     <label htmlFor="sn">Task Type <span className="text-danger">*</span></label>
-                                    <FontAwesomeIcon type="button" className="btn addBtn" onClick={() => openModal4(4004)} icon={faGears} />
+                                    <FontAwesomeIcon type="button" className="btn addBtn" onClick={() => dispatch(openModal4(4004))} icon={faGears} />
                                 </div>
                                 <Select
                                     ref={el => { taskInputs.current[3] = el }}

@@ -1,13 +1,15 @@
 import { useRecoilState } from "recoil"
-import { $Defaults, $Server, $Token, $SwalDark, $LoaderIndex } from "@/store"
-import { useContext, useEffect, useRef, useState } from "react";
+import { $Defaults, $Server, $Token, $SwalDark, $LoaderIndex } from "@/store-recoil"
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { useUpdate } from "@/customHooks";
-import { ProjectsContext } from "../../../../../Apps/Projects/ProjectContext";
 import { refresh } from "../../../../../shared/state/refreshIndexSlice";
 import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
+import { toggleSeletor, } from "../../../state/multiTasksSelectorSlice";
 
 export default function Status(props) {
+    const multiSelect = useSelector(state => state.projects.multiTasksSelector);
     const dispatch = useDispatch();
     const [serverUrl] = useRecoilState($Server);
     const [token] = useRecoilState($Token);
@@ -17,8 +19,6 @@ export default function Status(props) {
     const allStatus = useSelector(state => state.projects.projectTaskStatus.value);
     const theSelect = useRef();
     const [editIndex, setEditIndex] = useState(false);
-    const { multiSelect } = useContext(ProjectsContext);
-
     const updateStatus = (event) => {
         setLoaderIndex(true);
         let log_id = props.log_id;
@@ -52,7 +52,7 @@ export default function Status(props) {
     const updateMultiStatus = async (event) => {
         setLoaderIndex(true);
         let new_status_id = event.target.value;
-        let tasks = multiSelect.ids;
+        let tasks = multiSelect.tasks;
         for (let task of tasks) {
             let log_id = task.log_id;
             let current_progress = task.percentage;
@@ -65,6 +65,7 @@ export default function Status(props) {
             }
             await useUpdate(serverUrl, token, "project_tasks", `log_id = ${log_id}`, obj);
         }
+
         Swal.fire({
             icon: "success",
             text: "Task Status Updated  !",
@@ -75,8 +76,8 @@ export default function Status(props) {
             showConfirmButton: false,
         }).then(() => {
             setLoaderIndex(false);
-            multiSelect.close();
             setEditIndex(false);
+            dispatch(toggleSeletor());
             dispatch(refresh());
         });
     }
@@ -86,6 +87,7 @@ export default function Status(props) {
         await useUpdate(serverUrl, token, "project_work_packages", `work_package_id = ${props.package_id} AND project_id=${props.project_id}`, {
             status_id: event.target.value
         });
+
         Swal.fire({
             icon: "success",
             text: "Task Status Updated  !",
@@ -96,7 +98,7 @@ export default function Status(props) {
             showConfirmButton: false,
         }).then(() => {
             setLoaderIndex(false);
-            multiSelect.close();
+            dispatch(toggleSeletor());
             setEditIndex(false);
             dispatch(refresh());
         });
@@ -105,10 +107,6 @@ export default function Status(props) {
     useEffect(() => {
         editIndex && theSelect.current.focus();
     }, [editIndex]);
-
-    useEffect(() => {
-        console.log(allStatus);
-    }, [])
 
     return (
         <div className="col-12 d-flex justify-content-center" style={{ cursor: "pointer" }}>
@@ -140,3 +138,16 @@ export default function Status(props) {
         </div>
     )
 }
+
+Status.propTypes = {
+    log_id: PropTypes.number,
+    percentage: PropTypes.number,
+    isMulti: PropTypes.bool,
+    status_id: PropTypes.number,
+    status_name: PropTypes.string,
+    package_id: PropTypes.number,
+    is_package: PropTypes.number,
+}
+
+
+

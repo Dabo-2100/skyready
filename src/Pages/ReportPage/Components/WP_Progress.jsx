@@ -1,9 +1,9 @@
 import { useContext, useState, useEffect } from "react";
 import { ReportContext } from "../ReportContext";
 import { useRecoilState } from "recoil";
-import { $LoaderIndex, $Server, $Token } from "@/store";
+import { $LoaderIndex, $Server, $Token } from "@/store-recoil";
 import { useGetData } from "@/customHooks.jsx";
-import BarChart from "@/Components/BarChart";
+import BarChart from "../../../shared/ui/components/BarChart";
 
 export default function WP_Progress() {
     const [serverUrl] = useRecoilState($Server);

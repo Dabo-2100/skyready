@@ -1,22 +1,20 @@
 import { faAngleRight, faArrowDown, faArrowUp, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
-import { ProjectsContext } from "../../../../../Apps/Projects/ProjectContext";
 import PackageTask from "../PackageTask";
 import { User } from "../../../../../shared/core/User";
-import { $UserInfo } from "../../../../../store";
+import { $UserInfo } from "../../../../../store-recoil";
 import { useDispatch, useSelector } from "react-redux";
 import useProjects from "../../hooks/useProjects";
 import { setActiveId } from "../../../../aircraft-fleet/state/activeWorkPackageIdSlice";
-import { HomeContext } from "@/Pages/HomePage/HomeContext";
 import PropTypes from "prop-types";
 import { setPackageInfo } from "../../../../aircraft-fleet/state/activeWorkPackageInfoSlice";
+import { openModal2 } from "../../../../../shared/state/modalSlice";
+import { selectAllTasks, toggleSeletor } from "../../../state/multiTasksSelectorSlice";
 
 export default function WorkPackage({ package_id, estimated_duration, package_name, start_at, end_at, work_package_progress, info }) {
     const dispatch = useDispatch();
-    const { openModal2 } = useContext(HomeContext);
-    const { multiSelect, setMultiSelect } = useContext(ProjectsContext);
     const { getWorkPackageTasks } = useProjects();
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const activeProjectId = useSelector(state => state.projects.activeProject.id);
@@ -31,7 +29,7 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
         event.preventDefault();
         dispatch(setPackageInfo(info));
         dispatch(setActiveId(package_id));
-        openModal2(4002);
+        dispatch(openModal2(4002));
     }
 
     useEffect(() => {
@@ -66,25 +64,13 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
     }
 
     const selectAll = async () => {
-        let oSelect = { ...multiSelect };
-        oSelect.ids = [];
+        let tasks = [];
         if (!selectAllIndex) {
-            packageTasks.forEach((el) => {
-                let obj = {
-                    log_id: el.log_id,
-                    percentage: el.task_progress
-                }
-                oSelect.ids.push(obj)
-            })
-            oSelect.index = true;
-            setMultiSelect(oSelect);
-            setSelectAllIndex(true);
+            tasks = packageTasks.map((el) => { return { log_id: el.log_id, percentage: el.task_progress }; })
         }
-        else {
-            oSelect.index = false;
-            setMultiSelect(oSelect);
-            setSelectAllIndex(false);
-        }
+        setSelectAllIndex(!selectAllIndex);
+        dispatch(selectAllTasks(tasks));
+        dispatch(toggleSeletor());
     }
 
     const user = new User(useRecoilValue($UserInfo));

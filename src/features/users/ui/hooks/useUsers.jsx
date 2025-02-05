@@ -1,16 +1,18 @@
 import { useContext } from "react";
 import { useRecoilValue } from "recoil"
 import Swal from "sweetalert2";
-import { $Server, $Token } from "../../../../store"
+import { $Server, $Token } from "../../../../store-recoil"
 import { UsersRepo } from "../../data/repositories/UsersRepo";
 import { formCheck } from "../../../../customHooks";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
 import { UserContext } from "../../UserContext";
+import { closeModal } from "../../../../shared/state/modalSlice";
+import { refresh } from "../../../../shared/state/refreshIndexSlice";
+import { useDispatch } from "react-redux";
 
 export default function useUsers() {
+    const dispatch = useDispatch();
     const serverUrl = useRecoilValue($Server);
     const token = useRecoilValue($Token);
-    const { closeModal, refresh } = useContext(HomeContext);
     const { userToEdit } = useContext(UserContext)
 
     const registerNewUser = async (formInputs, selectedRoles) => {
@@ -33,7 +35,7 @@ export default function useUsers() {
                     text: res == true ? "User added successfully !" : res == undefined ? "Connection Problem" : res,
                     timer: 2500,
                 }).then(() => {
-                    res == true && closeModal();
+                    res == true && dispatch(closeModal());
                 })
             })
         } else {
@@ -96,7 +98,7 @@ export default function useUsers() {
                     text: res == true ? "User Updated successfully !" : res == undefined ? "Connection Problem" : res,
                     timer: 2500,
                 }).then(() => {
-                    res == true && refresh();
+                    res == true && dispatch(refresh());
                 })
             })
         } else {
@@ -120,7 +122,7 @@ export default function useUsers() {
                     text: res == true ? "User Activated successfully !" : res == undefined ? "Connection Problem" : res,
                     timer: 2500,
                 }).then(() => {
-                    res == true && refresh();
+                    res == true && dispatch(refresh());
                 })
             });
         })
@@ -138,7 +140,7 @@ export default function useUsers() {
                     text: res == true ? "User Deleted successfully !" : res == undefined ? "Connection Problem" : res,
                     timer: 2500,
                 }).then(() => {
-                    res == true && closeModal();
+                    res == true && dispatch(closeModal());
                 })
             });
         })

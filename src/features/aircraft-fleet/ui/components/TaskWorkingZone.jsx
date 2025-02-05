@@ -2,18 +2,16 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
 import { removeZoneByZoneId } from "../../state/selectedZonesSlice";
-import { useContext } from "react";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
+import { openModal4 } from "../../../../shared/state/modalSlice";
 
 export default function TaskWorkingZone() {
     const dispatch = useDispatch();
-    const { openModal4 } = useContext(HomeContext);
     const selectedZones = useSelector(state => state.aircraftFleet.selectedZones.value);
     return (
         <div className="col-12 d-flex flex-wrap">
             <div className="col-12 d-flex align-items-center justify-content-between">
                 <label>Working Zones</label>
-                <button className="addMoreButton" type="button" onClick={() => openModal4(1006)}>
+                <button className="addMoreButton" type="button" onClick={() => dispatch(openModal4(1006))}>
                     <div className="sign">+</div>
                     <div className="text">Add Zone</div>
                 </button>

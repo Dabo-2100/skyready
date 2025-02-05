@@ -1,10 +1,11 @@
 import { useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
 import usePackages from "../hooks/usePackages";
-import SaveBtn from "../../../../Apps/Warehouse/UI/Components/SaveBtn";
+
 import { useSelector } from "react-redux";
+import Modal from "../../../../shared/ui/modals/Modal";
+import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 
 
 export default function NewPackageType() {

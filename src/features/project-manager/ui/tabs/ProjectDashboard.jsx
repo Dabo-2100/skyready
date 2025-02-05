@@ -1,24 +1,23 @@
-import { useContext, useEffect, useRef, useState } from "react"
-import { ProjectsContext } from "../../../../Apps/Projects/ProjectContext";
+import { useEffect, useRef, useState } from "react"
 import { useRecoilState, useRecoilValue } from "recoil";
-import { $Server, $Token, $SwalDark, $UserInfo, $LoaderIndex } from "@/store";
-import BarChart from "../../../../Apps/Projects/Components/BarChart";
+import { $Server, $Token, $UserInfo, $LoaderIndex } from "@/store-recoil";
 
-import { useDashboard, useAircraftStatus, getAircraftByModel, useAircraftModels, useAircraftUsages, formCheck } from "@/customHooks";
+import { useDashboard } from "@/customHooks";
 import axios from "axios";
 import Swal from "sweetalert2";
 import ProgressBar from "../../../../Apps/Projects/Components/ProgressBar";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
 import { User } from "../../../../shared/core/User";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { closeModal } from "../../../../shared/state/modalSlice";
 
 export default function ProjectDashboard() {
-    const { closeModal, refreshIndex } = useContext(HomeContext);
+    const dispatch = useDispatch();
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
+    const openedProject = useSelector(state => state.projects.activeProject.id);
+
     const [serverUrl] = useRecoilState($Server);
     const [token] = useRecoilState($Token);
     const [, setLoaderIndex] = useRecoilState($LoaderIndex);
-
-    const { openedProject } = useContext(ProjectsContext);
     const [dashboardInfo, setDashboardInfo] = useState({});
     const [editInfoIndex, setEditInfoIndex] = useState(false);
 
@@ -43,7 +42,7 @@ export default function ProjectDashboard() {
                         text: "Project removed Successfully !",
                         timer: 1500,
                     }).then(() => {
-                        closeModal();
+                        dispatch(closeModal());
                     })
                 })
                 .catch((err) => { console.log(err); })

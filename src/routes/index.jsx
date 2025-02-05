@@ -1,5 +1,4 @@
 import { lazy } from "react";
-import { HomeProvider } from "../Pages/HomePage/HomeContext.jsx";
 import { ReportProvider } from "../Pages/ReportPage/ReportContext.jsx";
 
 const LoginPage = lazy(() => import("../Pages/LoginPage/index.jsx"));
@@ -10,7 +9,7 @@ const ActivatePage = lazy(() => import("../Pages/ActivatePage/index.jsx"));
 const Page404 = lazy(() => import("../Pages/Page404/index.jsx"))
 
 const routes = [
-  { path: "/", element: (<HomeProvider><HomePage /></HomeProvider>) },
+  { path: "/", element: (<HomePage />) },
   { path: "login", element: <LoginPage /> },
   { path: "report", element: (<ReportProvider><ReportPage /></ReportProvider>) },
   { path: "report2", element: (<ReportProvider><Report2 /></ReportProvider>) },

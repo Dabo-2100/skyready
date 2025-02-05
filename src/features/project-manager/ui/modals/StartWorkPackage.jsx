@@ -1,11 +1,11 @@
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
-import CloseBtn from "../../../../Apps/Warehouse/UI/Components/CloseBtn";
 import useProjects from "../hooks/useProjects";
 import { useRecoilState } from "recoil";
-import { $LoaderIndex } from "../../../../store";
+import { $LoaderIndex } from "../../../../store-recoil";
+import Modal from "../../../../shared/ui/modals/Modal";
+import CloseBtn from "../../../../shared/ui/components/CloseBtn/CloseBtn";
 
 export default function StartWorkPackage() {
     const [, setLoaderIndex] = useRecoilState($LoaderIndex);

@@ -1,37 +1,31 @@
-import { useContext } from "react"
-import { ProjectsContext } from "../../../../../Apps/Projects/ProjectContext"
 import ProgressBar from "../ProgressBar"
 import Status from "../Status"
-import { HomeContext } from "../../../../../Pages/HomePage/HomeContext"
 import { faComment, faEye, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRecoilValue } from "recoil"
 import { User } from "../../../../../shared/core/User"
-import { $UserInfo } from "../../../../../store"
+import { $UserInfo } from "../../../../../store-recoil"
 import { useDispatch, useSelector } from "react-redux"
 import { setActiveId } from "../../../../aircraft-fleet/state/activeWorkPackageTaskIdSlice"
 import PropTypes from "prop-types"
-import useProjects from "../../hooks/useProjects"
+import useProjects from "../../hooks/useProjects";
+import { openModal2 } from "../../../../../shared/state/modalSlice"
+import { toggleTask, toggleSeletor } from "../../../state/multiTasksSelectorSlice"
 
 export default function PackageTask(props) {
+
     const dispatch = useDispatch();
+    const multiSelect = useSelector(state => state.projects.multiTasksSelector);
     const { removeWorkPackageTask } = useProjects();
     const user = new User(useRecoilValue($UserInfo));
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
     const taskFilter = useSelector(state => state.projects.projectTasksFilter);
-    const { openModal2, setMenu } = useContext(HomeContext);
-    const { multiSelect } = useContext(ProjectsContext)
 
-    const openContextMenu = (event) => {
-        event.preventDefault()
-        setMenu({ index: true, posX: event.clientX, posY: event.clientY })
-        dispatch(setActiveId(props.task_id));
-    }
 
     const openTaskDetails = (event) => {
         event.preventDefault()
         dispatch(setActiveId(props.task_id));
-        openModal2(4005);
+        dispatch(openModal2(4005));
     }
 
     const handleRemove = async () => {
@@ -39,12 +33,12 @@ export default function PackageTask(props) {
     }
 
     return (
-        <tr onContextMenu={openContextMenu} className='task animate__animated animate__fadeIn'>
+        <tr className='task animate__animated animate__fadeIn'>
             <td
                 style={{ whiteSpace: "nowrap" }}
                 onClick={(event) => {
                     event.stopPropagation();
-                    !multiSelect.index && multiSelect.open();
+                    !multiSelect.index && dispatch(toggleSeletor());
                 }}>
                 {
                     multiSelect.index ? (
@@ -53,7 +47,7 @@ export default function PackageTask(props) {
                                 log_id: props.log_id,
                                 percentage: props.task_progress
                             }
-                            multiSelect.toggleTask(obj)
+                            dispatch(toggleTask(obj))
                         }
                         } type="checkbox" style={{ transform: "scale(1.5)" }} defaultChecked={props.selectAllIndex} />
                     ) : (props.task_index + 1)
@@ -115,6 +109,19 @@ export default function PackageTask(props) {
 
 PackageTask.propTypes = {
     status_id: PropTypes.number,
-    props: PropTypes.object,
+    task_duration: PropTypes.number,
+    task_start_at: PropTypes.string,
+    task_end_at: PropTypes.string,
+    task_type_name: PropTypes.string,
+    task_desc: PropTypes.string,
+    specialty_name: PropTypes.string,
+    task_name: PropTypes.string,
+    task_index: PropTypes.number,
+    comments_no: PropTypes.number,
+    log_id: PropTypes.number,
+    task_progress: PropTypes.number,
+    task_id: PropTypes.number,
+    selectAllIndex: PropTypes.bool,
+    status_name: PropTypes.string,
 };
 

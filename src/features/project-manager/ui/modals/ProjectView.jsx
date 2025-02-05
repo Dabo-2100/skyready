@@ -1,5 +1,5 @@
+import FullModal from "../../../../shared/ui/modals/FullModal";
 import ProjectTasks from "../tabs/ProjectTasks";
-import FullModal from "../../../../Apps/Warehouse/UI/Modals/FullModal";
 import { useSelector } from "react-redux";
 
 export default function ProjectView() {

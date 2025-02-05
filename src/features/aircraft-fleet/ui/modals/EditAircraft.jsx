@@ -1,6 +1,7 @@
-import Modal from "../../../../Apps/Warehouse/UI/Modals/Modal";
+
 import WorkPackagesTable from "../components/WorkPackagesTable.jsx";
 import AircraftDataForm from "../components/AircraftDataForm.jsx";
+import Modal from "../../../../shared/ui/modals/Modal.jsx";
 
 export default function EditAircraft() {
     return (

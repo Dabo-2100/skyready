@@ -1,21 +1,22 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { faGears } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import useAircraftData from '../hooks/useAircraftData'
 import useAircraft from '../hooks/useAircraft';
-import SaveBtn from '../../../../Apps/Warehouse/UI/Components/SaveBtn';
-import { HomeContext } from '../../../../Pages/HomePage/HomeContext';
-import { useSelector } from 'react-redux';
+
+import { useDispatch, useSelector } from 'react-redux';
 import { User } from '../../../../shared/core/User';
 import { useRecoilValue } from 'recoil';
-import { $UserInfo } from '../../../../store';
+import { $UserInfo } from '../../../../store-recoil';
+import { openModal2 } from '../../../../shared/state/modalSlice';
+import SaveBtn from '../../../../shared/ui/components/SaveBtn';
 
 export default function AircraftDataForm() {
     // const userData = { isAppAdmin: () => false };
+    const dispatch = useDispatch();
     const userData = new User(useRecoilValue($UserInfo));
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
     const { aircraftStatus, manufacturers, aircraftUsages, aircraftInfo, aircraftModels } = useAircraftData();
-    const { openModal2 } = useContext(HomeContext);
     const { updateAircraftInfo } = useAircraft();
     const formInputs = useRef([]);
     const [editIndex, setEditIndex] = useState(false);
@@ -54,7 +55,7 @@ export default function AircraftDataForm() {
                 <div className="col-12 col-lg-5 inputField">
                     <div className="d-flex col-12 align-items-center justify-content-between">
                         <label htmlFor="sn">Manufacturer</label>
-                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1002)} />}
+                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => dispatch(openModal2(1002))} />}
                     </div>
                     <select disabled={!editIndex} ref={el => { formInputs.current[3] = el }} className="col-12 form-select" >
                         {
@@ -68,7 +69,7 @@ export default function AircraftDataForm() {
 
                     <div className="d-flex col-12 align-items-center justify-content-between">
                         <label htmlFor="sn">Status</label>
-                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1003)} />}
+                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => dispatch(openModal2(1003))} />}
                     </div>
 
                     <select disabled={!editIndex} ref={el => { formInputs.current[2] = el }} className="col-12 form-select" >
@@ -82,7 +83,7 @@ export default function AircraftDataForm() {
                 <div className="col-12 col-lg-5 inputField">
                     <div className="d-flex col-12 align-items-center justify-content-between">
                         <label htmlFor="sn">Model</label>
-                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1004)} />}
+                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => dispatch(openModal2(1004))} />}
                     </div>
                     <select disabled={!editIndex} ref={el => { formInputs.current[5] = el }} className="col-12 form-select" >
                         {
@@ -95,7 +96,7 @@ export default function AircraftDataForm() {
                 <div className="col-12 col-lg-5 inputField">
                     <div className="d-flex col-12 align-items-center justify-content-between">
                         <label htmlFor="sn">Usage</label>
-                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => openModal2(1005)} />}
+                        {userData.isAppAdmin(appIndex) && <FontAwesomeIcon icon={faGears} className="btn addBtn" onClick={() => dispatch(openModal2(1005))} />}
                     </div>
                     <select disabled={!editIndex} ref={el => { formInputs.current[4] = el }} className="col-12 form-select" >
                         {

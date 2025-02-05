@@ -1,22 +1,20 @@
 import { useRecoilState, useRecoilValue } from "recoil";
-import { $LoaderIndex, $Server, $SwalDark, $Token } from "../../../../store";
+import { $LoaderIndex, $Server, $SwalDark, $Token } from "../../../../store-recoil";
 import { WorkPackagesRepo } from "../../data/repositories/WorkPackagesRepo";
 import { formCheck } from "../../../../customHooks";
 import Swal from "sweetalert2";
-import { useContext } from "react";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
 import { useDispatch } from "react-redux";
 import { setAllDesignators } from "../../state/selectedDesignatorsSlice";
 import { setAllZones } from "../../state/selectedZonesSlice";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
 import { resetActiveType } from "../../state/activeWorkPackageTypeIdSlice";
+import { closeModal } from "../../../../shared/state/modalSlice";
 
 export default function usePackages() {
     const token = useRecoilValue($Token);
     const serverUrl = useRecoilValue($Server);
     const darkSwal = useRecoilValue($SwalDark);
     const [, setLoaderIndex] = useRecoilState($LoaderIndex);
-    const { closeModal } = useContext(HomeContext);
     const dispatch = useDispatch();
 
     const getWorkPackageTypes = async () => {
@@ -122,7 +120,7 @@ export default function usePackages() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && dispatch(refresh()) && closeModal();
+                    res == true && dispatch(refresh()) && dispatch(closeModal());
                 })
             })
         }
@@ -312,7 +310,7 @@ export default function usePackages() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && dispatch(refresh()) && closeModal()
+                    res == true && dispatch(refresh()) && dispatch(closeModal())
                 })
             })
         }

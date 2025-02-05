@@ -1,10 +1,7 @@
-import { useContext, useEffect } from "react";
-import { HomeContext } from "../../../../Pages/HomePage/HomeContext";
-import TreeView from "../../../../Apps/Fleet/Components/Tree";
+import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
-import NoData from "../../../../Apps/Fleet/Components/NoData";
-import ControlsBtn from "../../../../Apps/Warehouse/UI/Components/ControlsBtn";
+import NoData from "../../../../shared/ui/components/NoData";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveType } from "../../state/activeWorkPackageTypeIdSlice";
 import { setActiveId } from "../../state/activeWorkPackageFolderIdSlice";
@@ -14,7 +11,10 @@ import { setWorkPackages } from "../../state/workPackagesSlice";
 import { setWorkPackageTypes } from "../../state/workPackageTypesSlice";
 import { buildTree } from "../../../../shared/utilities/buildTree";
 import { useRecoilState } from "recoil";
-import { $LoaderIndex } from "../../../../store";
+import { $LoaderIndex } from "../../../../store-recoil";
+import { openModal } from "../../../../shared/state/modalSlice";
+import TreeView from "../../../../shared/ui/components/Tree";
+import ControlsBtn from "../../../../shared/ui/components/ControlsBtn";
 
 export default function Packages() {
     const [loaderIndex, setLoaderIndex] = useRecoilState($LoaderIndex);
@@ -24,9 +24,6 @@ export default function Packages() {
     const workPackageTypes = useSelector(state => state.aircraftFleet.workPackageTypes.value);
     const activeWorkPackageTypeId = useSelector(state => state.aircraftFleet.activeWorkPackageTypeId.value);
     const { getWorkPackages, getWorkPackageTypes } = usePackages();
-    // Context
-    const { openModal } = useContext(HomeContext);
-
     useEffect(() => {
         setLoaderIndex(true)
         let active = activeWorkPackageTypeId;
@@ -64,7 +61,7 @@ export default function Packages() {
                                 })
                             }
                         </div>
-                        <ControlsBtn onClick={() => openModal(3000)} />
+                        <ControlsBtn onClick={() => dispatch(openModal(3000))} />
                     </div>
                     {
                         activeWorkPackageTypeId != 0 && !loaderIndex && (

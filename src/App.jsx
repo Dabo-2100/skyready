@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { $LoaderIndex } from "./store";
+import { $LoaderIndex } from "./store-recoil";
 import routes from "./routes";
-import Loader from "./Components/Loader";
+import Loader from "./shared/ui/components/Loader";
 export default function App() {
   const loaderIndex = useRecoilValue($LoaderIndex);
   return (

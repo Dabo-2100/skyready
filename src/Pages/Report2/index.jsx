@@ -1,6 +1,6 @@
 import { useRecoilState, useRecoilValue } from "recoil";
 import "./index.scss";
-import { $LoaderIndex, $Server, $Token } from "../../store";
+import { $LoaderIndex, $Server, $Token } from "../../store-recoil";
 import { useEffect, useState } from "react";
 import useReport from "./useReport";
 
