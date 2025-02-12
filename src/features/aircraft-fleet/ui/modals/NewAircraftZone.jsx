@@ -22,7 +22,7 @@ export default function NewAircraftZone() {
     const new_zone_name = useRef();
     const handleSubmit = () => { addNewAircraftZone(new_zone_name).then(() => { new_zone_name.current.value = "" }) }
     useEffect(() => {
-        getAircraftZones(activeWorkPackageInfo.model_id).then((res) => {
+        getAircraftZones(activeWorkPackageInfo.model_id || 1).then((res) => {
             dispatch(setAircraftZones(buildTree(res, "zone_id")));
         })
         // eslint-disable-next-line

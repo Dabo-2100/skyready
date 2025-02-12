@@ -18,7 +18,7 @@ import Modal from "../../../../shared/ui/modals/Modal";
 import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 
 export default function EditDetailedPackage() {
-    const dispatch = useDispatch();
+
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const packageInfo = useSelector(state => state.aircraftFleet.activeWorkPackageInfo.value);
     const active_work_package_id = useSelector(state => state.aircraftFleet.activeWorkPackageId.value);
@@ -28,6 +28,7 @@ export default function EditDetailedPackage() {
     const { removeWorkPackageFromProject } = useProjects();
     const { getAircraftFleetByModel, getAircraftModels } = useAircraft();
     const { updateWorkPackageInfo, getWorkPackageTasks } = usePackages();
+    const dispatch = useDispatch();
     // Local States 
     const [editIndex, setEditIndex] = useState(false);
     const [workPackageTasks, setWorkPackageTasks] = useState([]);
@@ -55,7 +56,7 @@ export default function EditDetailedPackage() {
 
     useEffect(() => {
         getAircraftModels().then((res) => dispatch(setAircraftModels(res))).then(() => {
-            formInputs.current[5].value = packageInfo.model_id;
+            formInputs.current[5] && (formInputs.current[5].value = packageInfo.model_id)
         });
 
         getWorkPackageTasks(active_work_package_id).then((res) => {
@@ -78,34 +79,6 @@ export default function EditDetailedPackage() {
     //         refresh();
     //     })
     // }
-
-    // const closeWP = () => {
-    //     if (editIndex) {
-    //         Swal.fire({
-    //             icon: "question",
-    //             text: "All unsaved data will remove , Are you sure you want to exit ?",
-    //             showDenyButton: true,
-    //         }).then((res) => {
-    //             res.isConfirmed && closeModal()
-    //         })
-    //     }
-    //     else {
-    //         closeModal()
-    //     }
-    // }
-
-
-
-    // useEffect(() => {
-    //     if (openedProject != 0) {
-    //         useGetData(serverUrl, token, `
-    //         `).then((res) => {
-    //             setPackageStatus(res[0].status_id);
-    //             let x = Defaults.status.find(el => { return el.status_id == res[0].status_id });
-    //             setPackageStatusName(x.status_name);
-    //         })
-    //     }
-    // }, [openedProject]);
 
     const removeWP = (event) => {
         event.stopPropagation();
@@ -141,32 +114,36 @@ export default function EditDetailedPackage() {
                             {editIndex ? (<SaveBtn label="Save" onClick={handleSaveWPInfo} />) : (<EditBtn label="Edit" onClick={() => setEditIndex(!editIndex)} />)}
                         </div>
                         <div className="col-12 d-flex flex-wrap">
-                            <div className="col-12 col-md-6 p-2 border d-flex flex-wrap align-content-center">
-                                <label className="col-12 mb-2">Work Package Name</label>
-                                <input ref={el => { formInputs.current[0] = el }} className="form-control" disabled={!editIndex} defaultValue={packageInfo.package_name} />
-                            </div>
+                            {
+                                activeProject.id == 0 &&
+                                <>
+                                    <div className="col-12 col-md-6 p-2 border d-flex flex-wrap align-content-center">
+                                        <label className="col-12 mb-2">Work Package Name</label>
+                                        <input ref={el => { formInputs.current[0] = el }} className="form-control" disabled={!editIndex} defaultValue={packageInfo.package_name} />
+                                    </div>
+                                    <div className="col-12 col-md-6 p-2 border">
+                                        <label className="col-12  mb-2">Release Version</label>
+                                        <input ref={el => { formInputs.current[2] = el }} type="text" className="form-control" disabled={!editIndex} defaultValue={packageInfo.package_version} />
+                                    </div>
 
-                            <div className="col-12 col-md-6 p-2 border">
-                                <label className="col-12  mb-2">Release Version</label>
-                                <input ref={el => { formInputs.current[2] = el }} type="text" className="form-control" disabled={!editIndex} defaultValue={packageInfo.package_version} />
-                            </div>
+                                    <div className="col-12 col-md-6 p-2 border">
+                                        <label className="col-12 mb-2">Release Date</label>
+                                        <input ref={el => { formInputs.current[3] = el }} type="date" className="form-control" disabled={!editIndex} defaultValue={packageInfo.package_release_date} />
+                                    </div>
 
-                            <div className="col-12 col-md-6 p-2 border">
-                                <label className="col-12 mb-2">Release Date</label>
-                                <input ref={el => { formInputs.current[3] = el }} type="date" className="form-control" disabled={!editIndex} defaultValue={packageInfo.package_release_date} />
-                            </div>
+                                    <div className="col-12 col-md-6 p-2 border">
+                                        <label className="col-12 mb-2">Issued Duration (HRs)</label>
+                                        <input ref={el => { formInputs.current[4] = el }} type="number" className="form-control" disabled={!editIndex} defaultValue={packageInfo.package_issued_duration} />
+                                    </div>
 
-                            <div className="col-12 col-md-6 p-2 border">
-                                <label className="col-12 mb-2">Issued Duration (HRs)</label>
-                                <input ref={el => { formInputs.current[4] = el }} type="number" className="form-control" disabled={!editIndex} defaultValue={packageInfo.package_issued_duration} />
-                            </div>
+                                    <div className="col-12 col-md-6 p-2 border">
+                                        <label className="col-12  mb-2">Work Package Description</label>
+                                        <textarea ref={el => { formInputs.current[1] = el }} className="form-control" disabled={!editIndex} defaultValue={packageInfo.package_desc} />
+                                    </div>
+                                </>
+                            }
 
-                            <div className="col-12 col-md-6 p-2 border">
-                                <label className="col-12  mb-2">Work Package Description</label>
-                                <textarea ref={el => { formInputs.current[1] = el }} className="form-control" disabled={!editIndex} defaultValue={packageInfo.package_desc} />
-                            </div>
-
-                            <div className="col-12 col-md-6 border d-flex flex-wrap justify-content-between myCheck gap-0">
+                            <div className={`col-12 ${activeProject.id == 0 ? 'col-md-6' : null}  border d-flex flex-wrap justify-content-between myCheck gap-0`}>
                                 {
                                     editIndex &&
                                     <div className="col-12 p-2 border-bottom d-flex flex-wrap align-content-center">
@@ -177,6 +154,7 @@ export default function EditDetailedPackage() {
                                             onChange={handleModelChange}
                                             disabled={!editIndex}
                                         >
+                                            <option value={-1}>Select Aircraft Model</option>
                                             {
                                                 models.map((el, index) => {
                                                     return (<option key={index} value={el.model_id}>{el.model_name}</option>)

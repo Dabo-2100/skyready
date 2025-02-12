@@ -1,5 +1,6 @@
 import "./index.scss";
 import CommentNode from './CommentNode';
+import PropTypes from "prop-types";
 
 export default function CommentsTree({ data }) {
     return (
@@ -11,4 +12,8 @@ export default function CommentsTree({ data }) {
             }
         </div>
     );
-};
+}
+
+CommentsTree.propTypes = {
+    data: PropTypes.array
+}

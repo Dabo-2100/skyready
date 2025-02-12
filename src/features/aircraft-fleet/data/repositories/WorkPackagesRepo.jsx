@@ -11,6 +11,7 @@ import { storeFolderWorkPackage } from "../api/work-packages/store_folder_workpa
 import { storeWorkPackageTask } from "../api/work-packages/store_work_package_task";
 import { storeWorkPackageTaskType } from "../api/work-packages/store_workpackage_task_type";
 import { storeWorkpackageType } from "../api/work-packages/store_workpackage_type";
+import { updateWorkPackageTask } from "../api/work-packages/update_work_package_task";
 import { updateWorkPackageInfo } from "../api/work-packages/update_workpackage_info";
 
 export const WorkPackagesRepo = {
@@ -72,6 +73,10 @@ export const WorkPackagesRepo = {
 
     show_work_package_task: async (serverUrl, token, active_work_package_task_id) => {
         return await showWorkPackageTaskInfo(serverUrl, token, active_work_package_task_id);
+    },
+
+    update_work_package_task: async (serverUrl, token, data) => {
+        return await updateWorkPackageTask(serverUrl, token, data);
     },
 
 }

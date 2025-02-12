@@ -15,7 +15,7 @@ export default function ProjectsList() {
   const [, setLoaderIndex] = useRecoilState($LoaderIndex);
   const refreshIndex = useSelector(state => state.home.refreshIndex.value);
   const dispatch = useDispatch();
-  const { getAllProjects, getProjectPackages } = useProjects();
+  const { getAllProjects, getProjectPackages,removeProject } = useProjects();
   const [projects, setProjects] = useState([]);
 
   const openProject = (id) => {
@@ -32,6 +32,11 @@ export default function ProjectsList() {
       dispatch(setAvailablePackages(final));
       dispatch(setActivePackages(res.active_work_packages));
     }).then(() => dispatch(openModal(6001)))
+  }
+
+  const handleRemove = (event, project_id) => {
+    event.stopPropagation();
+    removeProject(project_id);
   }
 
   useEffect(() => {
@@ -67,6 +72,9 @@ export default function ProjectsList() {
                 <th>Due Date</th>
                 <th>Progress %</th>
                 <th>Status</th>
+                {
+                  user.isAppAdmin(appIndex) && <th>Actions</th>
+                }
               </tr>
             </thead>
             <tbody>
@@ -81,6 +89,11 @@ export default function ProjectsList() {
                       <td>{pro.project_due_date}</td>
                       <td>{pro.project_progress && pro.project_progress.toFixed(2)} %</td>
                       <td><p style={{ color: pro.status_color_code }}></p>{pro.status_name}</td>
+                      {
+                        user.isAppAdmin(appIndex) && (
+                          <td><button onClick={(event) => handleRemove(event, pro.project_id)} className="btn btn-danger">Remove</button></td>
+                        )
+                      }
                     </tr>
                   )
                 })

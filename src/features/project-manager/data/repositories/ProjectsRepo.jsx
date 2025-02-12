@@ -1,11 +1,15 @@
+import { deleteProject } from "../api/delete_project";
 import { deleteProjectWorkPackage } from "../api/delete_project_work_package";
+import { deleteTaskComment } from "../api/delete_task_comment";
 import { deleteWorkPackageTask } from "../api/delete_work_package_task";
 import { indexProjectPackages } from "../api/index_project_packages";
 import { indexProjectTaskStatus } from "../api/index_project_task_status";
 import { indexProjects } from "../api/index_projects";
+import { indexTaskComments } from "../api/index_task_comments";
 import { indexWorkPackageTasks } from "../api/index_work_package_tasks";
 import { showProjectFilteredPackages } from "../api/show_project_packages";
 import { showFilteredWorkPackages } from "../api/show_work_package_tasks";
+import { storeNewComment } from "../api/store_new_comment";
 import { storeNewProjectPackage } from "../api/store_new_project_package";
 import { storeProject } from "../api/store_project";
 
@@ -38,6 +42,10 @@ export const ProjectsRepo = {
         return await deleteWorkPackageTask(serverUrl, token, data);
     },
 
+    remove_project: async (serverUrl, token, data) => {
+        return await deleteProject(serverUrl, token, data);
+    },
+
     add_new_project: async (serverUrl, token, data) => {
         return await storeProject(serverUrl, token, data);
     },
@@ -48,5 +56,16 @@ export const ProjectsRepo = {
 
     remove_work_package_from_project: async (serverUrl, token, project_id, package_id) => {
         return await deleteProjectWorkPackage(serverUrl, token, project_id, package_id);
+    },
+
+    all_task_comments: async (serverUrl, token, task_id, data) => {
+        return await indexTaskComments(serverUrl, token, task_id, data);
+    },
+
+    add_new_comment: async (serverUrl, token, data) => {
+        return await storeNewComment(serverUrl, token, data);
+    },
+    remove_task_comment: async (serverUrl, token, data) => {
+        return await deleteTaskComment(serverUrl, token, data);
     },
 }

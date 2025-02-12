@@ -10,7 +10,7 @@ import { setActiveId } from "../../../../aircraft-fleet/state/activeWorkPackageT
 import PropTypes from "prop-types"
 import useProjects from "../../hooks/useProjects";
 import { openModal2 } from "../../../../../shared/state/modalSlice"
-import { toggleTask, toggleSeletor } from "../../../state/multiTasksSelectorSlice"
+import { toggleTask, toggleSeletor } from "../../../state/multiTasksSelectorSlice";
 
 export default function PackageTask(props) {
 

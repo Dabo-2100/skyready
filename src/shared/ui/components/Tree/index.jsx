@@ -45,7 +45,7 @@ export default function TreeView({ data, type, action }) {
 }
 
 TreeView.propTypes = {
-    data: PropTypes.object.isRequired,
-    type: PropTypes.object.isRequired,
-    action: PropTypes.object.isRequired,
+    data: PropTypes.array,
+    type: PropTypes.string,
+    action: PropTypes.func,
 };

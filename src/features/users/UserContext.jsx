@@ -5,9 +5,7 @@ const UserContext = createContext();
 const UserProvider = ({ children }) => {
     const [userToEdit, setUserToEdit] = useState(0);
     return (
-        <UserContext.Provider value={{
-            userToEdit, setUserToEdit,
-        }}>
+        <UserContext.Provider value={{ userToEdit, setUserToEdit }}>
             {children}
         </UserContext.Provider>
     );

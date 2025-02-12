@@ -116,7 +116,7 @@ export const useWorkPackageTypes = async (serverUrl, token) => {
 export const useSpecialties = async (serverUrl, token) => {
     let final = [];
     await axios.get(`${serverUrl}/php/index.php/api/specialties`,
-        { headers: { Authorization: `Bearer ${token}` }, }
+        { headers: { Authorization: `Bearer ${token}` } }
     ).then((res) => {
         if (res.data.data) { final = [...res.data.data]; }
     }).catch((err) => { console.log(err); })
@@ -216,7 +216,6 @@ export const validateValue = (value, options = {}) => {
     let hasError = false;
     // Check if value is not null and not just spaces
     if (options.required) {
-        console.log(value);
         if (value && value.trim() === "") {
             hasError = true;
         }
@@ -229,7 +228,7 @@ export const validateValue = (value, options = {}) => {
     }
 
     if (options.isEqual !== undefined) {
-        if (!value || (value != options.notEqual)) {
+        if (!value || (value != options.isEqual)) {
             hasError = true;
         }
     }

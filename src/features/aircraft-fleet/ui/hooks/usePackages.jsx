@@ -24,7 +24,6 @@ export default function usePackages() {
     const getWorkPackages = async (workpackage_type_id) => {
         let workPackages = await WorkPackagesRepo.all_workpackages(serverUrl, token, workpackage_type_id);
         return workPackages;
-        // return buildTree(workPackages).sort((a, b) => a.package_name.localeCompare(b.package_name))
     }
 
     const getWorkPackageTasks = async (work_package_id) => {
@@ -283,6 +282,7 @@ export default function usePackages() {
 
     const addNewWorkPackageTask = async (formInputs, active_work_package_id, selectedZones, selectedDesignators) => {
         let taskTypeId = (formInputs.current[2].value && formInputs.current[3] && formInputs.current[3].props.value.value) || -1;
+
         let data = {
             package_id: active_work_package_id,
             task_name: formInputs.current[0].value,
@@ -300,6 +300,7 @@ export default function usePackages() {
         //     // { value: formInputs.current[1].value, options: { required: true, notEqual: -1 } },
         //     { value: taskTypeId, options: { required: true, notEqual: -1 } },
         // ])
+
         let formErrors = 0;
 
         if (formErrors == 0) {
@@ -314,6 +315,48 @@ export default function usePackages() {
                 })
             })
         }
+
+        else {
+            Swal.fire({
+                icon: "error",
+                text: "Please Fill All Required Data",
+                customClass: darkSwal,
+                timer: 1500,
+                showConfirmButton: false,
+            })
+        }
+    }
+
+    const updateWorkPackageTask = async (formInputs, active_task_id, selectedZones, selectedDesignators) => {
+        setLoaderIndex(true);
+        let taskTypeId = (formInputs.current[2].value && formInputs.current[3] && formInputs.current[3].props.value.value) || -1;
+
+        let data = {
+            task_id: active_task_id,
+            task_name: formInputs.current[0].value,
+            task_duration: formInputs.current[1].value,
+            specialty_id: formInputs.current[2].value,
+            task_type_id: taskTypeId,
+            task_desc: formInputs.current[4].value,
+            task_zones: selectedZones,
+            task_designators: selectedDesignators,
+        };
+
+        let formErrors = 0;
+
+        if (formErrors == 0) {
+            await WorkPackagesRepo.update_work_package_task(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "New Aircraft Status Registered to Your Fleet !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && dispatch(refresh()) && dispatch(closeModal())
+                })
+            })
+        }
+
         else {
             Swal.fire({
                 icon: "error",
@@ -341,7 +384,7 @@ export default function usePackages() {
         getWorkPackageTypes, getWorkPackageTaskTypes, getWorkPackages, addNewWorkPackageTask, reOrderWorkPackageTasks,
         addNewWorkPackageTaskType, addNewWorkPackageType, removeWorkPackageType, getWorkPackageTaskInfo,
         removeWorkPackageTaskType, addNewFolderPackage, removeFolderPackage,
-        addNewDetailedWorkPackage, getWorkPackageTasks, updateWorkPackageInfo
+        addNewDetailedWorkPackage, getWorkPackageTasks, updateWorkPackageInfo, updateWorkPackageTask
     }
 
 }

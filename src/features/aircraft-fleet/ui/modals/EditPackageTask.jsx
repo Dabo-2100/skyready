@@ -9,37 +9,48 @@ import { useDispatch, useSelector } from "react-redux";
 import usePackages from "../hooks/usePackages";
 import TaskWorkingZone from "../components/TaskWorkingZone";
 import TaskWorkingDesignators from "../components/TaskWorkingDesignators";
-
-import useAircraftData from "../hooks/useAircraftData";
 import { setActiveId as setSpecialty_id } from "../../state/activeSpecialityIdSlice";
 import { resetDesignators } from "../../state/selectedDesignatorsSlice";
 import { resetZones } from "../../state/selectedZonesSlice";
-import { openModal4 } from "../../../../shared/state/modalSlice";
+import { closeModal, openModal4 } from "../../../../shared/state/modalSlice";
 import Modal from "../../../../shared/ui/modals/Modal";
 import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 import CommentsTree from "../../../../shared/ui/components/CommentTree";
+import useProjects from "../../../project-manager/ui/hooks/useProjects";
+import { buildTree } from "../../../../customHooks";
+import EditBtn from "../../../../shared/ui/components/EditBtn";
+// import { setActiveId as setActiveModelId } from "../../state/activeAircraftModelIdSlice";
 
 export default function EditPackageTask() {
-    const openedProject = useSelector(state => state.projects.activeProject.id);
     const dispatch = useDispatch();
-    const { getWorkPackageTaskInfo, getWorkPackageTaskTypes } = usePackages();
-    const { aircraftSpecialties } = useAircraftData();
-    const active_work_package_task_id = useSelector(state => state.aircraftFleet.activeWorkPackageTaskId.value);
+    const { getTaskComments, addNewComment, removeWorkPackageTask } = useProjects();
+    const { getWorkPackageTaskInfo, getWorkPackageTaskTypes, updateWorkPackageTask } = usePackages();
+
+    const aircraftSpecialties = useSelector(state => state.aircraftFleet.aircraftSpecialties.value);
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
+
+    const selectedDesignators = useSelector(state => state.aircraftFleet.selectedDesignators.value);
+    const selectedZones = useSelector(state => state.aircraftFleet.selectedZones.value);
+
+    const activeSepcialtyId = useSelector(state => state.aircraftFleet.activeSpecialityId.value);
+    const activeProjectId = useSelector(state => state.projects.activeProject.id);
+    const activeTaskId = useSelector(state => state.aircraftFleet.activeWorkPackageTaskId.value);
 
     const [, setLoaderIndex] = useRecoilState($LoaderIndex);
+
     const taskInputs = useRef([]);
     const [comments, setComments] = useState([]);
     const [taskTypes, setTaskTypes] = useState([]);
     const [editIndex, setEditIndex] = useState(true);
     const [taskInfo, setTaskInfo] = useState({ task_name: "" });
 
-    const saveComment = () => { }
-    const updateTask = () => { }
-    const removeTask = () => { }
-    const getComments = () => { }
-    const areArraysEqual = () => { }
+    const updateTask = () => {
+        updateWorkPackageTask(taskInputs, activeTaskId, selectedZones, selectedDesignators);
+    }
 
-    // const { getComments, saveComment, updateTask, removeTask, areArraysEqual } = useEditPackageTask();
+    const removeTask = () => {
+        removeWorkPackageTask(activeTaskId).then(() => { dispatch(closeModal()) })
+    }
 
     const saveChanges = async (event) => {
         event.preventDefault();
@@ -48,36 +59,61 @@ export default function EditPackageTask() {
         updateTask(taskInputs, taskInfo);
     };
 
-    const addComment = (event) => {
+    const handleNewComment = (event) => {
         event.preventDefault();
-        saveComment(taskInputs.current[5].value).then(() => { taskInputs.current[5].value = "" })
+        let commentContent = taskInputs.current[5].value;
+        addNewComment(activeTaskId, activeProjectId, commentContent).then(() => {
+            taskInputs.current[5].value = "";
+        });
+    }
+
+    const handleChangeSpecaility = (e) => {
+        if (e.target.value != taskInfo.task_type_id) {
+            getWorkPackageTaskTypes(e.target.value).then(setTaskTypes).then(() => {
+                dispatch(setSpecialty_id(e.target.value));
+                taskInputs.current[3].selectOption({});
+            });
+        }
     }
 
     useEffect(() => {
-        getWorkPackageTaskInfo(active_work_package_task_id).then((result) => {
+        getWorkPackageTaskInfo(activeTaskId).then((result) => {
+            console.log(result);
+            const { task_name, task_duration, specialty_id, task_desc } = result;
+            taskInputs.current[0].value = task_name;
+            taskInputs.current[1].value = task_duration;
+            taskInputs.current[2].value = specialty_id;
+            taskInputs.current[4].value = task_desc;
+            dispatch(setSpecialty_id(specialty_id));
             setTaskInfo(result);
-            taskInputs.current[0].value = result.task_name;
-            taskInputs.current[1].value = result.task_duration;
-            taskInputs.current[2].value = result.specialty_id;
-            taskInputs.current[4].value = result.task_desc;
-            getWorkPackageTaskTypes(result.specialty_id).then((res) => {
-                let obj = res.find(el => el.type_id == result.task_type_id);
-                obj && taskInputs.current[3].selectOption({ value: obj.type_id, label: obj.type_name });
-                setTaskTypes(res);
-                setSpecialty_id(res.specialty_id);
-            })
         });
-    }, [aircraftSpecialties]);
+        return () => { dispatch(resetDesignators()); dispatch(resetZones()) }
+        // eslint-disable-next-line
+    }, [])
+
 
     useEffect(() => {
-        return () => { dispatch(resetDesignators()); dispatch(resetZones()) }
-    }, [])
+        getWorkPackageTaskTypes(activeSepcialtyId).then((res) => {
+            let obj = res.find(el => el.type_id == taskInfo.task_type_id);
+            obj && taskInputs.current[3].selectOption({ value: obj.type_id, label: obj.type_name });
+            setTaskTypes(res);
+        })
+        // eslint-disable-next-line
+    }, [taskInfo.task_type_id, refreshIndex]);
+
+    useEffect(() => {
+        getTaskComments(activeTaskId, activeProjectId).then((res) => {
+            setComments(buildTree(res.current_comments, "comment_id"))
+        });
+        // eslint-disable-next-line
+    }, [activeTaskId, refreshIndex]);
+
 
     return (
         <Modal>
             <Accordion className="col-12" defaultActiveKey={['1']} alwaysOpen>
                 {
-                    openedProject != 0 && (
+                    activeProjectId != 0 && (
                         <AccordionItem eventKey="0" className="col-12">
                             <AccordionHeader>
                                 <h5>Task Comments</h5>
@@ -85,7 +121,7 @@ export default function EditPackageTask() {
                             <AccordionBody>
                                 <div className="col-12">
                                     <h5>Add New Comment</h5>
-                                    <form onSubmit={addComment} className="col-12 d-flex p-2 pt-0 gap-3 align-items-center border-top-0">
+                                    <form onSubmit={handleNewComment} className="col-12 d-flex p-2 pt-0 gap-3 align-items-center border-top-0">
                                         <textarea ref={el => { taskInputs.current[5] = el }} className="form-control" rows={1}></textarea>
                                         <button className="btn addBtn">Add</button>
                                     </form>
@@ -101,16 +137,10 @@ export default function EditPackageTask() {
                         <div className="d-flex align-items-center gap-3 justify-content-end">
                             <FontAwesomeIcon icon={faTrash} className="btn btn-danger" onClick={removeTask} />
                             {
-                                editIndex ? (
-                                    <SaveBtn label="Save" onClick={saveChanges} />
-                                ) : (
-                                    <button className="editButton" onClick={() => { setEditIndex(true) }}>
-                                        Edit
-                                        <svg viewBox="0 0 512 512" className="svg"> <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
-                                    </button>
-                                )
+                                editIndex ?
+                                    <SaveBtn label="Save" onClick={saveChanges} /> :
+                                    <EditBtn label="Edit" onClick={() => { setEditIndex(true) }} />
                             }
-
                         </div>
                         <form className="col-12 d-flex flex-wrap gap-3 justify-content-lg-between">
                             <div className="col-12 col-lg-5 inputField">
@@ -126,10 +156,7 @@ export default function EditPackageTask() {
                                     <label htmlFor="sn">Specialty <span className="text-danger">*</span></label>
                                     <FontAwesomeIcon type="button" className="btn addBtn" onClick={() => dispatch(openModal4(5000))} icon={faGears} />
                                 </div>
-                                <select onChange={(e) => {
-                                    e.target.value != taskInfo.task_type_id && getWorkPackageTaskTypes(e.target.value).then(setTaskTypes);
-                                    taskInputs.current[3].selectOption({});
-                                }
+                                <select onChange={(e) => { handleChangeSpecaility(e) }
                                 } ref={el => { taskInputs.current[2] = el }
                                 } className="col-12 form-select" disabled={!editIndex} required>
                                     <option hidden value={-1} >Select Specialty</option>

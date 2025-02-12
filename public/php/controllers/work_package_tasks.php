@@ -1,12 +1,15 @@
 <?php
 // Routes
 $endpoints += [
-    '/api/workpackage/tasks'            => 'workpackge_tasks_index',
-    '/api/workpackage/tasks/\d+'        => 'workpackge_tasks_show',
-    '/api/workpackage/tasks/store'      => 'workpackge_tasks_store',
-    '/api/workpackage/tasks/delete'     => 'workpackge_tasks_delete',
-    '/api/workpackage/tasks/reorder'    => 'workpackge_tasks_reorder',
-
+    '/api/workpackage/tasks'                 => 'workpackge_tasks_index',
+    '/api/workpackage/tasks/\d+'             => 'workpackge_tasks_show',
+    '/api/workpackage/tasks/store'           => 'workpackge_tasks_store',
+    '/api/workpackage/tasks/delete'          => 'workpackge_tasks_delete',
+    '/api/workpackage/tasks/update'          => 'workpackge_tasks_update',
+    '/api/workpackage/tasks/reorder'         => 'workpackge_tasks_reorder',
+    '/api/workpackage/tasks/comments/\d+'    => 'task_comments_index',
+    '/api/workpackage/tasks/comments/store'  => 'task_comments_store',
+    '/api/workpackage/tasks/comments/delete' => 'task_comments_delete',
 ];
 
 function workpackge_tasks_index()
@@ -29,16 +32,17 @@ function workpackge_tasks_store()
     if ($method === "POST") {
         $operator_info = checkAuth();
         if ($operator_info['is_super'] == 1) {
-            $package_id = htmlspecialchars($POST_data["package_id"]);
-            $task_name = htmlspecialchars($POST_data["task_name"]);
-            $task_duration = htmlspecialchars($POST_data["task_duration"]);
-            $specialty_id = htmlspecialchars($POST_data["specialty_id"]);
-            $task_type_id = htmlspecialchars($POST_data["task_type_id"]);
-            $task_zones = $POST_data["task_zones"];
-            $task_designators = $POST_data["task_designators"];
+            $package_id         = htmlspecialchars($POST_data["package_id"]);
+            $task_name          = htmlspecialchars($POST_data["task_name"]);
+            $task_duration      = htmlspecialchars($POST_data["task_duration"]);
+            $specialty_id       = htmlspecialchars($POST_data["specialty_id"]);
+            $task_type_id       = htmlspecialchars($POST_data["task_type_id"]);
+            $task_zones         = $POST_data["task_zones"];
+            $task_designators   = $POST_data["task_designators"];
 
             $fields = ["package_id", "task_name", "task_duration", "specialty_id", "task_type_id"];
             $values = [$package_id, $task_name, $task_duration, $specialty_id, $task_type_id];
+
             if (isset($POST_data["parent_id"])) {
                 array_push($fields, "parent_id");
                 array_push($values, $POST_data["parent_id"]);
@@ -51,7 +55,9 @@ function workpackge_tasks_store()
                 array_push($fields, "task_order");
                 array_push($values, $POST_data["task_order"]);
             }
+
             $task_id = insert_data("work_package_tasks", $fields, $values);
+
             if (is_null($task_id) == false) {
                 $response['task_id'] =  $task_id;
                 $response['err'] = false;
@@ -75,6 +81,53 @@ function workpackge_tasks_store()
             http_response_code(401);
             exit();
         }
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function workpackge_tasks_update()
+{
+    global $method, $POST_data, $response;
+    if ($method === "POST") {
+        $operator_info      = checkAuth();
+        $task_id            = htmlspecialchars($POST_data["task_id"]);
+        $task_name          = htmlspecialchars($POST_data["task_name"]);
+        $task_duration      = htmlspecialchars($POST_data["task_duration"]);
+        $specialty_id       = htmlspecialchars($POST_data["specialty_id"]);
+        $task_type_id       = htmlspecialchars($POST_data["task_type_id"]);
+        $task_zones         = $POST_data["task_zones"];
+        $task_designators   = $POST_data["task_designators"];
+        $package_id = getOneField("work_package_tasks", "package_id", "task_id = {$task_id}");
+
+        $dataToUpdate = [
+            'task_name'         => $task_name,
+            'task_duration'     => $task_duration,
+            'specialty_id'      => $specialty_id,
+            'task_type_id'      => $task_type_id,
+        ];
+
+        if (isset($POST_data["task_desc"])) {
+            $dataToUpdate['task_desc'] = $POST_data["task_desc"];
+        }
+
+        update_data("work_package_tasks", "task_id = {$task_id}", $dataToUpdate);
+
+        delete_data("tasks_x_zones", "task_id = {$task_id}");
+
+        foreach ($task_zones as $index => $zone) {
+            insert_data("tasks_x_zones", ['task_id', 'zone_id'], [$task_id, $zone['zone_id']]);
+        }
+
+        delete_data("tasks_x_designators", "task_id = {$task_id}");
+
+        foreach ($task_designators as $index => $zone) {
+            insert_data("tasks_x_designators", ['task_id', 'designator_id'], [$task_id, $zone['designator_id']]);
+        }
+        workpackge_tasks_reorder($package_id);
+        $response['err'] = false;
+        $response['msg'] = "New Task Added Successfully";
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -219,6 +272,89 @@ function workpackge_tasks_reorder($package_id = false)
             http_response_code(401);
             exit();
         }
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function task_comments_index($id)
+{
+    $task_id = explode("api/workpackage/tasks/comments/", $id[0])[1];
+    global $method, $POST_data, $pdo, $response;
+    if ($method === "POST") {
+        $posted_project_id = $POST_data['project_id'];
+        $operator_info = checkAuth();
+        $sql = "SELECT * FROM task_comments tc WHERE tc.log_id IN (SELECT log_id FROM project_tasks pt WHERE pt.task_id = {$task_id})";
+        $statement = $pdo->prepare($sql);
+        $statement->execute();
+        $final = [];
+        if ($statement->rowCount() > 0) {
+            while ($el = $statement->fetch(PDO::FETCH_ASSOC)) {
+                array_push($final, $el);
+            }
+        }
+
+        $data = [
+            'current_comments' => array_map(function ($el) use ($posted_project_id) {
+                $log_id = $el['log_id'];
+                $project_id = getOneField("project_tasks", "project_id", "log_id = {$log_id}");
+                if ($project_id == $posted_project_id) return $el;
+            }, $final),
+            'old_comments' => array_map(function ($el) use ($posted_project_id) {
+                $log_id = $el['log_id'];
+                $project_id = getOneField("project_tasks", "project_id", "log_id = {$log_id}");
+                if ($project_id != $posted_project_id) return $el;
+            }, $final) ?? [],
+        ];
+        $response['err'] = false;
+        $response['data'] = $data;
+        $response['msg'] = "Task Comments Are Ready to view ";
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function task_comments_store()
+{
+    global $method, $response, $POST_data;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        $log_id = 0;
+        $user_id = $operator_info['user_id'];
+        $comment_content = $POST_data['comment_content'];
+        if (isset($POST_data['log_id'])) {
+            $log_id = $POST_data['log_id'];
+        } else {
+            $task_id = $POST_data['task_id'];
+            $project_id = $POST_data['project_id'];
+            $log_id = getOneField("project_tasks", "log_id", "task_id = {$task_id} AND project_id = {$project_id}");
+        }
+        $Fields = ["log_id", "comment_content", "comment_by"];
+        $Values = [$log_id, $comment_content, $user_id];
+        if (isset($POST_data['parent_id'])) {
+            array_push($Fields, "parent_id");
+            array_push($Values, $POST_data['parent_id']);
+        }
+        insert_data("task_comments", $Fields, $Values);
+        $response['err'] = false;
+        $response['msg'] = 'Comment Added Successfully !';
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function task_comments_delete()
+{
+    global $method, $POST_data, $response;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        $comment_id = $POST_data['comment_id'];
+        delete_data("task_comments", "comment_id = {$comment_id}");
+        $response['err'] = false;
+        $response['msg'] = 'Comment Added Successfully !';
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }

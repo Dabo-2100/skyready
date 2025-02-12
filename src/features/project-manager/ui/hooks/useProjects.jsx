@@ -5,12 +5,13 @@ import { $Server, $SwalDark, $Token } from "../../../../store-recoil";
 import { ProjectsRepo } from "../../data/repositories/ProjectsRepo";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
 import { formCheck } from "../../../../customHooks";
+import { closeModal } from "../../../../shared/state/modalSlice";
 
 export default function useProjects() {
     const dispatch = useDispatch();
     const token = useRecoilValue($Token);
-    const serverUrl = useRecoilValue($Server);
     const darkSwal = useRecoilValue($SwalDark);
+    const serverUrl = useRecoilValue($Server);
     const projectTasksFilters = useSelector(state => state.projects.projectTasksFilter);
 
     const getAllProjects = async () => {
@@ -108,7 +109,7 @@ export default function useProjects() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && dispatch(refresh());
+                    res == true && dispatch(refresh()) && dispatch(closeModal());
                 })
             })
         }
@@ -143,7 +144,7 @@ export default function useProjects() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && dispatch(refresh());
+                    res == true && dispatch(refresh()) && dispatch(closeModal());
                 })
             })
         }
@@ -184,6 +185,99 @@ export default function useProjects() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
+                    res == true && dispatch(refresh()) && dispatch(closeModal());
+                })
+            })
+        })
+    }
+
+    const removeProject = async (project_id) => {
+        Swal.fire({
+            icon: "question",
+            html: `
+                <div class="d-flex flex-wrap gap-3">
+                    <p class="text-danger">Are you sure you want to remove this project ?</p>
+                    <ul class="text-start fs-6">
+                        <li>This Will Remove All Project Data from Report</li>
+                        <li>This Will Remove All Task Comments</li>
+                    </ul>
+                </div>
+            `,
+            confirmButtonColor: "red",
+            confirmButtonText: "Yes, Delete",
+            showDenyButton: true,
+            denyButtonColor: "green",
+            denyButtonText: " No, Keep it",
+            customClass: darkSwal
+        }).then((res) => {
+            res.isConfirmed && ProjectsRepo.remove_project(serverUrl, token, project_id).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "Project Deleted Successfully !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && dispatch(refresh());
+                })
+            })
+        })
+    }
+
+    const getTaskComments = async (task_id, project_id) => {
+        return await ProjectsRepo.all_task_comments(serverUrl, token, task_id, { project_id });
+    }
+
+    const addNewComment = async (task_id, project_id, new_content, parent_id, log_id) => {
+
+        let data = { comment_content: new_content };
+        parent_id && (data.parent_id = parent_id);
+        log_id ? (data.log_id = log_id) : (data = { ...data, project_id, task_id })
+        // let formErrors = formCheck([
+        //     { value: new_content, options: { required: true } }
+        // ]);
+        let formErrors = 0;
+        if (formErrors == 0) {
+            ProjectsRepo.add_new_comment(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "New Comment Added Successfully !" : res == undefined ? "Connection Problem" : res,
+                    timer: 1200,
+                    customClass: darkSwal,
+                }).then(() => {
+                    res == true && dispatch(refresh());
+                })
+            })
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                text: "Please Fill All Required Data",
+                customClass: darkSwal,
+                timer: 1500,
+                showConfirmButton: false,
+            })
+        }
+    }
+
+    const removeTaskComment = async (comment_id) => {
+        let data = { comment_id }
+        Swal.fire({
+            icon: "question",
+            title: "Are you sure you want to delete this comment !",
+            confirmButtonColor: "red",
+            confirmButtonText: "Yes, Delete",
+            showDenyButton: true,
+            denyButtonColor: "green",
+            denyButtonText: " No, Keep it",
+            customClass: darkSwal
+        }).then((res) => {
+            res.isConfirmed && ProjectsRepo.remove_task_comment(serverUrl, token, data).then((res) => {
+                Swal.fire({
+                    icon: res == true ? "success" : "error",
+                    text: res == true ? "Comment Deleted Successfully !" : res == undefined ? "Connection Problem" : res,
+                    timer: 2500,
+                    customClass: darkSwal,
+                }).then(() => {
                     res == true && dispatch(refresh());
                 })
             })
@@ -191,6 +285,7 @@ export default function useProjects() {
     }
 
     return {
-        getAllProjects, getProjectTaskStatus, getProjectPackages, filterWorkPackages, getWorkPackageTasks, removeWorkPackageTask, removeWorkPackageFromProject, createNewProject, startWorkPackage
+        addNewComment, removeTaskComment,
+        getAllProjects, getTaskComments, getProjectTaskStatus, removeProject, getProjectPackages, filterWorkPackages, getWorkPackageTasks, removeWorkPackageTask, removeWorkPackageFromProject, createNewProject, startWorkPackage
     }
 }
