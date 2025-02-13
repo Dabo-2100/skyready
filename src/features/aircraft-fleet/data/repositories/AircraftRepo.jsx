@@ -35,10 +35,6 @@ export const AircraftRepo = {
         return await indexAircraftZones(serverUrl, token, model_id);
     },
 
-    all_aircraft_designators: async (serverUrl, token, model_id) => {
-        return await indexAircraftZones(serverUrl, token, model_id);
-    },
-
     show_designator_tasks: async (serverUrl, token, designator_id) => {
         return await showDesignatorTasks(serverUrl, token, designator_id);
     },
