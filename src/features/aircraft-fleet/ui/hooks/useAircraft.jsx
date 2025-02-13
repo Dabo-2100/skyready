@@ -55,6 +55,11 @@ export default function useAircraft() {
         return await AircraftRepo.aircraft_applicability(serverUrl, token, editAircaft_id);
     }
 
+
+    const getDesignatorTasks = async (designator_id) => {
+        return await AircraftRepo.show_designator_tasks(serverUrl, token, designator_id);
+    }
+
     const addNewAircraftToFleet = async (formInputs) => {
         let data = {
             aircraft_serial_no: formInputs.current[0].value,
@@ -505,7 +510,7 @@ export default function useAircraft() {
     }
 
     const getAircraftDesignators = async () => {
-        let model_id = activeWorkPackageInfo.model_id;
+        let model_id = activeWorkPackageInfo.model_id || 1;
         return await AircraftRepo.all_aircraft_designators(serverUrl, token, model_id);
     }
 
@@ -620,6 +625,6 @@ export default function useAircraft() {
         getAircraftFleet, filterAircraftFleet, getAircraftManufacturers, getAircraftFleetByModel, filterAircraftDesignators, updateDesignatorType,
         getAircraftStatus, getAircraftModels, getAircraftUsages, addNewAircraftToFleet, getAircraftSpecialties, getAircraftDesignators,
         getAircraftInfo, getAircraftApplicableParts, updateAircraftInfo, addNewAircraftModel, removeAircraftModel, addNewDesignator, removeAircraftDesignator,
-        addNewManufacturer, removeManufacturer, addNewAircraftStatus, removeAircraftStatus, addNewAircraftUsage, removeAircraftUsage
+        addNewManufacturer, removeManufacturer, addNewAircraftStatus, removeAircraftStatus, addNewAircraftUsage, removeAircraftUsage, getDesignatorTasks
     }
 }

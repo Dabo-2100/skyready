@@ -70,7 +70,7 @@ export default function Packages() {
                                     <button
                                         style={{ fontSize: "12px", borderRadius: "0" }}
                                         className="btn btn-danger d-flex align-items-center gap-2 addBtn"
-                                        onClick={() => { dispatch(setActiveId(0)); dispatch(resetActiveId(0)); openModal(4000) }}>
+                                        onClick={() => { dispatch(setActiveId(0)); dispatch(resetActiveId(0)); dispatch(openModal(4000)) }}>
                                         <FontAwesomeIcon icon={faAdd} />
                                         New {workPackageTypes.length > 0 &&
                                             workPackageTypes.find(el => el.package_type_id == activeWorkPackageTypeId)['package_type_name']

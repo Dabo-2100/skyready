@@ -28,10 +28,19 @@ import { storeAircraftDesignator } from "../api/store_aircraft_designator";
 import { indexAircraftDesignators } from "../api/index_aircraft_designators";
 import { updateAircraftDesignator } from "../api/update_aircraft_designator";
 import { deleteAircraftDesignator } from "../api/delete_aircraft_designator";
+import { showDesignatorTasks } from "../api/show_designator_tasks";
 
 export const AircraftRepo = {
     all_aircraft_zones: async (serverUrl, token, model_id) => {
         return await indexAircraftZones(serverUrl, token, model_id);
+    },
+
+    all_aircraft_designators: async (serverUrl, token, model_id) => {
+        return await indexAircraftZones(serverUrl, token, model_id);
+    },
+
+    show_designator_tasks: async (serverUrl, token, designator_id) => {
+        return await showDesignatorTasks(serverUrl, token, designator_id);
     },
 
     all_aircraft_fleet: async (serverUrl, token) => {

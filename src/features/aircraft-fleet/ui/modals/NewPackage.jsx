@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-
 import usePackages from "../hooks/usePackages";
 import { useDispatch, useSelector } from "react-redux";
 import { resetActiveId } from "../../state/activeWorkPackageFolderIdSlice";
 import { openModal2 } from "../../../../shared/state/modalSlice";
 import Modal from "../../../../shared/ui/modals/Modal";
 import SaveBtn from "../../../../shared/ui/components/SaveBtn";
+
 export default function NewPackage() {
     const dispatch = useDispatch();
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);

@@ -11,7 +11,8 @@ import { setActiveId } from "../../state/activeAircraftIdSlice";
 import PrintBtn from "../../../../shared/ui/components/PrintBtn";
 import { openModal } from "../../../../shared/state/modalSlice";
 
-export default function Aircraft() {
+export default function ZoneFinder() {
+    // const userData = { isAppAdmin: () => false };
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const aircraftFleetTable = useRef();
     const userData = new User(useRecoilValue($UserInfo));
@@ -29,7 +30,6 @@ export default function Aircraft() {
             setView(res);
             setTimeout(() => { setLoaderIndex(false) }, 500);
         });
-        // eslint-disable-next-line
     }, [refreshIndex]);
 
     return (
@@ -87,7 +87,6 @@ export default function Aircraft() {
                                         </tbody>
                                     </table>
                                 </div>
-
                             )
                     )
                 }
