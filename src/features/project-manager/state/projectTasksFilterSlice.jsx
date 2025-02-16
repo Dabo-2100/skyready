@@ -6,6 +6,7 @@ const projectTasksFilterSlice = createSlice({
         tableView: [],
         selectedSpecialties: [],
         selectedStatus: [],
+        selectedZones: [],
     },
 
     reducers: {
@@ -27,9 +28,16 @@ const projectTasksFilterSlice = createSlice({
             index == -1 ? state.selectedStatus.push({ ...action.payload }) : state.selectedStatus.splice(index, 1);
         },
 
+        toggleZones: (state, action) => {
+            let zone_id = action.payload.zone_id;
+            let index = state.selectedZones.findIndex(el => { return el.zone_id == zone_id });
+            index == -1 ? state.selectedZones.push({ ...action.payload }) : state.selectedZones.splice(index, 1);
+        },
+
         clearFilters: (state) => {
             state.selectedSpecialties = [];
             state.selectedStatus = [];
+            state.selectedZones = [];
         },
 
         toggleView: (state, action) => {
@@ -56,5 +64,5 @@ const projectTasksFilterSlice = createSlice({
     },
 });
 
-export const { setTableView, resetTableView, toggleSpeciality, toggleStatus, clearFilters, searchByName, toggleView } = projectTasksFilterSlice.actions;
+export const { setTableView, resetTableView, toggleSpeciality, toggleStatus, toggleZones, clearFilters, searchByName, toggleView } = projectTasksFilterSlice.actions;
 export default projectTasksFilterSlice.reducer;

@@ -11,15 +11,18 @@ import { TiDelete } from "react-icons/ti";
 import { toggleStatus, toggleSpeciality, searchByName, toggleView, clearFilters } from "../../../state/projectTasksFilterSlice";
 import { FaFilterCircleXmark } from "react-icons/fa6";
 import { openModal3 } from "../../../../../shared/state/modalSlice";
+import { buildTree } from "../../../../../shared/utilities/buildTree";
+import { setAircraftZones } from "../../../../aircraft-fleet/state/aircraftZonesSlice";
 
 export default function ProjectTasksFilter() {
     const dispatch = useDispatch(() => { });
     const activeProject = useSelector(state => state.projects.activeProject);
+    const aircraftZones = useSelector(state => state.aircraftFleet.aircraftZones.value);
     const projectTaskStatus = useSelector(state => state.projects.projectTaskStatus.value);
     const projectTasksFilter = useSelector(state => state.projects.projectTasksFilter);
     const aircraftSpecialties = useSelector(state => state.aircraftFleet.aircraftSpecialties.value);
     const filterName = useSelector(state => state.projects.projectTasksFilter.workPackageNameFilter);
-    const { getAircraftSpecialties } = useAircraft();
+    const { getAircraftSpecialties, getAircraftZones } = useAircraft();
     const { getProjectTaskStatus } = useProjects();
     const searchInput = useRef();
     const [canvasIndex, setCanvasIndex] = useState(false);
@@ -31,6 +34,14 @@ export default function ProjectTasksFilter() {
 
         if (projectTaskStatus.length == 0) {
             getProjectTaskStatus().then((res) => { dispatch(setTaskStatus(res)) });
+        }
+        if (aircraftZones.length == 0) {
+            getAircraftZones(1).then((res) => {
+                console.log(res);
+                dispatch(setAircraftZones(buildTree(res, "zone_id")));
+            })
+        } else {
+            console.log();
         }
         // eslint-disable-next-line
     }, [])
@@ -89,6 +100,37 @@ export default function ProjectTasksFilter() {
                                         return <CheckBox onClick={() => { dispatch(toggleStatus(el)) }} key={el.status_id} id={`st${index}`} checked={projectTasksFilter.selectedStatus.some(x => x.status_id == el.status_id)} content={el.status_name} />
                                     })
                                 }
+                            </div>
+                            <hr className="col-12" />
+                            <p className="mb-2">Filter By : Task Zones</p>
+                            <div className="col-12 bg-dark rounded p-3 d-flex flex-column gap-1">
+                                {
+                                    buildTree(aircraftZones, "zone_id").map((el, index1) => {
+                                        return (
+                                            <div key={el.zone_id} className="accordion" id="accordionExample">
+                                                <div className="accordion-item">
+                                                    <h2 className="accordion-header d-flex align-items-center" id={`heading${index1}`}>
+                                                        <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target={`#collapse${index1}`} aria-expanded="true" aria-controls={`collapse${index1}`}>
+                                                            {el.children.length == 0 && <CheckBox onClick={() => { }} key={el.zone_id} id={`pzn${index1}`} />}
+                                                            {el.zone_name}
+                                                        </button>
+                                                    </h2>
+                                                    {
+                                                        el.children.length > 0 && <div id={`collapse${index1}`} className="accordion-collapse collapse bg-dark" aria-labelledby={`heading${index1}`} data-bs-parent="#accordionExample">
+                                                            <div className="accordion-body">
+                                                                {
+                                                                    el.children.map((el, index) => {
+                                                                        return <CheckBox onClick={() => { }} key={el.zone_id} id={`${index1}zn${index}`} content={el.zone_name} />
+                                                                    })
+                                                                }
+                                                            </div>
+                                                        </div>}
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                }
+
                             </div>
                             <hr className="col-12" />
                             <p className="mb-2">Table View</p>
