@@ -1,6 +1,6 @@
 import { faAngleRight, faArrowDown, faArrowUp, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRecoilValue } from "recoil";
 import PackageTask from "../PackageTask";
 import { User } from "../../../../../shared/core/User";
@@ -11,17 +11,21 @@ import { setActiveId } from "../../../../aircraft-fleet/state/activeWorkPackageI
 import PropTypes from "prop-types";
 import { setPackageInfo } from "../../../../aircraft-fleet/state/activeWorkPackageInfoSlice";
 import { openModal2 } from "../../../../../shared/state/modalSlice";
-import { selectAllTasks, toggleSeletor } from "../../../state/multiTasksSelectorSlice";
+import { resetSelector, selectAllTasks, unselectAllTasks } from "../../../state/multiTasksSelectorSlice";
 
 export default function WorkPackage({ package_id, estimated_duration, package_name, start_at, end_at, work_package_progress, info }) {
     const dispatch = useDispatch();
+    const selectAllRef = useRef();
     const { getWorkPackageTasks } = useProjects();
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const activeProjectId = useSelector(state => state.projects.activeProject.id);
     const projectTasksFilter = useSelector(state => state.projects.projectTasksFilter);
+
+    const multiSelect = useSelector(state => state.projects.multiTasksSelector);
+    const selectAllIndex = useSelector(state => state.projects.multiTasksSelector.selectAllIndex);
+
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [packageTasks, setPackageTasks] = useState([]);
-    const [selectAllIndex, setSelectAllIndex] = useState(false);
     const [sort, setSort] = useState({ task_order: 0, task_progress: 0 })
 
     const openWorkPackageDetails = (event) => {
@@ -65,13 +69,18 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
 
     const selectAll = async () => {
         let tasks = [];
-        if (!selectAllIndex) {
-            tasks = packageTasks.map((el) => { return { log_id: el.log_id, percentage: el.task_progress }; })
+        if (selectAllIndex == false) {
+            tasks = packageTasks.map((el) => { return { log_id: el.log_id, percentage: el.task_progress } });
+            dispatch(selectAllTasks(tasks));
+        } else {
+            dispatch(unselectAllTasks());
         }
-        setSelectAllIndex(!selectAllIndex);
-        dispatch(selectAllTasks(tasks));
-        dispatch(toggleSeletor());
     }
+
+    // useEffect(() => {
+    //     selectAllRef.current && (selectAllRef.current.checked = selectAllIndex);
+
+    // }, [selectAllIndex]);
 
     const user = new User(useRecoilValue($UserInfo));
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
@@ -88,7 +97,11 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
                     {!isCollapsed ?
                         <FontAwesomeIcon icon={faAngleRight} /> :
                         <div className="col-12 d-flex align-items-center justify-content-center">
-                            <input type="checkbox" style={{ transform: "scale(2)" }} className="form-check" onClick={selectAll} />
+                            {
+                                multiSelect.index && (
+                                    <input ref={selectAllRef} type="checkbox" style={{ transform: "scale(2)" }} className="form-check" onClick={selectAll} />
+                                )
+                            }
                         </div>
                     }
                 </th>
@@ -149,7 +162,7 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
                                         task_index={index}
                                         package_id={package_id}
                                         taskInfo={el}
-                                        selectAllIndex={selectAllIndex}
+                                        selectAllIndex={selectAllIndex ? true : false}
                                         key={el.log_id}
                                         log_id={el.log_id}
                                         task_id={el.task_id}

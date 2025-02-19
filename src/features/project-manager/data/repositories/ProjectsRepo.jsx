@@ -12,6 +12,8 @@ import { showFilteredWorkPackages } from "../api/show_work_package_tasks";
 import { storeNewComment } from "../api/store_new_comment";
 import { storeNewProjectPackage } from "../api/store_new_project_package";
 import { storeProject } from "../api/store_project";
+import { updateMultiTasks } from "../api/update_multi_tasks";
+import { updateTaskStatus } from "../api/update_task_status";
 
 export const ProjectsRepo = {
     all_projects: async (serverUrl, token, model_id) => {
@@ -65,7 +67,17 @@ export const ProjectsRepo = {
     add_new_comment: async (serverUrl, token, data) => {
         return await storeNewComment(serverUrl, token, data);
     },
+
+    update_task_status: async (serverUrl, token, log_id, data) => {
+        return await updateTaskStatus(serverUrl, token, log_id, data);
+    },
+
+    update_multi_tasks: async (serverUrl, token, tasks) => {
+        return await updateMultiTasks(serverUrl, token, tasks);
+    },
+
     remove_task_comment: async (serverUrl, token, data) => {
         return await deleteTaskComment(serverUrl, token, data);
     },
+
 }

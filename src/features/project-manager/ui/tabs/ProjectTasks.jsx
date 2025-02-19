@@ -12,7 +12,8 @@ import useProjects from "../hooks/useProjects";
 import { searchByName } from "../../state/projectTasksFilterSlice";
 import { setAvailablePackages, setActivePackages } from "../../state/activeProjectSlice";
 import WorkPackage from "../components/WorkPackage";
-import { toggleSeletor } from "../../state/multiTasksSelectorSlice";
+import { resetSelector } from "../../state/multiTasksSelectorSlice";
+import MultiSelector from "../components/MultiSelector";
 
 export default function ProjectTasks() {
     const multiSelect = useSelector(state => state.projects.multiTasksSelector);
@@ -103,7 +104,6 @@ export default function ProjectTasks() {
                 return (index == -1) && el
             })
             let final = x.filter(item => typeof item === 'object' && item !== null);
-
             dispatch(setAvailablePackages(final));
             dispatch(setActivePackages(res.active_work_packages));
             setwpView(res.active_work_packages);
@@ -117,20 +117,7 @@ export default function ProjectTasks() {
             style={{ background: "#171829", borderTop: "1px solid grey" }}
         >
 
-            {
-                multiSelect.index && (
-                    <div className="col-12 position-fixed top-0 animate__animated animate__fadeInDown "
-                        style={{ left: 0, zIndex: "200", background: "#2c2e6e", boxShadow: "0 0 10px 4px #3F51B5" }}>
-                        <div className="col-12 container d-flex align-items-center justify-content-between py-3" >
-                            <h5 className="m-0" style={{ visibility: multiSelect.tasks.length == 0 ? "hidden" : null }}>Selected Tasks : {multiSelect.tasks.length}</h5>
-                            <div className="col-4">
-                                <Status isMulti={true} status_name="Change Status" status_id="-1" />
-                            </div>
-                            <FontAwesomeIcon className="bg-danger p-2 rounded-2" style={{ fontSize: "12px", }} icon={faX} onClick={() => { dispatch(toggleSeletor()) }} />
-                        </div>
-                    </div>
-                )
-            }
+            {multiSelect.index && (<MultiSelector />)}
             <ProjectTasksFilter />
             <hr className="col-12 m-0" />
             {

@@ -11,16 +11,16 @@ import PropTypes from "prop-types"
 import useProjects from "../../hooks/useProjects";
 import { openModal2 } from "../../../../../shared/state/modalSlice"
 import { toggleTask, toggleSeletor } from "../../../state/multiTasksSelectorSlice";
+import { SiTicktick } from "react-icons/si";
+import { useState } from "react"
 
 export default function PackageTask(props) {
-
+    const user = new User(useRecoilValue($UserInfo));
+    const { removeWorkPackageTask } = useProjects();
     const dispatch = useDispatch();
     const multiSelect = useSelector(state => state.projects.multiTasksSelector);
-    const { removeWorkPackageTask } = useProjects();
-    const user = new User(useRecoilValue($UserInfo));
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
     const taskFilter = useSelector(state => state.projects.projectTasksFilter);
-
 
     const openTaskDetails = (event) => {
         event.preventDefault()
@@ -42,14 +42,15 @@ export default function PackageTask(props) {
                 }}>
                 {
                     multiSelect.index ? (
-                        <input onChange={() => {
-                            let obj = {
-                                log_id: props.log_id,
-                                percentage: props.task_progress
-                            }
-                            dispatch(toggleTask(obj))
-                        }
-                        } type="checkbox" style={{ transform: "scale(1.5)" }} defaultChecked={props.selectAllIndex} />
+                        !multiSelect.selectAllIndex ? (
+                            <input
+                                onChange={() => { dispatch(toggleTask({ log_id: props.log_id, percentage: props.task_progress })) }}
+                                type="checkbox"
+                                defaultChecked={props.selectAllIndex ? true : false}
+                                style={{ transform: "scale(1.5)", cursor: "pointer" }}
+                            />
+                        ) : <SiTicktick />
+
                     ) : (props.task_index + 1)
                 }
             </td>
@@ -108,8 +109,8 @@ export default function PackageTask(props) {
 }
 
 PackageTask.propTypes = {
-    status_id: PropTypes.number,
-    task_duration: PropTypes.number,
+    status_id: PropTypes.string,
+    task_duration: PropTypes.string,
     task_start_at: PropTypes.string,
     task_end_at: PropTypes.string,
     task_type_name: PropTypes.string,

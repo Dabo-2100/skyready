@@ -1,0 +1,6 @@
+.multiSelector {
+    position: fixed;
+    z-index: 1000;
+    justify-self: center;
+    align-self: center;
+}

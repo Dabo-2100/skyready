@@ -1,17 +1,19 @@
 <?php
 // Routes
 $endpoints += [
-    '/api/projects'                                     => 'projects_index',
-    '/api/projects/\d+'                                 => 'projects_show',
-    '/api/projects/store'                               => 'projects_store',
-    '/api/projects/remove/\d+'                          => 'projects_remove',
-    '/api/project/dashboard/\d+'                        => 'project_dashboard',
-    '/api/project/workpackages/\d+'                     => 'project_wps',
-    '/api/project/\d+/workpackages/\d+/tasks'           => 'project_tasks',
-    '/api/project/workpackages/filter/\d+'              => 'project_wps_filter',
-    '/api/project/\d+/workpackages/filter/\d+/tasks'    => 'project_tasks_filter',
-    '/api/project/\d+/workpackages/\d+/remove'          => 'project_remove_workpackage',
-    '/api/project/workpackages/store'                   => 'project_workpackage_store',
+    '/api/projects'                                   => 'projects_index',
+    '/api/projects/\d+'                               => 'projects_show',
+    '/api/projects/store'                             => 'projects_store',
+    '/api/projects/remove/\d+'                        => 'projects_remove',
+    '/api/project/dashboard/\d+'                      => 'project_dashboard',
+    '/api/project/workpackages/\d+'                   => 'project_wps',
+    '/api/project/\d+/workpackages/\d+/tasks'         => 'project_tasks',
+    '/api/project/workpackages/filter/\d+'            => 'project_wps_filter',
+    '/api/project/\d+/workpackages/filter/\d+/tasks'  => 'project_tasks_filter',
+    '/api/project/\d+/workpackages/\d+/remove'        => 'project_remove_workpackage',
+    '/api/project/workpackages/store'                 => 'project_workpackage_store',
+    '/api/project/task/update/\d+'                    => 'project_task_update',
+    '/api/project/task/update/multi'                  => 'project_task_multi_update',
 ];
 
 function projects_index()
@@ -546,6 +548,48 @@ function project_workpackage_store()
             $response['msg'] = "Tasks Added To Project";
             echo json_encode($response, true);
         }
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function project_task_update($id)
+{
+    $log_id = explode("project/task/update/", $id[0])[1];
+    global $method, $POST_data, $response;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        $data = [
+            "status_id" => $POST_data["status_id"],
+            "is_active" =>  $POST_data["is_active"],
+            "task_progress" =>  @$POST_data["task_progress"]
+        ];
+        update_data("project_tasks", "log_id = {$log_id}", $data);
+        $response['err'] = false;
+        $response['msg'] = "New Project Added Successfully";
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function project_task_multi_update()
+{
+    global $method, $POST_data, $response;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        $tasks_to_update = $POST_data['tasks'];
+        foreach ($tasks_to_update as $index => $task) {
+            $data = [
+                "status_id" => $task["status_id"],
+                "is_active" =>  $task["is_active"],
+                "task_progress" =>  @$task["task_progress"]
+            ];
+            update_data("project_tasks", "log_id = {$task['log_id']}", $data);
+        }
+        $response['err'] = false;
+        $response['msg'] = "New Project Added Successfully";
         echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
