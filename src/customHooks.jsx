@@ -215,8 +215,16 @@ export const useDelete = async (serverUrl, token, tableName, condition) => {
 export const validateValue = (value, options = {}) => {
     let hasError = false;
     // Check if value is not null and not just spaces
+    if (options.isEmail) {
+        if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) == false) {
+            hasError = true;
+        }
+    }
+
     if (options.required) {
-        if (value && value.trim() === "") {
+        if (!value) {
+            hasError = true;
+        } else if (value && value.trim() === "") {
             hasError = true;
         }
     }

@@ -5,7 +5,6 @@ import FleetApp from "../../features/aircraft-fleet/app";
 import ProjectsApp from "../../features/project-manager/app/index.jsx";
 import UsersApp from "../../features/users/app";
 import { useRecoilState } from "recoil";
-import { UserProvider } from "../../features/users/UserContext.jsx";
 import { allModals } from "./Modals.jsx";
 import useAuthentication from "../../shared/ui/hooks/useAuthentication.jsx";
 import { $UserInfo } from "../../store-recoil";
@@ -66,13 +65,11 @@ export default function HomePage() {
     return (
         <div className="col-12 d-flex flex-column flex-lg-row" id="HomePage">
             <SideMenu />
-            <UserProvider>
-                {isChecked && renderContent()}
-                {renderModalLayer1()}
-                {renderModalLayer2()}
-                {renderModalLayer3()}
-                {renderModalLayer4()}
-            </UserProvider>
+            {isChecked && renderContent()}
+            {renderModalLayer1()}
+            {renderModalLayer2()}
+            {renderModalLayer3()}
+            {renderModalLayer4()}
         </div >
     )
 }

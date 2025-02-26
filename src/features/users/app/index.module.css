@@ -2,8 +2,15 @@
     .content {
         background-color: #171829;
         height: 100%;
+        overflow-y: auto;
 
         table {
+            tbody {
+                tr {
+                    cursor: pointer;
+                }
+            }
+
             th {
                 background-color: rgb(16, 16, 28) !important;
             }

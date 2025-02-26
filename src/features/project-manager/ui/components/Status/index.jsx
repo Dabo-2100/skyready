@@ -91,7 +91,7 @@ export default function Status(props) {
         <div className="col-12 d-flex justify-content-center" style={{ cursor: "pointer" }}>
             {
                 editIndex || props.isMulti ? (
-                    <select ref={theSelect} disabled={multiSelect.tasks.length > 0 ? false : true} className="form-control" onBlur={() => setEditIndex(false)} onChange={(event) => { props.isMulti ? updateMultiStatus(event) : (props.is_package ? updateWorkPackage(event) : updateStatus(event)) }} defaultValue={props.status_id}>
+                    <select ref={theSelect} disabled={props.isMulti && (multiSelect.tasks.length > 0 ? false : true)} className="form-control" onBlur={() => setEditIndex(false)} onChange={(event) => { props.isMulti ? updateMultiStatus(event) : (props.is_package ? updateWorkPackage(event) : updateStatus(event)) }} defaultValue={props.status_id}>
                         <option value={-1} hidden>Select New Status</option>
                         {
                             allStatus.map((el) => {

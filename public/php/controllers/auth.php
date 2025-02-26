@@ -34,9 +34,7 @@ function auth_login()
                         ];
                     }, $user_info);
                 } else {
-                    $response['data'] = [
-                        'user_token' => $user_token,
-                    ];
+                    $response['data'] = ['user_token' => $user_token];
                     $response['msg']  = "User is not active";
                     $response['isActive']  = false;
                 }
@@ -88,6 +86,7 @@ function auth_check_token()
                     'user_name'  => $user['user_name'],
                     'user_email' => $user['user_email'],
                     'is_active'  => $user['is_active'],
+                    'is_super'   => $user['is_super'],
                     'user_roles' => array_map(function ($role) {
                         if ($role['is_active'] == 1) {
                             return [
@@ -103,8 +102,6 @@ function auth_check_token()
                     }, $user_roles),
                 ];
             }, $user_info);
-        } {
-            // $response['msg'] = 'User id is wrong !';
         }
         echo json_encode($response, true);
     } else {

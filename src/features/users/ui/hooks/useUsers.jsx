@@ -1,19 +1,17 @@
-import { useContext } from "react";
 import { useRecoilValue } from "recoil"
 import Swal from "sweetalert2";
 import { $Server, $Token } from "../../../../store-recoil"
 import { UsersRepo } from "../../data/repositories/UsersRepo";
 import { formCheck } from "../../../../customHooks";
-import { UserContext } from "../../UserContext";
 import { closeModal } from "../../../../shared/state/modalSlice";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function useUsers() {
     const dispatch = useDispatch();
     const serverUrl = useRecoilValue($Server);
     const token = useRecoilValue($Token);
-    const { userToEdit } = useContext(UserContext)
+    const userToEdit = useSelector(state => state.users.activeUser.value);
 
     const registerNewUser = async (formInputs, selectedRoles) => {
         let formErrors = formCheck([
@@ -140,7 +138,7 @@ export default function useUsers() {
                     text: res == true ? "User Deleted successfully !" : res == undefined ? "Connection Problem" : res,
                     timer: 2500,
                 }).then(() => {
-                    res == true && dispatch(closeModal());
+                    res == true && dispatch(refresh()) && dispatch(closeModal());
                 })
             });
         })

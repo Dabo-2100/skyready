@@ -12,7 +12,6 @@ import useProjects from "../../hooks/useProjects";
 import { openModal2 } from "../../../../../shared/state/modalSlice"
 import { toggleTask, toggleSeletor } from "../../../state/multiTasksSelectorSlice";
 import { SiTicktick } from "react-icons/si";
-import { useState } from "react"
 
 export default function PackageTask(props) {
     const user = new User(useRecoilValue($UserInfo));
@@ -109,8 +108,8 @@ export default function PackageTask(props) {
 }
 
 PackageTask.propTypes = {
-    status_id: PropTypes.string,
-    task_duration: PropTypes.string,
+    status_id: PropTypes.number,
+    task_duration: PropTypes.number,
     task_start_at: PropTypes.string,
     task_end_at: PropTypes.string,
     task_type_name: PropTypes.string,

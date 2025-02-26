@@ -1,18 +1,17 @@
-import "./index.css";
-import { useContext, useEffect, useState } from "react";
+import styles from "./index.module.css";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { UserContext } from "../UserContext";
 import useUsers from "../ui/hooks/useUsers";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../../shared/state/modalSlice.jsx";
+import { setActiveUserId } from "../state/activeUserSlice.jsx";
 
 export default function UsersApp() {
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const dispatch = useDispatch();
     const { getUsers } = useUsers();
     const [users, setUsers] = useState([]);
-    const { setUserToEdit } = useContext(UserContext);
     useEffect(() => {
         getUsers().then(setUsers);
         // eslint-disable-next-line
@@ -20,8 +19,8 @@ export default function UsersApp() {
     );
 
     return (
-        <div className="tabApp d-flex flex-column p-3" id="UsersApp">
-            <div className="col-12 d-flex flex-column content p-3 rounded-4 gap-3">
+        <div className="tabApp d-flex flex-column p-3" id={styles.UsersApp}>
+            <div className={"col-12 d-flex flex-column p-3 rounded-4 gap-3 " + styles.content}>
                 <div className="col-12 d-flex align-items-center justify-content-between ">
                     <h5 className="m-0">Users List</h5>
                     <button className="btn addBtn" onClick={() => { dispatch(openModal(7000)) }}>
@@ -42,7 +41,7 @@ export default function UsersApp() {
                             {
                                 users.map((el, index) => {
                                     return (
-                                        <tr key={el.user_id} onClick={() => { setUserToEdit(el.user_id); dispatch(openModal(7001)) }}>
+                                        <tr key={el.user_id} onClick={() => { dispatch(setActiveUserId(el.user_id)); dispatch(openModal(7001)) }}>
                                             <td>{index + 1}</td>
                                             <td>{el.user_name}</td>
                                             <td>{el.user_roles}</td>

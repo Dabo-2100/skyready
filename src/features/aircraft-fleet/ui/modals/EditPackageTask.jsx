@@ -78,7 +78,6 @@ export default function EditPackageTask() {
 
     useEffect(() => {
         getWorkPackageTaskInfo(activeTaskId).then((result) => {
-            console.log(result);
             const { task_name, task_duration, specialty_id, task_desc } = result;
             taskInputs.current[0].value = task_name;
             taskInputs.current[1].value = task_duration;

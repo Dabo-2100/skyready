@@ -1,136 +1,140 @@
-import "./index.scss";
-import { useRecoilState } from "recoil";
-import { $Server, $Token, $SwalDark, $LoaderIndex, $UserInfo } from "@/store-recoil";
+import styles from "./index.module.css";
+import { HiOutlineMail } from "react-icons/hi";
+import { IoLockClosedOutline } from "react-icons/io5";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { $Token, $SwalDark, $LoaderIndex, $UserInfo } from "@/store-recoil";
+import { IoIosEyeOff } from "react-icons/io";
+import { IoIosEye } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/assets/IPACOLogo.png";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import axios from "axios";
+import useAuthentication from "../../shared/ui/hooks/useAuthentication";
 
 export default function LoginPage() {
   // GlobalState
-  const [serverUrl] = useRecoilState($Server);
+  const darkSwal = useRecoilValue($SwalDark);
   const [token, setToken] = useRecoilState($Token);
-  const [darkSwal] = useRecoilState($SwalDark);
   const [, setUserInfo] = useRecoilState($UserInfo);
   const [, setLoaderIndex] = useRecoilState($LoaderIndex);
   const navigate = useNavigate();
+  const { checkToken, userLogin } = useAuthentication();
   // LocalState
+  const [tokenCheck, setTokenCheck] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const [rememberIndex, setRememberIndex] = useState(false);
   // Refs
   const emailInput = useRef();
   const passwordInput = useRef();
   // handlers
-  const handleSubmit = () => {
-    setLoaderIndex(true);
+  const handleSubmit = async () => {
+
     event.preventDefault();
-    let mail = emailInput.current.value;
-    let pass = passwordInput.current.value;
-    if (mail && pass && mail.trim() && pass.trim()) {
-      if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(mail)) {
-        axios
-          .post(
-            `${serverUrl}/php/index.php/api/auth/login`,
-            {
-              user_email: mail,
-              user_password: pass,
-            },
-            {
-              headers: {
-                Authorization: `Barear ${token}`,
-              },
-            }
-          )
-          .then((res) => {
-            setLoaderIndex(false);
-            let isActive = res.data.isActive;
-            if (!res.data.err) {
-              Swal.fire({
-                icon: "success",
-                text: "Successfully Login !",
-                timer: 1500,
-                showConfirmButton: false,
-                customClass: darkSwal,
-              });
-              rememberIndex ? localStorage.setItem('$Token', res.data.data[0].user_token)
-                : sessionStorage.setItem('$Token', res.data.data[0].user_token);
-              setToken(res.data.data[0].user_token);
-              navigate("/");
-            } else {
-              Swal.fire({
-                icon: "error",
-                text: res.data.msg,
-                timer: 1500,
-                showConfirmButton: false,
-                customClass: darkSwal,
-              }).then(() => {
-                if (isActive == false) {
-                  setToken(res.data.data.user_token);
-                  sessionStorage.setItem("user_email", mail);
-                  navigate('/activate');
-                }
-              })
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            setLoaderIndex(false);
+    let formInputs = { user_email: emailInput.current.value, user_password: passwordInput.current.value, remember_user_index: rememberIndex, };
+    setLoaderIndex(true);
+    await userLogin(formInputs).then((res) => {
+      setLoaderIndex(false);
+      if (res) {
+        if (res.err) {
+          if (res.data != null) {
+            let userInfo = res.data;
+            setToken(userInfo.user_token);
+            sessionStorage.setItem("user_email", emailInput.current.value);
+            Swal.fire({
+              icon: "info",
+              title: "User is not active",
+              timer: 1500,
+              customClass: darkSwal
+            }).then(() => {
+              navigate('/activate');
+            })
+          } else {
             Swal.fire({
               icon: "error",
-              text: "Connection Lost !",
+              title: "Wrong username or password",
               timer: 1500,
-              showConfirmButton: false,
-              customClass: darkSwal,
-            });
-          });
-      } else {
-        setLoaderIndex(false);
-        Swal.fire({
-          icon: "error",
-          text: "Invalid Email",
-          timer: 1500,
-          customClass: darkSwal,
-        });
+              customClass: darkSwal
+            })
+          }
+        } else {
+          let userInfo = res.data[0];
+          setUserInfo(userInfo);
+          setToken(userInfo.user_token);
+          rememberIndex ? localStorage.setItem("$Token", userInfo.user_token) : sessionStorage.setItem("$Token", userInfo.user_token);
+          Swal.fire({
+            icon: "success",
+            title: "Login Successfully !",
+            timer: 1500,
+            customClass: darkSwal,
+          }).then(() => { navigate('/') })
+        }
       }
-    } else {
-      setLoaderIndex(false);
-      Swal.fire({
-        icon: "info",
-        text: "Please Enter You Email And Password !",
-        customClass: darkSwal,
-      });
-    }
+    });
+
   };
 
   useEffect(() => {
     if (token) {
-      axios
-        .post(`${serverUrl}/php/index.php/api/auth/check`, {}, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setUserInfo(res.data.data[0]);
-          navigate('/');
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      checkToken().then((res) => {
+        if (res) {
+          if (res.is_active == 0) {
+            sessionStorage.setItem("user_email", res.user_email);
+            navigate('/activate');
+          } else {
+            setUserInfo(res);
+            navigate('/');
+          }
+        } else {
+          setTokenCheck(true);
+        }
+      })
     } else {
-      setLoaderIndex(false);
+      setTokenCheck(true);
     }
+    // eslint-disable-next-line
   }, []);
 
   // View
   return (
-    <div
-      id="LoginPage"
-      className="page d-flex align-items-center justify-content-center"
-    >
-      <div className="container d-flex flex-wrap justify-content-center animate__animated animate__fadeIn">
-        <div className="d-flex flex-wrap gap-3 px-4 px-md-0" id="loginContent">
-          <div className="col-12 d-flex align-items-center gap-3 text-white">
+    <div id={styles.LoginPage} className="col-12 p-4 pt-5 d-flex align-items-start justify-content-center">
+      {
+        tokenCheck &&
+        <div className="container d-flex flex-column align-items-center col-12 col-md-6 col-lg-5 animate__animated animate__fadeInDown" id={styles.loginContent}>
+          <div className="col-12 d-flex flex-column gap-2 align-items-center" id={styles.logoHeader}>
+            <img src={Logo} alt="IPACO Source Logo" />
+            <h1 className="mb-0">Welcome Back</h1>
+            <p className="mb-3">Please sign in to continue</p>
+          </div>
+          <form onSubmit={handleSubmit} className="col-12 d-flex flex-column rounded-3 py-3 px-4">
+            <div className="d-flex col-12 flex-column position-relative">
+              <HiOutlineMail className={styles.inputIcon} />
+              <label className="mb-2">Email Address</label>
+              <input ref={emailInput} type="text" className="form-control mb-3" placeholder="email@company.com" />
+            </div>
+
+            <div className="d-flex col-12 flex-column position-relative">
+              <IoLockClosedOutline className={styles.inputIcon} />
+              <label className="mb-2">Password</label>
+              {showPass ? <IoIosEyeOff className={styles.iconPass} onClick={() => setShowPass(!showPass)} /> : <IoIosEye onClick={() => setShowPass(!showPass)} className={styles.iconPass} />}
+              <input ref={passwordInput} type={showPass ? 'text' : 'password'} className="form-control mb-3" placeholder="Enter Password" />
+            </div>
+
+            <div className="col-12 d-flex justify-content-between align-items-center mt-2 mb-4" id={styles.remeber}>
+              <div className="d-flex align-items-center gap-2">
+                <input type="checkbox" id="rememberMeInput" checked={rememberIndex} onChange={(e) => setRememberIndex(e.target.checked)} />
+                <label htmlFor="rememberMeInput">Remember Me</label>
+              </div>
+              <Link to="forget">Forgot Password ?</Link>
+            </div>
+            <button className="col-12 btn">Sign In</button>
+          </form>
+        </div>
+
+      }
+
+      {/* <div className="container d-flex flex-wrap justify-content-center animate__animated animate__fadeIn">
+        <div className="d-flex flex-wrap gap-3 px-4 px-md-0" id={styles.loginContent}>
+          <div className="col-12 d-flex flex-column align-items-center gap-3 text-white">
             <img height={60} src={Logo} alt="IPACO Source Logo" />
             <p className="fs-3">SkyReady</p>
           </div>
@@ -139,10 +143,8 @@ export default function LoginPage() {
             <p className="col-12 fs-6 mb-4">
               Enter your email & password to login
             </p>
-            <form
-              className="col-12 d-flex flex-wrap gap-3"
-              onSubmit={handleSubmit}
-            >
+
+            <form className="col-12 d-flex flex-wrap gap-3" onSubmit={handleSubmit}>
               <div className="inputField col-12 d-flex flex-column gap-2">
                 <label htmlFor="email">Email Address</label>
                 <input
@@ -192,7 +194,10 @@ export default function LoginPage() {
             </form>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
+
+
+// Customized Project Management System

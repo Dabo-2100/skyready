@@ -1,12 +1,93 @@
 #LoginPage {
-  background-image: url("@/assets/login_bg.jpg");
-  background-color: #10101c;
-  background-blend-mode: overlay;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: 50%;
+  background-color: var(--primary-color);
+  height: 100vh;
+  overflow-y: auto;
+
   #loginContent {
-    max-width: 450px;
+    #logoHeader {
+      img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+      }
+
+      h1 {
+        color: var(--grey-100);
+        font-size: clamp(26px, 5vw, 32px);
+      }
+
+      P {
+        color: var(--grey-200);
+        font-size: clamp(14px, 5vw, 16px);
+      }
+    }
+
+    form {
+      font-size: 14px;
+      border: 1px solid var(--border-color);
+      color: var(--grey-100);
+
+      label {
+        font-size: 14px;
+        font-weight: 400;
+      }
+
+      .inputIcon {
+        position: absolute;
+        bottom: 1.5rem;
+        font-size: 1.25rem;
+        left: 0.75rem;
+      }
+
+      .iconPass {
+        position: absolute;
+        bottom: 1.4rem;
+        font-size: 1.25rem;
+        right: 0.75rem;
+        cursor: pointer;
+      }
+
+      input[type=checkbox] {
+        transform: scale(1.5);
+        margin-left: 5px;
+      }
+
+      input {
+        background-color: transparent;
+        padding-left: 2.5rem;
+        font-size: 14px;
+        color: var(--grey-100);
+
+        &::placeholder {
+          color: var(--grey-100)
+        }
+      }
+
+      button {
+        background-color: var(--purple-100);
+        color: white;
+        font-size: 14px;
+      }
+
+      #remeber {
+
+        input,
+        label,
+        span {
+          cursor: pointer;
+        }
+
+        span {
+          transition: ease all 400ms;
+
+          &:hover {
+            color: var(--grey-200)
+          }
+        }
+      }
+
+    }
+
     .contentBody {
       background-color: #171829;
       color: rgba(255, 255, 255, 0.6);
@@ -17,13 +98,16 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+
       input {
         background-color: rgb(16, 16, 28);
         color: #9b9b9b !important;
         opacity: 1;
+
         &::placeholder {
           color: #9b9b9b;
-          opacity: 0.6; /* Firefox */
+          opacity: 0.6;
+          /* Firefox */
         }
       }
     }
@@ -31,6 +115,7 @@
     .signIn {
       background-color: #5c61f2;
     }
+
     a {
       color: rgb(92, 97, 242);
     }
@@ -40,17 +125,20 @@
       display: none;
       visibility: hidden;
     }
+
     .checkbox-wrapper-46 .cbx {
       margin: auto;
       -webkit-user-select: none;
       user-select: none;
       cursor: pointer;
     }
+
     .checkbox-wrapper-46 .cbx span {
       display: inline-block;
       vertical-align: middle;
       transform: translate3d(0, 0, 0);
     }
+
     .checkbox-wrapper-46 .cbx span:first-child {
       position: relative;
       width: 18px;
@@ -61,6 +149,7 @@
       border: 1px solid #9098a9;
       transition: all 0.2s ease;
     }
+
     .checkbox-wrapper-46 .cbx span:first-child svg {
       position: absolute;
       top: 3px;
@@ -76,6 +165,7 @@
       transition-delay: 0.1s;
       transform: translate3d(0, 0, 0);
     }
+
     .checkbox-wrapper-46 .cbx span:first-child:before {
       content: "";
       width: 100%;
@@ -86,25 +176,31 @@
       opacity: 1;
       border-radius: 50%;
     }
+
     .checkbox-wrapper-46 .cbx span:last-child {
       padding-left: 8px;
     }
+
     .checkbox-wrapper-46 .cbx:hover span:first-child {
       border-color: #506eec;
     }
-    .checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child {
+
+    .checkbox-wrapper-46 .inp-cbx:checked+.cbx span:first-child {
       background: #506eec;
       border-color: #506eec;
       animation: wave-46 0.4s ease;
     }
-    .checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child svg {
+
+    .checkbox-wrapper-46 .inp-cbx:checked+.cbx span:first-child svg {
       stroke-dashoffset: 0;
     }
-    .checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child:before {
+
+    .checkbox-wrapper-46 .inp-cbx:checked+.cbx span:first-child:before {
       transform: scale(3.5);
       opacity: 0;
       transition: all 0.6s ease;
     }
+
     @keyframes wave-46 {
       50% {
         transform: scale(0.9);

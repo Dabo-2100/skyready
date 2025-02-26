@@ -69,7 +69,6 @@ export default function ConnectorFinder() {
                         <tbody>
                             {
                                 designatorTasks.map((task, index) => {
-                                    console.log(task);
                                     return (
                                         <tr key={task.task_id}>
                                             <td>{index + 1}</td>

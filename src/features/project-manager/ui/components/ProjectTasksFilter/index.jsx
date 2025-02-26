@@ -37,11 +37,8 @@ export default function ProjectTasksFilter() {
         }
         if (aircraftZones.length == 0) {
             getAircraftZones(1).then((res) => {
-                console.log(res);
                 dispatch(setAircraftZones(buildTree(res, "zone_id")));
             })
-        } else {
-            console.log();
         }
         // eslint-disable-next-line
     }, [])

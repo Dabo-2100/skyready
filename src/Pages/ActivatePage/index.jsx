@@ -107,7 +107,7 @@ export default function ActivatePage() {
               }
             </div>
             <button onClick={handleActivate} className="btn btn-success col-6 fs-5">Activate account</button>
-            <h6 className="col-12 text-center d-flex justify-content-center gap-1">Don't have the code ? <p onClick={sendMail} className="theLink">Send again</p></h6>
+            <h6 className="col-12 text-center d-flex justify-content-center gap-1">Dont have the code ? <p onClick={sendMail} className="theLink">Send again</p></h6>
           </form>
         )
       }

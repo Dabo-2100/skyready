@@ -1,25 +1,37 @@
+import Swal from 'sweetalert2';
+import Logo from "@/assets/IPACOLogo.png";
 import './index.scss';
 import { useEffect, useState } from 'react';
-import Logo from "@/assets/IPACOLogo.png";
 import { useRecoilState } from 'recoil';
 import { $UserInfo, $Token, $SwalDark } from '@/store-recoil';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faCalendar, faGears, faHouse, faJetFighter, faListCheck, faPowerOff, faUsers } from '@fortawesome/free-solid-svg-icons';
-import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setActiveIndex } from '../../../state/activeAppIndexSlice';
+import { IoPower } from "react-icons/io5";
+import { GiCommercialAirplane } from "react-icons/gi";
+import { FaRegCalendarCheck } from "react-icons/fa";
+import { FaUsersGear } from "react-icons/fa6";
+
 export default function SideMenu() {
     const navigate = useNavigate();
-    library.add(faUsers, faListCheck, faBook, faJetFighter, faCalendar, faHouse, faGears);
     const [userInfo] = useRecoilState($UserInfo);
     const [, setToken] = useRecoilState($Token);
     const [darkSwal] = useRecoilState($SwalDark);
     const [isPhone, setIsPhone] = useState(false);
     const dispatch = useDispatch();
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
-    
+
+    const Apps = [
+        { id: 1, name: "Fleet Manager", icon: <GiCommercialAirplane className='appIcon' /> },
+        { id: 2, name: "Project Manager", icon: <FaRegCalendarCheck className='appIcon' /> },
+        { id: 3, name: "Report Manager", icon: <GiCommercialAirplane className='appIcon' /> },
+        { id: 4, name: "Form Manager", icon: <GiCommercialAirplane className='appIcon' /> },
+        { id: 5, name: "Warehose Manager", icon: <GiCommercialAirplane className='appIcon' /> },
+        { id: 6, name: "Users Manager", icon: <FaUsersGear className='appIcon' /> },
+    ]
+    const showIocn = (id) => {
+        return Apps.find(el => el.id == id).icon;
+    }
     useEffect(() => {
         window.innerWidth <= '991' ? setIsPhone(true) : setIsPhone(false);
         window.addEventListener("resize", () => {
@@ -67,12 +79,10 @@ export default function SideMenu() {
                         <div
                             onClick={() => dispatch(setActiveIndex(el['app_order']))}
                             key={index}
-                            style={{
-                                order: `${el['app_order']}`,
-                                width: isPhone ? `calc(100% / ${userInfo.user_roles.length})` : `100%`
-                            }}
-                            className={`d-flex flex-column flex-lg-row align-items-center gap-3 py-4 py-lg-2 app ${appIndex == el['app_order'] ? 'activeLink' : null} `}>
-                            <FontAwesomeIcon className='appIcon' icon={`fa-solid ${el['app_icon']}`} />
+                            style={{ order: `${el['app_order']}`, width: isPhone ? `calc(100% / ${userInfo.user_roles.length})` : `100%` }}
+                            className={`d-flex flex-column flex-lg-row align-items-center gap-3 py-4 py-lg-2 app ${appIndex == el['app_order'] ? 'activeLink' : null} `}
+                        >
+                            {showIocn(el['app_id'])}
                             <p className='appName mb-0 text-center text-lg-start'>{el['app_name']}</p>
                         </div>
                     )
@@ -80,7 +90,7 @@ export default function SideMenu() {
                 }
             </main>
             <footer onClick={logout} style={{ cursor: "pointer" }} className='col-12 d-flex align-items-center justify-content-center gap-3 p-3'>
-                <FontAwesomeIcon icon={faPowerOff} />
+                <IoPower />
                 <p>Logout</p>
             </footer>
         </div>

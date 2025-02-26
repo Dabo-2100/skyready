@@ -6,6 +6,7 @@ use function PHPSTORM_META\map;
 $endpoints += [
     '/api/report/wp/details' => 'wp_report_1',
     '/api/report/2'          => 'wp_report_2',
+    '/api/report/final'      => 'final_Report',
 ];
 
 function wp_report_1()
@@ -85,4 +86,111 @@ function wp_report_2()
     } else {
         echo 'Method Not Allowed';
     }
+}
+
+
+function final_Report()
+{
+    global $method, $response, $pdo;
+    if ($method === "GET") {
+        $all_projects = getRows("app_projects", "1=1");
+        $data = [];
+
+        foreach ($all_projects as $index => $project) {
+            $project_obj = [];
+            $project_obj['project_id'] = $project['project_id'];
+            $project_obj['project_name'] = $project['project_name'];
+            $project_obj['project_progress'] = $project['project_progress'];
+            $project_obj['details'] = getProjectDetails($project['project_id']);
+            array_push($data, $project_obj);
+        }
+        $response['err'] = false;
+        $response['msg'] = 'All Types Are Ready To View';
+        $response['data'] = $data;
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+
+function getProjectDetails($project_id)
+{
+    $avionics_special_id = getOneField("app_specialties", "specialty_id", "specialty_name = 'Avionics'");
+    $aircraft_id = getOneField("app_projects", "aircraft_id", "project_id = {$project_id}");
+    $applicability = getRows("work_package_applicability", "aircraft_id = {$aircraft_id}");
+    $project_packages = $project_avionics_tasks = $project_structure_tasks = $project_parent_packages_ids = $project_parent_packages  = [];
+    $project_avionics_duration = $project_structure_duration = $project_avionics_done_duration = $project_structure_done_duration = 0;
+
+    foreach ($applicability as $index => $pkg) {
+        $pkg_obj = [];
+        $package_id = $pkg['package_id'];
+        $pkg_obj['package_id'] = $package_id;
+        $pkg_tasks = getRows("work_package_tasks", "package_id = {$package_id}");
+        $Pkg_avionics_tasks = $Pkg_structure_tasks = [];
+        $Pkg_avionics_duration = $Pkg_structure_duration = 0;
+        $Pkg_avionics_done_duration = $Pkg_structure_done_duration = 0;
+
+        foreach ($pkg_tasks as $index => $task) {
+            $task_id = $task['task_id'];
+            $task_progress = getOneField("project_tasks", "task_progress", "task_id = {$task_id} AND project_id ={$project_id}");
+            $task_done_time = $task['task_duration'] * ($task_progress / 100);
+
+            if ($task['specialty_id'] == $avionics_special_id) {
+                array_push($Pkg_avionics_tasks, $task);
+                array_push($project_avionics_tasks, $task);
+                $Pkg_avionics_duration += $task['task_duration'];
+                $project_avionics_duration += $task['task_duration'];
+                $Pkg_avionics_done_duration += $task_done_time;
+                $project_avionics_done_duration += $task_done_time;
+            } else {
+                array_push($Pkg_structure_tasks, $task);
+                array_push($project_structure_tasks, $task);
+                $Pkg_structure_duration += $task['task_duration'];
+                $project_structure_duration += $task['task_duration'];
+                $Pkg_structure_done_duration += $task_done_time;
+                $project_structure_done_duration += $task_done_time;
+            }
+        }
+
+
+
+        $pkg_obj['duration'] = $Pkg_avionics_duration + $Pkg_structure_duration;
+
+        $pkg_obj['avionocs'] = [
+            'tasks' => $Pkg_avionics_tasks,
+            'duration' => $Pkg_avionics_duration,
+        ];
+
+        $pkg_obj['structure'] = [
+            'tasks' => $Pkg_structure_tasks,
+            'duration' => $Pkg_structure_duration,
+        ];
+
+        $parent_id = getOneField("work_packages", "parent_id", "package_id = {$package_id}");
+
+        if (in_array($parent_id, $project_parent_packages_ids) == false) {
+            array_push($project_parent_packages_ids, $parent_id);
+            $parent_obj = getRows("work_packages", "package_id = {$parent_id}")[0];
+            array_push($project_parent_packages, $parent_obj);
+        }
+
+        $pkg_obj['Pkg_avionics_duration'] = $Pkg_avionics_duration;
+        $pkg_obj['Pkg_structure_duration'] = $Pkg_structure_duration;
+        $pkg_obj['Pkg_avionics_done_duration'] = $Pkg_avionics_done_duration;
+        $pkg_obj['Pkg_structure_done_duration'] = $Pkg_structure_done_duration;
+        $pkg_obj['package_info'] = getRows("work_packages", "package_id = {$package_id}")[0];
+        array_push($project_packages, $pkg_obj);
+    }
+
+    return [
+        'project_packages' => $project_packages,
+        'project_parent_packages' => $project_parent_packages,
+        'project_avionics_tasks' => $project_avionics_tasks,
+        'project_structure_tasks' => $project_structure_tasks,
+        'project_structure_duration' => $project_structure_duration,
+        'project_avionics_duration' => $project_avionics_duration,
+        'project_avionics_done_duration' => $project_avionics_done_duration,
+        'project_structure_done_duration' => $project_structure_done_duration,
+    ];
 }
