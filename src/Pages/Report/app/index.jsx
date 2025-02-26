@@ -1,21 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./index.module.css";
 import { ReportRepo } from "../data/repositories/ReportRepo";
-import { useRecoilValue } from "recoil";
-import { $Server } from "../../../store-recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { $LoaderIndex, $Server } from "../../../store-recoil";
 import ProjectDetails from "../ui/modals/ProjectDetails";
-import { useProjectDetailsModal, useWorkPackageModal } from "../../../store-zustand";
+import { useProjectDetailsModal, useRemainTasksModal, useWorkPackageModal } from "../../../store-zustand";
 import WPDetails from "../ui/modals/WPDetails";
-export default function ReportFinal() {
-    const serverURl = useRecoilValue($Server);
-    const [projects, setProjects] = useState([]);
-    const { index, openDetails, setReportDetails } = useProjectDetailsModal();
-    const { index: wpIndex, openWorkPackage } = useWorkPackageModal();
+import RemainTasks from "../ui/modals/RemainTasks";
 
-    useState(() => {
+
+export default function ReportFinal() {
+
+    const [, setLoaderIndex] = useRecoilState($LoaderIndex);
+    const [serverURl] = useRecoilState($Server);
+    const { index, openDetails, setReportDetails } = useProjectDetailsModal();
+    const { index: wpIndex } = useWorkPackageModal();
+    const { index: remainIndex } = useRemainTasksModal();
+    const [projects, setProjects] = useState([]);
+
+    useEffect(() => {
+        setLoaderIndex(true)
         ReportRepo.all_projects(serverURl).then((res) => {
             setProjects(res);
             setReportDetails(res);
+            setLoaderIndex(false);
         });
     }, []);
 
@@ -23,7 +31,8 @@ export default function ReportFinal() {
         <div className={styles['report-page']}>
             {index && <ProjectDetails />}
             {wpIndex && <WPDetails />}
-            <div className="container d-flex flex-column bg-white rounded shadow p-3">
+            {remainIndex && <RemainTasks />}
+            <div className="container d-flex flex-column bg-white rounded shadow p-3 animate__animated animate__fadeIn">
                 <h5 className="bg-dark text-center text-white mx-2 py-3">Active Projects</h5>
                 <div className="col-12 d-flex flex-wrap">
                     {

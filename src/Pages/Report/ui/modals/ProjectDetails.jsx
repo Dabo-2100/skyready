@@ -9,7 +9,6 @@ export default function ProjectDetails() {
     useEffect(() => {
         let obj = reportDetails.find(el => el.project_id == active_project_id);
         setActiceProject(obj);
-        console.log(obj)
         //eslint-disable-next-line
     }, []);
 
@@ -105,7 +104,10 @@ export default function ProjectDetails() {
                                                         return (
                                                             <tr key={el.package_id} onClick={() => openWorkPackage(el.package_id)}>
                                                                 <td>{index + 1}</td>
-                                                                <td>{el.package_name}</td>
+                                                                <td>
+                                                                    {el.package_name} <br />
+                                                                    <p style={{ fontSize: "10px" }}>{el.package_desc}</p>
+                                                                </td>
                                                                 <td>{getPackageProgress(el.package_id)} %</td>
                                                             </tr>
                                                         )
@@ -114,19 +116,22 @@ export default function ProjectDetails() {
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div className="col-12 col-md-6 px-3 order-1 order-md-2">
-                                        <BarChart
-                                            labels={activeProject.details.project_parent_packages.sort((a, b) => a.package_name.trim().localeCompare(b.package_name.trim())).map(el => el.package_name)}
-                                            datasets={
-                                                [{
-                                                    label: 'SBs Progress',
-                                                    data: activeProject.details.project_parent_packages.sort((a, b) => a.package_name.trim().localeCompare(b.package_name.trim())).map(el => getPackageProgress(el.package_id)),
-                                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                                    borderColor: 'rgba(75, 192, 192, 1)',
-                                                    borderWidth: 1,
-                                                }]
-                                            }
-                                        />
+                                    <div className="col-12 col-md-6 px-3 order-1 order-md-2 h-100 position-relative">
+                                        <div className="col-12 position-sticky top-0">
+                                            <BarChart
+                                                labels={activeProject.details.project_parent_packages.sort((a, b) => a.package_name.trim().localeCompare(b.package_name.trim())).map(el => el.package_name)}
+                                                datasets={
+                                                    [{
+                                                        label: 'SBs Progress',
+                                                        data: activeProject.details.project_parent_packages.sort((a, b) => a.package_name.trim().localeCompare(b.package_name.trim())).map(el => getPackageProgress(el.package_id)),
+                                                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                                        borderWidth: 1,
+                                                    }]
+                                                }
+                                            />
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>

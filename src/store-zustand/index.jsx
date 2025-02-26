@@ -9,10 +9,17 @@ export const useProjectDetailsModal = create((set) => ({
     closeDetails: () => set(() => ({ index: false, active_project_id: 0 })),
 }));
 
-
 export const useWorkPackageModal = create((set) => ({
     index: false,
     active_workpackage_id: 0,
-    openWorkPackage: () => set((id) => ({ index: true, active_workpackage_id: id })),
+    openWorkPackage: (id) => set(() => ({ index: true, active_workpackage_id: id })),
     closeWorkPackage: () => set(() => ({ index: false, active_workpackage_id: 0 }))
+}))
+
+export const useRemainTasksModal = create((set) => ({
+    index: false,
+    active_part_id: 0,
+    speciality: "",
+    openModal: (sp, active_part_id) => set(() => ({ index: true, speciality: sp, active_part_id })),
+    closeModal: () => set(() => ({ index: false, speciality: "", active_part_id: 0 }))
 }))
