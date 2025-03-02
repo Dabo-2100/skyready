@@ -48,7 +48,7 @@ export default function RemainTasks() {
                                     <td>{index + 1}</td>
                                     <td>{el.task_name}</td>
                                     <td>{el.task_desc || el.task_type_name}</td>
-                                    <td>{el.status_name}</td>
+                                    <td><p className="bg-warning p-2 rounded shadow border text-dark fw-bolder">{el.status_name}</p></td>
                                 </tr>
                             ))}
                         </tbody>

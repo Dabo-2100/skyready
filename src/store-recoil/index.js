@@ -99,6 +99,12 @@ export const $Defaults = atom({
         bgColor: "#FFEB3B",
         color: "black",
       },
+      {
+        status_id: 13,
+        status_name: "Waiting For Painting",
+        bgColor: "#FFEB3B",
+        color: "black",
+      },
     ],
     project_status_id: 2,
     task_status_id: 4,
