@@ -4,9 +4,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   base: "https://skyready.online/",
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
-    },
+    alias: { "@": path.resolve(__dirname, "src") },
   },
   plugins: [react()],
   optimizeDeps: {

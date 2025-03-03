@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import NoImg from '@/assets/offline.png'
 import { useRecoilValue } from "recoil";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDown, faArrowUp, faX } from "@fortawesome/free-solid-svg-icons";
-import Status from "../components/Status";
+import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { User } from "../../../../shared/core/User";
 import { $UserInfo } from "../../../../store-recoil";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +11,6 @@ import useProjects from "../hooks/useProjects";
 import { searchByName } from "../../state/projectTasksFilterSlice";
 import { setAvailablePackages, setActivePackages } from "../../state/activeProjectSlice";
 import WorkPackage from "../components/WorkPackage";
-import { resetSelector } from "../../state/multiTasksSelectorSlice";
 import MultiSelector from "../components/MultiSelector";
 
 export default function ProjectTasks() {

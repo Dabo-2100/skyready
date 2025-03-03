@@ -292,8 +292,16 @@ export default function useProjects() {
         return ProjectsRepo.update_multi_tasks(serverUrl, token, tasksToUpdate);
     }
 
+    const updateTaskOperators = async (log_id, operators) => {
+        return ProjectsRepo.update_task_operators(serverUrl, token, log_id, operators);
+    }
+
+    const getTaskOperators = async (log_id) => {
+        return await ProjectsRepo.all_task_operators(serverUrl, token, log_id);
+    }
+
     return {
-        addNewComment, removeTaskComment, updateTaskStatus, updateMultiTasks,
+        addNewComment, removeTaskComment, updateTaskStatus, updateMultiTasks, updateTaskOperators, getTaskOperators,
         getAllProjects, getTaskComments, getProjectTaskStatus, removeProject, getProjectPackages, filterWorkPackages, getWorkPackageTasks, removeWorkPackageTask, removeWorkPackageFromProject, createNewProject, startWorkPackage
     }
 }

@@ -7,9 +7,12 @@ import { IoIosEyeOff } from "react-icons/io";
 import { IoIosEye } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/assets/IPACOLogo.png";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import useAuthentication from "../../shared/ui/hooks/useAuthentication";
+
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import * as yup from "yup";
 
 export default function LoginPage() {
   // GlobalState
@@ -22,15 +25,15 @@ export default function LoginPage() {
   // LocalState
   const [tokenCheck, setTokenCheck] = useState(false);
   const [showPass, setShowPass] = useState(false);
-  const [rememberIndex, setRememberIndex] = useState(false);
-  // Refs
-  const emailInput = useRef();
-  const passwordInput = useRef();
+  // Schema
+  const schema = yup.object({
+    email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup.string().required("Password is required"),
+    rememberMe: yup.boolean().notRequired(),
+  });
   // handlers
-  const handleSubmit = async () => {
-
-    event.preventDefault();
-    let formInputs = { user_email: emailInput.current.value, user_password: passwordInput.current.value, remember_user_index: rememberIndex, };
+  const handleSubmit = async (values) => {
+    let formInputs = { user_email: values.email, user_password: values.password, remember_user_index: values.rememberMe };
     setLoaderIndex(true);
     await userLogin(formInputs).then((res) => {
       setLoaderIndex(false);
@@ -39,7 +42,7 @@ export default function LoginPage() {
           if (res.data != null) {
             let userInfo = res.data;
             setToken(userInfo.user_token);
-            sessionStorage.setItem("user_email", emailInput.current.value);
+            sessionStorage.setItem("user_email", values.email);
             Swal.fire({
               icon: "info",
               title: "User is not active",
@@ -60,7 +63,7 @@ export default function LoginPage() {
           let userInfo = res.data[0];
           setUserInfo(userInfo);
           setToken(userInfo.user_token);
-          rememberIndex ? localStorage.setItem("$Token", userInfo.user_token) : sessionStorage.setItem("$Token", userInfo.user_token);
+          values.rememberMe ? localStorage.setItem("$Token", userInfo.user_token) : sessionStorage.setItem("$Token", userInfo.user_token);
           Swal.fire({
             icon: "success",
             title: "Login Successfully !",
@@ -105,99 +108,43 @@ export default function LoginPage() {
             <h1 className="mb-0">Welcome Back</h1>
             <p className="mb-3">Please sign in to continue</p>
           </div>
-          <form onSubmit={handleSubmit} className="col-12 d-flex flex-column rounded-3 py-3 px-4">
-            <div className="d-flex col-12 flex-column position-relative">
-              <HiOutlineMail className={styles.inputIcon} />
-              <label className="mb-2">Email Address</label>
-              <input ref={emailInput} type="text" className="form-control mb-3" placeholder="email@company.com" />
-            </div>
 
-            <div className="d-flex col-12 flex-column position-relative">
-              <IoLockClosedOutline className={styles.inputIcon} />
-              <label className="mb-2">Password</label>
-              {showPass ? <IoIosEyeOff className={styles.iconPass} onClick={() => setShowPass(!showPass)} /> : <IoIosEye onClick={() => setShowPass(!showPass)} className={styles.iconPass} />}
-              <input ref={passwordInput} type={showPass ? 'text' : 'password'} className="form-control mb-3" placeholder="Enter Password" />
-            </div>
+          <Formik validationSchema={schema} initialValues={{ email: "", password: "", rememberMe: false }} onSubmit={handleSubmit}>
+            {
+              () => (
+                <Form className={styles.loginForm + " col-12 d-flex gap-3 flex-column rounded-3 py-3 px-4"}>
+                  <div className="d-flex col-12 flex-column">
+                    <label className="mb-2">Email Address</label>
+                    <div className="d-flex position-relative col-12">
+                      <HiOutlineMail className={styles.inputIcon} />
+                      <Field className="form-control" name="email" placeholder="email@company.com" />
+                    </div>
+                    <ErrorMessage className={"animate__animated animate__fadeIn " + styles.error} name="email" component="span" />
+                  </div>
 
-            <div className="col-12 d-flex justify-content-between align-items-center mt-2 mb-4" id={styles.remeber}>
-              <div className="d-flex align-items-center gap-2">
-                <input type="checkbox" id="rememberMeInput" checked={rememberIndex} onChange={(e) => setRememberIndex(e.target.checked)} />
-                <label htmlFor="rememberMeInput">Remember Me</label>
-              </div>
-              <Link to="forget">Forgot Password ?</Link>
-            </div>
-            <button className="col-12 btn">Sign In</button>
-          </form>
+                  <div className="d-flex col-12 flex-column">
+                    <label className="mb-2">Password</label>
+                    <div className="d-flex position-relative col-12">
+                      <IoLockClosedOutline className={styles.inputIcon} />
+                      {showPass ? <IoIosEyeOff className={styles.iconPass} onClick={() => setShowPass(!showPass)} /> : <IoIosEye onClick={() => setShowPass(!showPass)} className={styles.iconPass} />}
+                      <Field type={showPass ? 'text' : 'password'} className="form-control" name="password" placeholder="Enter Password" />
+                    </div>
+                    <ErrorMessage className={"animate__animated animate__fadeIn " + styles.error} name="password" component="span" />
+                  </div>
+
+                  <div className="col-12 d-flex justify-content-between align-items-center " id={styles.remeber}>
+                    <label className="d-flex align-items-center gap-3">
+                      <Field type="checkbox" name="rememberMe" /> Remember Me
+                    </label>
+                    <Link to="forget">Forgot Password ?</Link>
+                  </div>
+                  <button type="submit" className="col-12 btn">Sign In</button>
+                </Form>
+              )
+            }
+          </Formik>
         </div>
-
       }
-
-      {/* <div className="container d-flex flex-wrap justify-content-center animate__animated animate__fadeIn">
-        <div className="d-flex flex-wrap gap-3 px-4 px-md-0" id={styles.loginContent}>
-          <div className="col-12 d-flex flex-column align-items-center gap-3 text-white">
-            <img height={60} src={Logo} alt="IPACO Source Logo" />
-            <p className="fs-3">SkyReady</p>
-          </div>
-          <div className="col-12 py-5 px-4 rounded-3 d-flex flex-wrap align-content-start contentBody">
-            <p className="col-12 fs-5 mb-1">Welcome Back</p>
-            <p className="col-12 fs-6 mb-4">
-              Enter your email & password to login
-            </p>
-
-            <form className="col-12 d-flex flex-wrap gap-3" onSubmit={handleSubmit}>
-              <div className="inputField col-12 d-flex flex-column gap-2">
-                <label htmlFor="email">Email Address</label>
-                <input
-                  required
-                  ref={emailInput}
-                  autoComplete="off"
-                  className="form-control"
-                  type="email"
-                  id="email"
-                  placeholder="email@company.com"
-                />
-              </div>
-              <div className="inputField col-12 d-flex flex-column gap-2">
-                <label htmlFor="password">Password</label>
-                <input
-                  required
-                  ref={passwordInput}
-                  autoComplete="off"
-                  className="form-control"
-                  type="password"
-                  id="password"
-                  placeholder="**********"
-                />
-              </div>
-              <div className="col-12 d-flex align-items-center justify-content-between py-3">
-                <div className="checkbox-wrapper-46">
-                  <input
-                    type="checkbox"
-                    id="cbx-46"
-                    className="inp-cbx"
-                    onChange={(event) => {
-                      setRememberIndex(event.target.checked);
-                    }}
-                  />
-                  <label htmlFor="cbx-46" className="cbx">
-                    <span>
-                      <svg viewBox="0 0 12 10" height="10px" width="12px">
-                        <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                      </svg>
-                    </span>
-                    <span>Remember me</span>
-                  </label>
-                </div>
-                <Link to="/forget">Forgot password?</Link>
-              </div>
-              <button className="col-12 btn signIn text-white">Sign in</button>
-            </form>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 }
-
-
-// Customized Project Management System

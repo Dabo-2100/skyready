@@ -44,6 +44,21 @@ $statements = array_merge($statements, [
         UNIQUE (project_name,aircraft_id)
     )',
 
+    'CREATE TABLE IF NOT EXISTS project_work_packages( 
+        log_id                  INT(20) AUTO_INCREMENT PRIMARY KEY,
+        work_package_id         INT,
+        FOREIGN KEY (work_package_id) REFERENCES work_packages(package_id),
+        project_id              INT,
+        FOREIGN KEY (project_id) REFERENCES app_projects(project_id),
+        status_id               INT,
+        FOREIGN KEY (status_id) REFERENCES project_status(status_id),
+        work_package_progress   FLOAT(20) DEFAULT 0,
+        is_active               BOOLEAN DEFAULT TRUE,
+        created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_update             TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        UNIQUE (project_id , work_package_id)
+    )',
+
     'CREATE TABLE IF NOT EXISTS project_tasks( 
         log_id                  INT(20) AUTO_INCREMENT PRIMARY KEY,
         task_id                 INT,
@@ -61,98 +76,6 @@ $statements = array_merge($statements, [
         UNIQUE (project_id , task_id)
     )',
 
-    'CREATE TABLE IF NOT EXISTS task_status_tracker ( 
-        action_id               INT(20) AUTO_INCREMENT PRIMARY KEY,
-        task_log_id             INT,
-        FOREIGN KEY (task_log_id) REFERENCES project_tasks(log_id),
-        old_status_id           INT,
-        FOREIGN KEY (old_status_id) REFERENCES project_status(status_id),
-        new_status_id           INT,
-        FOREIGN KEY (new_status_id) REFERENCES project_status(status_id),
-        technical_id            INT,
-        FOREIGN KEY (technical_id) REFERENCES app_users(user_id),
-        engineer_id             INT,
-        FOREIGN KEY (engineer_id) REFERENCES app_users(user_id),
-        inspector_id            INT,
-        FOREIGN KEY (inspector_id) REFERENCES app_users(user_id),
-        action_comments         VARCHAR(255) NOT NULL,
-        created_by              INT,
-        FOREIGN KEY (created_by) REFERENCES app_users(user_id),
-        is_active               BOOLEAN DEFAULT TRUE,
-        created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        last_update             TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    )',
-
-    'CREATE TABLE IF NOT EXISTS project_work_packages( 
-        log_id                  INT(20) AUTO_INCREMENT PRIMARY KEY,
-        work_package_id         INT,
-        FOREIGN KEY (work_package_id) REFERENCES work_packages(package_id),
-        project_id              INT,
-        FOREIGN KEY (project_id) REFERENCES app_projects(project_id),
-        status_id               INT,
-        FOREIGN KEY (status_id) REFERENCES project_status(status_id),
-        work_package_progress   FLOAT(20) DEFAULT 0,
-        is_active               BOOLEAN DEFAULT TRUE,
-        created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        last_update             TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        UNIQUE (project_id , work_package_id)
-    )',
-
-    'CREATE TABLE IF NOT EXISTS work_package_status_tracker ( 
-        action_id               INT(20) AUTO_INCREMENT PRIMARY KEY,
-        work_package_log_id     INT,
-        FOREIGN KEY (work_package_log_id) REFERENCES project_work_packages(log_id),
-        old_status_id           INT,
-        FOREIGN KEY (old_status_id) REFERENCES project_status(status_id),
-        new_status_id           INT,
-        FOREIGN KEY (new_status_id) REFERENCES project_status(status_id),
-        action_comments         VARCHAR(255) NOT NULL, 
-        created_by              INT,
-        FOREIGN KEY (created_by) REFERENCES app_users(user_id),              
-        is_active               BOOLEAN DEFAULT TRUE,
-        created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        last_update             TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    )',
-
-    'CREATE TABLE IF NOT EXISTS project_progress_tracker ( 
-        action_id               INT(20) AUTO_INCREMENT PRIMARY KEY,
-        project_id              INT,
-        FOREIGN KEY (project_id) REFERENCES app_projects(project_id),
-        day_date                DATE NOT NULL,          
-        old_progress            FLOAT(20) NOT NULL,        
-        new_progress            FLOAT(20) NOT NULL,    
-        is_active               BOOLEAN DEFAULT TRUE,
-        created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        last_update             TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    )',
-
-    'CREATE TABLE IF NOT EXISTS work_package_progress_tracker ( 
-        action_id               INT(20) AUTO_INCREMENT PRIMARY KEY,
-        work_packages_log_id    INT,
-        FOREIGN KEY (work_packages_log_id) REFERENCES project_work_packages(log_id),
-        day_date                DATE NOT NULL,          
-        old_progress            FLOAT(20) NOT NULL,        
-        new_progress            FLOAT(20) NOT NULL,    
-        is_active               BOOLEAN DEFAULT TRUE,
-        created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        last_update             TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    )',
-
-    'CREATE TABLE IF NOT EXISTS tasks_x_tags ( 
-        log_id          INT(20) AUTO_INCREMENT PRIMARY KEY,
-        task_id         INT NULL,
-        FOREIGN KEY (task_id) REFERENCES project_tasks(task_id),
-        package_id      INT NULL,
-        FOREIGN KEY (package_id) REFERENCES work_packages(package_id),
-        project_id      INT NULL,
-        FOREIGN KEY (project_id) REFERENCES app_projects(project_id),
-        tag_id          INT,
-        FOREIGN KEY (tag_id) REFERENCES project_tags(tag_id),
-        created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        last_update     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        UNIQUE (task_id,tag_id)
-    )',
-
     'CREATE TABLE IF NOT EXISTS task_comments ( 
         comment_id          INT(20) AUTO_INCREMENT PRIMARY KEY,
         log_id              INT,
@@ -165,5 +88,17 @@ $statements = array_merge($statements, [
         FOREIGN KEY (parent_id) REFERENCES task_comments(comment_id),
         created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_update         TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )',
+
+    'CREATE TABLE IF NOT EXISTS task_users ( 
+        log_id                      INT(20) AUTO_INCREMENT PRIMARY KEY,
+        task_log_id                 INT,
+        FOREIGN KEY (task_log_id) REFERENCES project_tasks(log_id),
+        user_id                     INT,
+        FOREIGN KEY (user_id) REFERENCES app_users(user_id),
+        created_at                  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_update                 TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        is_active                   BOOLEAN DEFAULT TRUE,
+        UNIQUE (task_log_id,user_id)
     )',
 ]);

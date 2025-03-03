@@ -36,6 +36,8 @@ $statements = array_merge($statements, [
         user_password     VARCHAR(255) NOT NULL,
         user_token        VARCHAR(255) NOT NULL,
         user_vcode        VARCHAR(255) NOT NULL,
+        user_role_id      INT,
+        FOREIGN KEY (user_role_id) REFERENCES app_roles(role_id),
         specialty_id      INT,
         FOREIGN KEY (specialty_id) REFERENCES app_specialties(specialty_id),
         is_super          BOOLEAN DEFAULT FALSE,

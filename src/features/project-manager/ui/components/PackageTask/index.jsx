@@ -1,3 +1,4 @@
+
 import ProgressBar from "../ProgressBar"
 import Status from "../Status"
 import { faComment, faEye, faTrash } from "@fortawesome/free-solid-svg-icons"
@@ -12,10 +13,17 @@ import useProjects from "../../hooks/useProjects";
 import { openModal2 } from "../../../../../shared/state/modalSlice"
 import { toggleTask, toggleSeletor } from "../../../state/multiTasksSelectorSlice";
 import { SiTicktick } from "react-icons/si";
+import { TiDelete } from "react-icons/ti";
+import { HiUserAdd } from "react-icons/hi";
+
+import { useOperators } from "../../../../../store-zustand"
+import Swal from "sweetalert2"
+import { refresh } from "../../../../../shared/state/refreshIndexSlice"
 
 export default function PackageTask(props) {
+    const { openModal } = useOperators();
     const user = new User(useRecoilValue($UserInfo));
-    const { removeWorkPackageTask } = useProjects();
+    const { removeWorkPackageTask, updateTaskOperators } = useProjects();
     const dispatch = useDispatch();
     const multiSelect = useSelector(state => state.projects.multiTasksSelector);
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
@@ -27,8 +35,30 @@ export default function PackageTask(props) {
         dispatch(openModal2(4005));
     }
 
-    const handleRemove = async () => {
-        removeWorkPackageTask(props.task_id);
+    const handleRemove = () => { removeWorkPackageTask(props.task_id) }
+
+    const removeOperator = (user_id) => {
+        let copy = [...props.operators];
+        Swal.fire({
+            icon: "question",
+            title: "Are you sure you want to delete this operator ? ",
+            showDenyButton: true,
+        }).then((res) => {
+            if (res.isConfirmed) {
+                let final = copy.filter(el => el.user_id != user_id);
+                updateTaskOperators(props.log_id, final.map(el => el.user_id)).then(
+                    () => {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Operators Updated Successfully",
+                            timer: 1500
+                        }).then(() => {
+                            dispatch(refresh());
+                        })
+                    }
+                )
+            }
+        })
     }
 
     return (
@@ -49,7 +79,6 @@ export default function PackageTask(props) {
                                 style={{ transform: "scale(1.5)", cursor: "pointer" }}
                             />
                         ) : <SiTicktick />
-
                     ) : (props.task_index + 1)
                 }
             </td>
@@ -99,15 +128,26 @@ export default function PackageTask(props) {
                         <div className="col-12 d-flex align-items-center justify-content-center gap-3">
                             <FontAwesomeIcon style={{ cursor: "pointer" }} icon={faEye} className="text-secondary" onClick={openTaskDetails} />
                             <FontAwesomeIcon style={{ cursor: "pointer" }} icon={faTrash} className="text-danger" onClick={handleRemove} />
+                            <HiUserAdd className="fs-4" style={{ cursor: "pointer" }} onClick={() => openModal(props.log_id)} />
                         </div>
                     </th>
                 )
+            }
+            {
+                taskFilter.tableView[10].active && <th className="m-0 p-0" style={{ whiteSpace: "nowrap" }}>
+                    <div className="col-12 d-flex gap-2 p-2 flex-wrap">
+                        {props.operators.map((el, index) => (
+                            <p style={{ fontSize: "10px" }} className="p-1 align-items-center rounded-3 bg-primary fw-lighter" key={index}>{el.user_name} <TiDelete onClick={() => removeOperator(el.user_id)} className="fs-6" /></p>
+                        ))}
+                    </div>
+                </th>
             }
         </tr>
     )
 }
 
 PackageTask.propTypes = {
+    operators: PropTypes.array,
     status_id: PropTypes.number,
     task_duration: PropTypes.number,
     task_start_at: PropTypes.string,

@@ -14,6 +14,8 @@ $endpoints += [
     '/api/project/workpackages/store'                 => 'project_workpackage_store',
     '/api/project/task/update/\d+'                    => 'project_task_update',
     '/api/project/task/update/multi'                  => 'project_task_multi_update',
+    '/api/project/task/update/operators'              => 'update_task_operators',
+    '/api/project/task/operators/\d+'                 => 'index_task_operators',
 ];
 
 function projects_index()
@@ -281,6 +283,10 @@ function project_tasks($id)
                         'task_start_at'     => $el['task_start_at'],
                         'task_end_at'       => $el['task_end_at'],
                         'specialty_id'      => $el['specialty_id'],
+                        'task_operators'    =>  array_map(function ($user) {
+                            $user['user_name'] = getOneField("app_users", "user_name", "user_id = {$user['user_id']}");
+                            return $user;
+                        }, getRows("task_users", "task_log_id = {$el['log_id']}")),
                         'specialty_name'    => getOneField("app_specialties", "specialty_name", "specialty_id = {$el['specialty_id']}"),
                         'task_type_id'      => $el['task_type_id'],
                         'task_type_name'    => getOneField("work_package_task_types", "type_name", "type_id = {$el['task_type_id']}"),
@@ -349,6 +355,7 @@ function project_tasks_filter($id)
             $final = [];
             if ($statement->rowCount() > 0) {
                 while ($el = $statement->fetch(PDO::FETCH_ASSOC)) {
+                    $el['task_operators'] = getRows("task_users", "task_log_id = {$el['log_id']}");
                     array_push($final, $el);
                 }
             }
@@ -590,6 +597,42 @@ function project_task_multi_update()
         }
         $response['err'] = false;
         $response['msg'] = "New Project Added Successfully";
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+
+function update_task_operators()
+{
+    global $method, $POST_data, $response;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        $task_log_id = $POST_data['log_id'];
+        $operators = $POST_data['operators'];
+        delete_data("task_users", "task_log_id = {$task_log_id}");
+
+        foreach ($operators as $index => $operator) {
+            insert_data("task_users", ["task_log_id", "user_id"], [$task_log_id, $operator]);
+        }
+        $response['err'] = false;
+        $response['msg'] = "New Project Added Successfully";
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function index_task_operators($id)
+{
+    $task_log_id = explode("/api/project/task/operators/", $id[0])[1];
+    global $method, $response;
+    if ($method === "GET") {
+        $operator_info = checkAuth();
+        $response['err'] = false;
+        $response['msg'] = 'All Projects Are Ready To View';
+        $response['data'] =  getRows("task_users", "task_log_id = {$task_log_id}");
         echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';

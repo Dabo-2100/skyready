@@ -23,3 +23,10 @@ export const useRemainTasksModal = create((set) => ({
     openModal: (sp, active_part_id) => set(() => ({ index: true, speciality: sp, active_part_id })),
     closeModal: () => set(() => ({ index: false, speciality: "", active_part_id: 0 }))
 }))
+
+export const useOperators = create((set) => ({
+    index: false,
+    active_task_id: 0,
+    openModal: (task_id) => set(() => ({ index: true, active_task_id: task_id })),
+    closeModal: () => set(() => ({ index: false, active_task_id: 0 }))
+}))

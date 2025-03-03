@@ -6,6 +6,7 @@ import { indexProjectPackages } from "../api/index_project_packages";
 import { indexProjectTaskStatus } from "../api/index_project_task_status";
 import { indexProjects } from "../api/index_projects";
 import { indexTaskComments } from "../api/index_task_comments";
+import { indexTaskOperators } from "../api/index_task_operators";
 import { indexWorkPackageTasks } from "../api/index_work_package_tasks";
 import { showProjectFilteredPackages } from "../api/show_project_packages";
 import { showFilteredWorkPackages } from "../api/show_work_package_tasks";
@@ -13,6 +14,7 @@ import { storeNewComment } from "../api/store_new_comment";
 import { storeNewProjectPackage } from "../api/store_new_project_package";
 import { storeProject } from "../api/store_project";
 import { updateMultiTasks } from "../api/update_multi_tasks";
+import { updateTaskOperators } from "../api/update_task_operators";
 import { updateTaskStatus } from "../api/update_task_status";
 
 export const ProjectsRepo = {
@@ -20,8 +22,12 @@ export const ProjectsRepo = {
         return await indexProjects(serverUrl, token, model_id);
     },
 
-    all_project_task_status: async (serverUrl, token, model_id) => {
-        return await indexProjectTaskStatus(serverUrl, token, model_id);
+    all_project_task_status: async (serverUrl, token, log_id) => {
+        return await indexProjectTaskStatus(serverUrl, token, log_id);
+    },
+
+    all_task_operators: async (serverUrl, token, model_id) => {
+        return await indexTaskOperators(serverUrl, token, model_id);
     },
 
     all_project_packages: async (serverUrl, token, model_id) => {
@@ -74,6 +80,10 @@ export const ProjectsRepo = {
 
     update_multi_tasks: async (serverUrl, token, tasks) => {
         return await updateMultiTasks(serverUrl, token, tasks);
+    },
+
+    update_task_operators: async (serverUrl, token, log_id, operators) => {
+        return await updateTaskOperators(serverUrl, token, log_id, operators);
     },
 
     remove_task_comment: async (serverUrl, token, data) => {

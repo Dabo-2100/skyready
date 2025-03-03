@@ -117,7 +117,7 @@ export default function ProjectTasksFilter() {
                                                             <div className="accordion-body">
                                                                 {
                                                                     el.children.map((el, index) => {
-                                                                        return <CheckBox onClick={() => { }} key={el.zone_id} id={`${index1}zn${index}`} content={el.zone_name} />
+                                                                        return <CheckBox key={el.zone_id} id={`${index1}zn${index}`} content={el.zone_name} />
                                                                     })
                                                                 }
                                                             </div>

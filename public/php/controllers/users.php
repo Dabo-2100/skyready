@@ -22,11 +22,12 @@ function users_index()
         $response['msg'] = 'All Users Are Ready To View';
         $response['data'] =  array_map(function ($user) {
             return [
-                'user_id'    => $user['user_id'],
-                'user_name'  => $user['user_name'],
-                'user_email' => $user['user_email'],
-                'is_active'  => $user['is_active'],
-                'user_roles' => count(getRows("app_user_authority", "user_id=" . $user['user_id']))
+                'user_id'       => $user['user_id'],
+                'user_name'     => $user['user_name'],
+                'user_email'    => $user['user_email'],
+                'is_active'     => $user['is_active'],
+                'user_role_id'  => $user['user_role_id'],
+                'user_roles'    => count(getRows("app_user_authority", "user_id=" . $user['user_id']))
             ];
         }, getRows("app_users", "1=1"));
         echo json_encode($response, true);

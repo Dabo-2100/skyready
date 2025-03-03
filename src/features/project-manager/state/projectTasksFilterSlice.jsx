@@ -59,6 +59,7 @@ const projectTasksFilterSlice = createSlice({
                 { id: 8, name: "Start Date", active: false },
                 { id: 9, name: "End Date", active: false },
                 { id: 10, name: "Actions", active: true },
+                { id: 11, name: "Operators", active: true },
             ]
         },
     },

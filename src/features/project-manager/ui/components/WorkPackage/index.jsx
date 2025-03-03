@@ -11,7 +11,7 @@ import { setActiveId } from "../../../../aircraft-fleet/state/activeWorkPackageI
 import PropTypes from "prop-types";
 import { setPackageInfo } from "../../../../aircraft-fleet/state/activeWorkPackageInfoSlice";
 import { openModal2 } from "../../../../../shared/state/modalSlice";
-import { resetSelector, selectAllTasks, unselectAllTasks } from "../../../state/multiTasksSelectorSlice";
+import { selectAllTasks, unselectAllTasks } from "../../../state/multiTasksSelectorSlice";
 
 export default function WorkPackage({ package_id, estimated_duration, package_name, start_at, end_at, work_package_progress, info }) {
     const dispatch = useDispatch();
@@ -135,7 +135,6 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
                 </th>}
                 {projectTasksFilter.tableView[7].active && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>{start_at}</th>}
                 {projectTasksFilter.tableView[8].active && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>{end_at}</th>}
-
                 {
                     user.isAppAdmin(appIndex) && projectTasksFilter.tableView[9].active && (
                         <th onClick={event => event.stopPropagation()} >
@@ -143,6 +142,7 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
                         </th>
                     )
                 }
+                {projectTasksFilter.tableView[10].active && <th onClick={event => event.stopPropagation()} style={{ cursor: "context-menu" }}>-</th>}
             </tr>
             {
                 isCollapsed && (packageTasks.length > 0) && (
@@ -167,6 +167,7 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
                                         log_id={el.log_id}
                                         task_id={el.task_id}
                                         status_id={el.status_id}
+                                        operators={el.task_operators}
                                         status_name={el.status_name}
                                         task_order={el.task_order}
                                         task_progress={isNaN(el.task_progress) ? 0 : el.task_progress}
