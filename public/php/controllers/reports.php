@@ -1,94 +1,12 @@
 <?php
 // Routes
-
-use function PHPSTORM_META\map;
-
 $endpoints += [
     // '/api/report/wp/details' => 'wp_report_1',
     // '/api/report/2'          => 'wp_report_2',
     '/api/report/final'         => 'final_Report',
     '/api/report/final/remian'  => 'remain_tasks',
+    '/api/report/kpi'           => 'kpi_report',
 ];
-
-// function wp_report_1()
-// {
-//     global $method, $response, $POST_data, $pdo;
-//     if ($method === "POST") {
-//         $operator_info = checkAuth();
-//         $package_children = $POST_data['package_children'];
-//         $data = [];
-//         foreach ($package_children as $index => $package_id) {
-//             $package_obj = [];
-//             $package_obj['package_id'] = $package_id;
-//             $package_obj['package_name'] = getOneField("work_packages", "package_name", "package_id = {$package_obj['package_id']}");
-//             $sql = "SELECT DISTINCT wpt.specialty_id , aps.specialty_name, wpt.package_id  
-//             FROM `project_tasks` pt
-//             JOIN work_package_tasks wpt ON wpt.task_id = pt.task_id
-//             JOIN app_specialties aps ON aps.specialty_id = wpt.specialty_id
-//             WHERE wpt.package_id = {$package_obj['package_id']}";
-//             $statement = $pdo->prepare($sql);
-//             $statement->execute();
-//             $final = [];
-//             if ($statement->rowCount() > 0) {
-//                 while ($el = $statement->fetch(PDO::FETCH_ASSOC)) {
-//                     $sql2 = "SELECT 
-//                     SUM(pt.task_progress/100 * wpt.task_duration) AS TotalDoneHrs, 
-//                     SUM(wpt.task_duration) AS Speciality_Duration, 
-//                     COUNT(*) AS tasks_No, 
-//                     (  SELECT COUNT(*) 
-//                         FROM project_tasks pt2 
-//                         JOIN work_package_tasks wpt2 ON wpt2.task_id = pt2.task_id
-//                         WHERE pt2.status_id != 4 AND wpt2.specialty_id = {$el['specialty_id']} AND wpt2.package_id = {$el['package_id']} 
-//                     ) AS not_done_count
-//                     FROM `project_tasks` pt 
-//                     JOIN work_package_tasks wpt ON wpt.task_id = pt.task_id 
-//                     JOIN app_specialties aps ON aps.specialty_id = wpt.specialty_id
-//                     WHERE wpt.package_id = {$el['package_id']} AND wpt.specialty_id = {$el['specialty_id']}";
-//                     $statement2 = $pdo->prepare($sql2);
-//                     $statement2->execute();
-//                     if ($statement2->rowCount() > 0) {
-//                         while ($el2 = $statement2->fetch(PDO::FETCH_ASSOC)) {
-//                             $el['Done_Hrs'] = number_format($el2['TotalDoneHrs'], 2);
-//                             $el['Speciality_Duration'] = number_format($el2['Speciality_Duration'], 2);
-//                             $el['tasks_no'] = number_format($el2['tasks_No'], 2);
-//                             $el['not_done_count'] = number_format($el2['not_done_count'], 2);
-//                         }
-//                     }
-//                     array_push($final, $el);
-//                 }
-//             }
-//             $package_obj['specialites'] = $final;
-//             array_push($data, $package_obj);
-//         }
-//         // print_r($package_children);
-//         $response['err'] = false;
-//         $response['msg'] = 'All Types Are Ready To View';
-//         $response['data'] = $data;
-//         echo json_encode($response, true);
-//     } else {
-//         echo 'Method Not Allowed';
-//     }
-// }
-
-
-// function wp_report_2()
-// {
-//     global $method, $response, $pdo;
-//     if ($method === "GET") {
-//         $operator_info = checkAuth();
-//         $data = array_map(function ($pkg) {
-//             $pkg['parent_name'] = getOneField("work_packages", "package_name", "package_id = {$pkg['parent_id']}");
-//             return $pkg;
-//         }, getRows("work_packages", "model_id = 1"));
-//         $response['err'] = false;
-//         $response['msg'] = 'All Types Are Ready To View';
-//         $response['data'] = $data;
-//         echo json_encode($response, true);
-//     } else {
-//         echo 'Method Not Allowed';
-//     }
-// }
-
 
 function final_Report()
 {
@@ -115,6 +33,29 @@ function final_Report()
 }
 
 
+function kpi_report()
+{
+    global $method, $response, $pdo;
+    if ($method === "GET") {
+        $all_projects = getRows("app_projects", "1=1");
+        $data = [];
+        foreach ($all_projects as $project) {
+            $project_obj = [];
+            $project_obj['project_id'] = $project['project_id'];
+            $project_obj['project_name'] = $project['project_name'];
+            $project_obj['project_progress'] = $project['project_progress'];
+            $project_obj['details'] = getProjectDetails($project['project_id']);
+            array_push($data, $project_obj);
+        }
+        $response['err'] = false;
+        $response['msg'] = 'All Types Are Ready To View';
+        $response['data'] = $data;
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
 function getProjectDetails($project_id)
 {
     $avionics_special_id = getOneField("app_specialties", "specialty_id", "specialty_name = 'Avionics'");
@@ -123,7 +64,7 @@ function getProjectDetails($project_id)
     $project_packages = $project_avionics_tasks = $project_structure_tasks = $project_parent_packages_ids = $project_parent_packages  = [];
     $project_avionics_duration = $project_structure_duration = $project_avionics_done_duration = $project_structure_done_duration = 0;
 
-    foreach ($applicability as $index => $pkg) {
+    foreach ($applicability as $pkg) {
         $pkg_obj = [];
         $package_id = $pkg['package_id'];
         $pkg_obj['package_id'] = $package_id;
@@ -132,7 +73,7 @@ function getProjectDetails($project_id)
         $Pkg_avionics_duration = $Pkg_structure_duration = 0;
         $Pkg_avionics_done_duration = $Pkg_structure_done_duration = 0;
 
-        foreach ($pkg_tasks as $index => $task) {
+        foreach ($pkg_tasks as $task) {
             $task_id = $task['task_id'];
             $task_progress = getOneField("project_tasks", "task_progress", "task_id = {$task_id} AND project_id ={$project_id}");
             $task_done_time = $task['task_duration'] * ($task_progress / 100);
@@ -212,7 +153,7 @@ function remain_tasks()
             $wp_tasks = getRows("work_package_tasks", "package_id={$package_id} AND specialty_id != {$avionics_special_id} ORDER BY task_order");
         }
         $remian_tasks = [];
-        foreach ($wp_tasks as $index => $task) {
+        foreach ($wp_tasks as $task) {
             $task_id = $task['task_id'];
             $task_progress = getOneField("project_tasks", "task_progress", "project_id={$project_id} and task_id = {$task_id}");
             if ($task_progress != 100) {

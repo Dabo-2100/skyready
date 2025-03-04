@@ -1,6 +1,5 @@
 import { lazy } from "react";
-import FormPage from "../Pages/Formik/index.jsx";
-
+import AlbertoReport from "../Pages/Report2/app/index.jsx";
 const HomePage = lazy(() => import("../Pages/HomePage/index.jsx"));
 const LoginPage = lazy(() => import("../Pages/LoginPage/index.jsx"));
 const ReportFinal = lazy(() => import("../Pages/Report/app/index.jsx"));
@@ -12,7 +11,7 @@ const routes = [
   { path: "login", element: <LoginPage /> },
   { path: "report", element: <ReportFinal /> },
   { path: "activate", element: <ActivatePage /> },
-  { path: "test", element: <FormPage /> },
+  { path: "key", element: <AlbertoReport /> },
   { path: "*", element: <Page404 /> },
 ];
 
