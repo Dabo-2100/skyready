@@ -12,7 +12,7 @@ function final_Report()
 {
     global $method, $response, $pdo;
     if ($method === "GET") {
-        $all_projects = getRows("app_projects", "1=1");
+        $all_projects = getRows("app_projects", "project_progress != 100");
         $data = [];
 
         foreach ($all_projects as $index => $project) {

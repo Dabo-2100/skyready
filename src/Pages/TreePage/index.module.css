@@ -1,0 +1,65 @@
+#treePage {
+    height: 100vh;
+    overflow: auto;
+
+    .root {
+        width: 100%;
+        padding: 16px;
+        background-color: white;
+        transition: ease all 500ms;
+
+        header {
+            cursor: pointer;
+            transition: ease all 400ms;
+        }
+
+        .root-header {
+            font-size: 24px;
+        }
+
+        .node {
+
+            position: relative;
+            padding-left: 16px;
+
+
+            header {
+                padding: 16px 0;
+
+                &:hover {
+                    background-color: rgba(226, 226, 255, 0.869);
+                }
+            }
+
+            header.active {
+                /* border-bottom: rgb(178, 178, 255) 8px solid; */
+                background-color: rgb(178, 178, 255);
+                border-radius: 8px;
+            }
+
+            .node-header {
+                font-size: 18px;
+
+            }
+        }
+
+        .separtor {
+            position: absolute;
+            border: 1px rgba(0, 0, 0, 0.3) solid;
+            height: 100%;
+            width: 0px;
+            top: 0;
+            left: 0;
+        }
+
+        .connector {
+            position: absolute;
+            border: 1px rgba(0, 0, 0, 0.3) solid;
+            width: 16px;
+            top: calc(50%);
+            left: 2px;
+        }
+
+
+    }
+}

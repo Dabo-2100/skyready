@@ -4,7 +4,8 @@ const HomePage = lazy(() => import("../Pages/HomePage/index.jsx"));
 const LoginPage = lazy(() => import("../Pages/LoginPage/index.jsx"));
 const ReportFinal = lazy(() => import("../Pages/Report/app/index.jsx"));
 const ActivatePage = lazy(() => import("../Pages/ActivatePage/index.jsx"));
-const Page404 = lazy(() => import("../Pages/Page404/index.jsx"))
+const Page404 = lazy(() => import("../Pages/Page404/index.jsx"));
+const TreePage = lazy(() => import("../Pages/TreePage/index.jsx"));
 
 const routes = [
   { path: "/", element: (<HomePage />) },
@@ -12,6 +13,7 @@ const routes = [
   { path: "report", element: <ReportFinal /> },
   { path: "activate", element: <ActivatePage /> },
   { path: "key", element: <AlbertoReport /> },
+  { path: "tree", element: <TreePage /> },
   { path: "*", element: <Page404 /> },
 ];
 
