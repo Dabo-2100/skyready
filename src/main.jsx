@@ -7,11 +7,18 @@ import "animate.css";
 import "./index.scss";
 import { Provider } from "react-redux";
 import store from "./store-redux";
+import { BrowserRouter } from "react-router-dom";
+import { Suspense } from "react";
+import Loader from "./shared/ui/components/Loader/index.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <RecoilRoot>
-      <App />
+      <BrowserRouter>
+        <Suspense fallback={<Loader />}>
+          <App />
+        </Suspense>
+      </BrowserRouter>
     </RecoilRoot>
   </Provider>
 );

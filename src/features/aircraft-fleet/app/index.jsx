@@ -6,7 +6,8 @@ import ConnectorFinder from "../ui/tabs/ConnectorFinder";
 
 export default function FleetApp() {
     return (
-        <div className="tabApp d-flex flex-column" id="FleetApp" >
+        <div className="col-12 d-flex flex-column" id="FleetApp" >
+            <nav className="col-12 d-flex "></nav>
             <NavTabs style={{ height: "100vh" }}>
                 <NavTabs.Tab name="Aircraft Fleet" className="d-flex flex-column flex-grow-1"><Aircraft /></NavTabs.Tab>
                 <NavTabs.Tab name="Work Packages"><Packages /></NavTabs.Tab>
