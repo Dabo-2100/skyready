@@ -1,8 +1,8 @@
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { $LoaderIndex, $UserInfo } from "../../../../store-recoil";
+import { useRecoilState } from "recoil";
+import { $LoaderIndex } from "../../../../store-recoil";
 import NoData from "../../../../shared/ui/components/NoData";
 import useAircraft from "../hooks/useAircraft";
 import { User } from "../../../../shared/core/User";
@@ -10,12 +10,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { setActiveId } from "../../state/activeAircraftIdSlice";
 import PrintBtn from "../../../../shared/ui/components/PrintBtn";
 import { openModal } from "../../../../shared/state/modalSlice";
+import { useAuth } from "../../../../store-zustand";
 
 export default function ZoneFinder() {
-    // const userData = { isAppAdmin: () => false };
+    const { userInfo } = useAuth()
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const aircraftFleetTable = useRef();
-    const userData = new User(useRecoilValue($UserInfo));
+    const userData = new User(userInfo);
     const [view, setView] = useState([]);
     const [aircraft, setAircaft] = useState([]);
     const [loaderIndex, setLoaderIndex] = useRecoilState($LoaderIndex);

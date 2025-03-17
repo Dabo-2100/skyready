@@ -26,21 +26,15 @@ function applicability_store()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $package_id = htmlspecialchars($POST_data["package_id"]);
-            $aircraft_id = htmlspecialchars($POST_data["aircraft_id"]);
-            $status_id = insert_data("work_package_applicability", ["package_id", "aircraft_id"], [$package_id, $aircraft_id]);
-            if (is_null($status_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "New Applicability Added Successfully";
-                $response['data'] = getRows("work_package_applicability", "is_active = 1");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $package_id = htmlspecialchars($POST_data["package_id"]);
+        $aircraft_id = htmlspecialchars($POST_data["aircraft_id"]);
+        $status_id = insert_data("work_package_applicability", ["package_id", "aircraft_id"], [$package_id, $aircraft_id]);
+        if (is_null($status_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "New Applicability Added Successfully";
+            $response['data'] = getRows("work_package_applicability", "is_active = 1");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -51,20 +45,14 @@ function applicability_delete()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $log_id = htmlspecialchars($POST_data["log_id"]);
-            $log_id = delete_data("work_package_applicability", "log_id = $log_id");
-            if (is_null($log_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "Applicability Deleted Successfully";
-                $response['data'] = getRows("work_package_applicability", "is_active = 1");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $log_id = htmlspecialchars($POST_data["log_id"]);
+        $log_id = delete_data("work_package_applicability", "log_id = $log_id");
+        if (is_null($log_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "Applicability Deleted Successfully";
+            $response['data'] = getRows("work_package_applicability", "is_active = 1");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }

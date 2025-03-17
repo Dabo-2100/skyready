@@ -2,12 +2,12 @@ import { useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import useAircraft from "../hooks/useAircraft";
-import useAircraftData from "../hooks/useAircraftData";
 import Modal from "../../../../shared/ui/modals/Modal";
+import { useSelector } from "react-redux";
 
 export default function NewModel() {
     const { addNewAircraftModel, removeAircraftModel } = useAircraft();
-    const { aircraftModels: models } = useAircraftData();
+    const models = useSelector(state => state.aircraftFleet.aircraftModels.value);
     const new_model_name = useRef();
 
     const handleSubmit = (event) => {

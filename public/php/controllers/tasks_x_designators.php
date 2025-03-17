@@ -79,23 +79,17 @@ function task_designators_store()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $task_id = htmlspecialchars($POST_data["task_id"]);
-            $designator_id = htmlspecialchars($POST_data["designator_id"]);
-            $fields = ["task_id", "designator_id"];
-            $values = ["$task_id", "$designator_id"];
-            $log_id = insert_data("tasks_x_designators", $fields, $values);
-            if (is_null($log_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "New designator Added Successfully to The Task";
-                $response['data'] = getRows("tasks_x_designators", "is_active = 1 AND task_id = {$task_id}");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $task_id = htmlspecialchars($POST_data["task_id"]);
+        $designator_id = htmlspecialchars($POST_data["designator_id"]);
+        $fields = ["task_id", "designator_id"];
+        $values = ["$task_id", "$designator_id"];
+        $log_id = insert_data("tasks_x_designators", $fields, $values);
+        if (is_null($log_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "New designator Added Successfully to The Task";
+            $response['data'] = getRows("tasks_x_designators", "is_active = 1 AND task_id = {$task_id}");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -106,20 +100,14 @@ function task_designators_delete()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $designator_id = htmlspecialchars($POST_data["designator_id"]);
-            $designator_id = delete_data("aircraft_designators", "designator_id = $designator_id");
-            if (is_null($designator_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "designator Deleted Successfully";
-                $response['data'] = getRows("aircraft_designators", "is_active = 1");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $designator_id = htmlspecialchars($POST_data["designator_id"]);
+        $designator_id = delete_data("aircraft_designators", "designator_id = $designator_id");
+        if (is_null($designator_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "designator Deleted Successfully";
+            $response['data'] = getRows("aircraft_designators", "is_active = 1");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }

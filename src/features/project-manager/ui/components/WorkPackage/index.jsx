@@ -1,10 +1,8 @@
 import { faAngleRight, faArrowDown, faArrowUp, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect, useRef } from "react";
-import { useRecoilValue } from "recoil";
 import PackageTask from "../PackageTask";
 import { User } from "../../../../../shared/core/User";
-import { $UserInfo } from "../../../../../store-recoil";
 import { useDispatch, useSelector } from "react-redux";
 import useProjects from "../../hooks/useProjects";
 import { setActiveId } from "../../../../aircraft-fleet/state/activeWorkPackageIdSlice";
@@ -12,6 +10,7 @@ import PropTypes from "prop-types";
 import { setPackageInfo } from "../../../../aircraft-fleet/state/activeWorkPackageInfoSlice";
 import { openModal2 } from "../../../../../shared/state/modalSlice";
 import { selectAllTasks, unselectAllTasks } from "../../../state/multiTasksSelectorSlice";
+import { useAuth } from "../../../../../store-zustand";
 
 export default function WorkPackage({ package_id, estimated_duration, package_name, start_at, end_at, work_package_progress, info }) {
     const dispatch = useDispatch();
@@ -81,8 +80,8 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
     //     selectAllRef.current && (selectAllRef.current.checked = selectAllIndex);
 
     // }, [selectAllIndex]);
-
-    const user = new User(useRecoilValue($UserInfo));
+    const { userInfo } = useAuth();
+    const user = new User(userInfo);
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
     return (
         <>

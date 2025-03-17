@@ -29,20 +29,14 @@ function specialties_store()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $specialty_name = htmlspecialchars($POST_data["specialty_name"]);
-            $specialty_id = insert_data("app_specialties", ["specialty_name"], [$specialty_name]);
-            if (is_null($specialty_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "New Specialty Added Successfully";
-                $response['data'] = getRows("app_specialties", "is_active = 1");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $specialty_name = htmlspecialchars($POST_data["specialty_name"]);
+        $specialty_id = insert_data("app_specialties", ["specialty_name"], [$specialty_name]);
+        if (is_null($specialty_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "New Specialty Added Successfully";
+            $response['data'] = getRows("app_specialties", "is_active = 1");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -78,20 +72,14 @@ function specialties_delete()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $specialty_id = htmlspecialchars($POST_data["specialty_id"]);
-            $specialty_id = delete_data("app_specialties", "specialty_id = $specialty_id");
-            if (is_null($specialty_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "Status Deleted Successfully";
-                $response['data'] = getRows("app_specialties", "is_active = 1");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $specialty_id = htmlspecialchars($POST_data["specialty_id"]);
+        $specialty_id = delete_data("app_specialties", "specialty_id = $specialty_id");
+        if (is_null($specialty_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "Status Deleted Successfully";
+            $response['data'] = getRows("app_specialties", "is_active = 1");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }

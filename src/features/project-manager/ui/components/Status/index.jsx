@@ -1,5 +1,3 @@
-import { useRecoilState } from "recoil"
-import { $Defaults, $LoaderIndex } from "@/store-recoil"
 import { useEffect, useRef, useState } from "react";
 import { refresh } from "../../../../../shared/state/refreshIndexSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,11 +5,11 @@ import PropTypes from "prop-types";
 import useProjects from "../../hooks/useProjects";
 import Swal from "sweetalert2";
 import { resetSelector } from "../../../state/multiTasksSelectorSlice";
+import { defaults, useLoader } from "../../../../../store-zustand";
 
 export default function Status(props) {
     const dispatch = useDispatch();
-    const [defaults] = useRecoilState($Defaults)
-    const [, setLoaderIndex] = useRecoilState($LoaderIndex);
+    const { setLoaderIndex } = useLoader();
     const allStatus = useSelector(state => state.projects.projectTaskStatus.value);
     const multiSelect = useSelector(state => state.projects.multiTasksSelector);
     const theSelect = useRef();

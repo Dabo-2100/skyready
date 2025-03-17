@@ -1,17 +1,13 @@
 import Swal from "sweetalert2";
-import { useRecoilValue } from "recoil";
 import { useDispatch, useSelector } from "react-redux";
-import { $Server, $SwalDark, $Token } from "../../../../store-recoil";
 import { ProjectsRepo } from "../../data/repositories/ProjectsRepo";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
-import { formCheck } from "../../../../customHooks";
+import { formCheck } from "../../../../validator";
 import { closeModal } from "../../../../shared/state/modalSlice";
+import { darkSwal, serverUrl, token } from "../../../../store-zustand";
 
 export default function useProjects() {
     const dispatch = useDispatch();
-    const token = useRecoilValue($Token);
-    const darkSwal = useRecoilValue($SwalDark);
-    const serverUrl = useRecoilValue($Server);
     const projectTasksFilters = useSelector(state => state.projects.projectTasksFilter);
 
     const getAllProjects = async () => {

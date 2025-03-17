@@ -26,21 +26,15 @@ function tasktypes_store()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $type_name = htmlspecialchars($POST_data["type_name"]);
-            $specialty_id = htmlspecialchars($POST_data["specialty_id"]);
-            $task_type_id = insert_data("work_package_task_types", ["specialty_id", "type_name"], [$specialty_id, $type_name]);
-            if (is_null($task_type_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "New Status Added Successfully";
-                $response['data'] = getRows("work_package_task_types", "is_active = 1 AND specialty_id = {$specialty_id}");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $type_name = htmlspecialchars($POST_data["type_name"]);
+        $specialty_id = htmlspecialchars($POST_data["specialty_id"]);
+        $task_type_id = insert_data("work_package_task_types", ["specialty_id", "type_name"], [$specialty_id, $type_name]);
+        if (is_null($task_type_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "New Status Added Successfully";
+            $response['data'] = getRows("work_package_task_types", "is_active = 1 AND specialty_id = {$specialty_id}");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -72,23 +66,15 @@ function tasktypes_delete()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $type_id = htmlspecialchars($POST_data["type_id"]);
-            $specialty_id = getOneField("work_package_task_types", "specialty_id", "type_id = {$type_id}");
-
-            $type_del = delete_data("work_package_task_types", "type_id = {$type_id}");
-            if (is_null($type_del) == false) {
-                $response['err'] = false;
-                $response['msg'] = "Type Deleted Successfully";
-                $response['data'] = getRows("work_package_task_types", "is_active = 1 AND specialty_id = {$specialty_id}");
-            }
-
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $type_id = htmlspecialchars($POST_data["type_id"]);
+        $specialty_id = getOneField("work_package_task_types", "specialty_id", "type_id = {$type_id}");
+        $type_del = delete_data("work_package_task_types", "type_id = {$type_id}");
+        if (is_null($type_del) == false) {
+            $response['err'] = false;
+            $response['msg'] = "Type Deleted Successfully";
+            $response['data'] = getRows("work_package_task_types", "is_active = 1 AND specialty_id = {$specialty_id}");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }

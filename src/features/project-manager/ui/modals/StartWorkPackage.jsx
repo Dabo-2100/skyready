@@ -2,13 +2,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import useProjects from "../hooks/useProjects";
-import { useRecoilState } from "recoil";
-import { $LoaderIndex } from "../../../../store-recoil";
 import Modal from "../../../../shared/ui/modals/Modal";
 import CloseBtn from "../../../../shared/ui/components/CloseBtn/CloseBtn";
+import { useLoader } from "../../../../store-zustand";
 
 export default function StartWorkPackage() {
-    const [, setLoaderIndex] = useRecoilState($LoaderIndex);
+    const { setLoaderIndex } = useLoader();
     const { startWorkPackage } = useProjects();
     const projectInfo = useSelector(state => state.projects.activeProject.info);
     const workPakcages = useSelector(state => state.projects.activeProject.availablePackages);

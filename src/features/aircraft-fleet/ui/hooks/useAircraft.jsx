@@ -1,19 +1,17 @@
 import Swal from "sweetalert2";
-import { useRecoilValue } from "recoil";
 import { useDispatch, useSelector } from "react-redux";
-import { $Server, $SwalDark, $Token } from "../../../../store-recoil";
 import { AircraftRepo } from "../../data/repositories/AircraftRepo";
-import { formCheck } from "../../../../customHooks";
+import { formCheck } from "../../../../validator";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
+import { closeModal } from "../../../../shared/state/modalSlice";
+import { darkSwal, serverUrl, token, useLoader } from "../../../../store-zustand";
 
 export default function useAircraft() {
+    const{setLoaderIndex} = useLoader();
     const dispatch = useDispatch();
     const editAircaft_id = useSelector(state => state.aircraftFleet.activeAircraftId.value);
     const activeWorkPackageInfo = useSelector(state => state.aircraftFleet.activeWorkPackageInfo.value);
     const activeParentZone = useSelector(state => state.aircraftFleet.activeParentZone.value);
-    const token = useRecoilValue($Token);
-    const serverUrl = useRecoilValue($Server);
-    const darkSwal = useRecoilValue($SwalDark);
 
     const getAircraftInfo = async () => {
         return await AircraftRepo.aircraft_info(serverUrl, token, editAircaft_id);
@@ -81,6 +79,7 @@ export default function useAircraft() {
         ])
 
         if (formErrors == 0) {
+            setLoaderIndex(true);
             AircraftRepo.register_new_aircraft(serverUrl, token, data).then((res) => {
                 Swal.fire({
                     icon: res == true ? "success" : "error",
@@ -88,8 +87,9 @@ export default function useAircraft() {
                     timer: 2500,
                     customClass: darkSwal,
                 }).then(() => {
-                    res == true && dispatch(refresh());
+                    res == true && dispatch(refresh()) && dispatch(closeModal());
                 })
+                setLoaderIndex(false);
             })
         }
         else {

@@ -14,6 +14,7 @@ import { storeNewComment } from "../api/store_new_comment";
 import { storeNewProjectPackage } from "../api/store_new_project_package";
 import { storeProject } from "../api/store_project";
 import { updateMultiTasks } from "../api/update_multi_tasks";
+import { updateProgress } from "../api/update_progress";
 import { updateTaskOperators } from "../api/update_task_operators";
 import { updateTaskStatus } from "../api/update_task_status";
 
@@ -89,5 +90,10 @@ export const ProjectsRepo = {
     remove_task_comment: async (serverUrl, token, data) => {
         return await deleteTaskComment(serverUrl, token, data);
     },
+
+    update_progress: async (serverUrl, token, log_id, data) => {
+        return await updateProgress(serverUrl, token, log_id, data);
+    },
+
 
 }

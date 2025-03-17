@@ -57,13 +57,8 @@ function auth_rest_password()
         $operator_info = checkAuth();
         $user_email = htmlspecialchars(strtolower(@$POST_data["user_email"]));
         $default_hash = password_hash($_ENV['DEFAULT_PASSWORD'], PASSWORD_DEFAULT);
-        if ($operator_info['is_super'] == 1) {
-            update_data("app_users", "user_email = '$user_email'", ['user_password' => $default_hash]);
-            sendMail("{$user_email}", "Password Reset", "Your password have been reset Your Default Password is : <b>{$_ENV['DEFAULT_PASSWORD']}</b>");
-        } else {
-            $response['msg'] = 'User have no authority';
-            echo json_encode($response, true);
-        }
+        update_data("app_users", "user_email = '$user_email'", ['user_password' => $default_hash]);
+        sendMail("{$user_email}", "Password Reset", "Your password have been reset Your Default Password is : <b>{$_ENV['DEFAULT_PASSWORD']}</b>");
     } else {
         echo 'Method Not Allowed';
     }

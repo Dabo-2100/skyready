@@ -26,7 +26,7 @@ export default function NewAircraftZone() {
             dispatch(setAircraftZones(buildTree(res, "zone_id")));
         })
         // eslint-disable-next-line
-    }, [aircraftZones, refreshIndex]);
+    }, [refreshIndex]);
 
     useEffect(() => { return () => { dispatch(resetActiveId()) } }, [])
 

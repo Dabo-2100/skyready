@@ -19,7 +19,7 @@ export default function UsersApp() {
     );
 
     return (
-        <div className="tabApp d-flex flex-column p-3" id={styles.UsersApp}>
+        <div className="col-12 d-flex flex-column p-3" id={styles.UsersApp}>
             <div className={"col-12 d-flex flex-column p-3 rounded-4 gap-3 " + styles.content}>
                 <div className="col-12 d-flex align-items-center justify-content-between ">
                     <h5 className="m-0">Users List</h5>

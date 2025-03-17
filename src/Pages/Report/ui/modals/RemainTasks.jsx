@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { useProjectDetailsModal, useRemainTasksModal, useWorkPackageModal } from "../../../../store-zustand";
+import { serverUrl, useProjectDetailsModal, useRemainTasksModal, useWorkPackageModal } from "../../../../store-zustand";
 import styles from "./RemainTasks.module.css";
 import { ReportRepo } from "../../data/repositories/ReportRepo";
-import { useRecoilValue } from "recoil";
-import { $Server } from "../../../../store-recoil";
+
 export default function RemainTasks() {
     const [openedPackage, setOpenedPackage] = useState({});
-    const serverUrl = useRecoilValue($Server);
     const { closeModal, speciality: speciality_name, active_part_id: package_id } = useRemainTasksModal();
     const { active_project_id: project_id, reportDetails } = useProjectDetailsModal();
     const { active_workpackage_id: parent_package_id } = useWorkPackageModal();

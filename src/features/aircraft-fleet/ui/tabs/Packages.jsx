@@ -34,12 +34,17 @@ export default function Packages() {
         }).then(() => {
             getWorkPackages(active).then(res => {
                 dispatch(setWorkPackages([...res]));
-                setTimeout(() => { setLoaderIndex(false) }, 300);
+                setLoaderIndex(false)
             });
         })
 
         // eslint-disable-next-line
     }, [activeWorkPackageTypeId, refreshIndex]);
+
+
+    useEffect(() => {
+
+    }, [refreshIndex]);
 
     return (
         <div className="col-12 d-flex flex-wrap p-3 Tab" id="packagesTab">

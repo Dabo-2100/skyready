@@ -84,8 +84,7 @@ function users_store()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $default_password = $_ENV['DEFAULT_PASSWORD'];
-        // $operator_info = checkAuth();
-        // if ($operator_info['is_super'] == 1) {
+        $operator_info = checkAuth();
         $user_email = htmlspecialchars(strtolower(@$POST_data["user_email"]));
         $user_name = htmlspecialchars(@$POST_data["user_name"]);
         $specialty_id = htmlspecialchars(@$POST_data["specialty_id"]);
@@ -108,9 +107,6 @@ function users_store()
         } catch (\Throwable $err) {
             $response['msg'] = $err;
         }
-        // } else {
-        //     $response['msg'] = "Only Super Users can register new users";
-        // }
         echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed That';

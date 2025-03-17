@@ -1,44 +1,21 @@
-import Swal from 'sweetalert2';
 import Logo from "@/assets/IPACOLogo.png";
 import styles from "./index.module.css"
 import { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { $Token, $SwalDark } from '@/store-recoil';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { IoPower } from "react-icons/io5";
 import { useAuth } from '../../../../store-zustand';
+import useAuthentication from '../../hooks/useAuthentication';
 
 export default function SideMenu() {
     const [activePath, setActivePath] = useState();
-    const navigate = useNavigate();
-    const [, setToken] = useRecoilState($Token);
-    const [darkSwal] = useRecoilState($SwalDark);
     const [isPhone, setIsPhone] = useState(false);
-    const { userInfo, apps: Apps, resetUserInfo } = useAuth();
+    const { logout } = useAuthentication();
+    const { userInfo, apps: Apps } = useAuth();
     const location = useLocation();
 
     const onlyAuthor = () => (
         Apps.filter(el => (userInfo.user_roles.some(role => role.app_id == el.id) && el))
     )
-    
-    const logout = () => {
-        Swal.fire({
-            icon: "question",
-            text: "Are you sure you want to exit ?",
-            showDenyButton: true,
-            denyButtonText: "No",
-            confirmButtonText: "Yes",
-            customClass: darkSwal
-        }).then((res) => {
-            if (res.isConfirmed) {
-                localStorage.removeItem("$Token");
-                sessionStorage.removeItem("$Token");
-                resetUserInfo();
-                setToken(null);
-                navigate('/login');
-            }
-        })
-    }
 
     useEffect(() => {
         window.innerWidth <= '991' ? setIsPhone(true) : setIsPhone(false);

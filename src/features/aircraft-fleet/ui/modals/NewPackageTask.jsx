@@ -32,15 +32,17 @@ export default function NewPackageTask() {
     const [workPackageTaskTypes, setWorkPackageTaskTypes] = useState([]);
 
     const taskInputs = useRef([]);
+
     const handleSubmit = () => {
         addNewWorkPackageTask(taskInputs, active_work_package_id, selectedZones, selectedDesignators);
     }
 
     useEffect(() => {
         getAircraftSpecialties().then((res) => { dispatch(setSpecialties(res)) });
+
         if (active_speciality_id != 0) {
             getWorkPackageTaskTypes(active_speciality_id).then(setWorkPackageTaskTypes).then(() => {
-                taskInputs.current[3].setValue(-1);
+                taskInputs.current[3] && taskInputs.current[3].setValue(-1);
             });
         }
         else {

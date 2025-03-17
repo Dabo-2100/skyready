@@ -71,36 +71,29 @@ function aircraft_store()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $aircraft_serial_no = htmlspecialchars($POST_data["aircraft_serial_no"]);
-            $aircraft_register_no = htmlspecialchars($POST_data["aircraft_register_no"]);
-            $model_id = htmlspecialchars($POST_data["model_id"]);
-            $manufacturer_id = htmlspecialchars($POST_data["manufacturer_id"]);
-            $status_id = htmlspecialchars($POST_data["status_id"]);
-            $usage_id = htmlspecialchars($POST_data["usage_id"]);
-            $aircraft_manufacture_date = htmlspecialchars($POST_data["aircraft_manufacture_date"]);
-            $aircraft_flight_hours = htmlspecialchars($POST_data["aircraft_flight_hours"]);
+        $aircraft_serial_no = htmlspecialchars($POST_data["aircraft_serial_no"]);
+        $aircraft_register_no = htmlspecialchars($POST_data["aircraft_register_no"]);
+        $model_id = htmlspecialchars($POST_data["model_id"]);
+        $manufacturer_id = htmlspecialchars($POST_data["manufacturer_id"]);
+        $status_id = htmlspecialchars($POST_data["status_id"]);
+        $usage_id = htmlspecialchars($POST_data["usage_id"]);
+        $aircraft_manufacture_date = htmlspecialchars($POST_data["aircraft_manufacture_date"]);
+        $aircraft_flight_hours = htmlspecialchars($POST_data["aircraft_flight_hours"]);
+        $aircraft_id = insert_data(
+            "app_aircraft",
+            ["aircraft_serial_no", "aircraft_register_no", "model_id", "manufacturer_id", "status_id", "usage_id", "aircraft_manufacture_date", "aircraft_flight_hours"],
+            [$aircraft_serial_no,  $aircraft_register_no,  $model_id,  $manufacturer_id,  $status_id,  $usage_id,  $aircraft_manufacture_date,  $aircraft_flight_hours]
+        );
 
-            $aircraft_id = insert_data(
-                "app_aircraft",
-                ["aircraft_serial_no", "aircraft_register_no", "model_id", "manufacturer_id", "status_id", "usage_id", "aircraft_manufacture_date", "aircraft_flight_hours"],
-                [$aircraft_serial_no,  $aircraft_register_no,  $model_id,  $manufacturer_id,  $status_id,  $usage_id,  $aircraft_manufacture_date,  $aircraft_flight_hours]
-            );
-
-            if (isset($aircraft_id)) {
-                $response['err'] = false;
-                $response['msg'] = "New Aircraft Added Successfully";
-                $response['data'] = [
-                    'aircraft_id' => $aircraft_id
-                ];
-            }
-
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        if (isset($aircraft_id)) {
+            $response['err'] = false;
+            $response['msg'] = "New Aircraft Added Successfully";
+            $response['data'] = [
+                'aircraft_id' => $aircraft_id
+            ];
         }
+
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }

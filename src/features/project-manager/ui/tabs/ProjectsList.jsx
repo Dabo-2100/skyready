@@ -1,21 +1,20 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { $LoaderIndex } from "@/store-recoil";
 import { User } from "../../../../shared/core/User";
-import { $UserInfo } from "../../../../store-recoil";
 import { useDispatch, useSelector } from "react-redux";
 import useProjects from "../hooks/useProjects";
 import { setActiveId, setProjectInfo, setActivePackages, setAvailablePackages } from "../../state/activeProjectSlice";
 import { resetTableView, setTableView } from "../../state/projectTasksFilterSlice";
 import { openModal } from "../../../../shared/state/modalSlice";
+import { useAuth, useLoader } from "../../../../store-zustand";
+import { useLocation } from "react-router-dom";
 
 export default function ProjectsList() {
-  const [, setLoaderIndex] = useRecoilState($LoaderIndex);
+  const { setLoaderIndex } = useLoader();
   const refreshIndex = useSelector(state => state.home.refreshIndex.value);
   const dispatch = useDispatch();
-  const { getAllProjects, getProjectPackages,removeProject } = useProjects();
+  const { getAllProjects, getProjectPackages, removeProject } = useProjects();
   const [projects, setProjects] = useState([]);
 
   const openProject = (id) => {
@@ -45,8 +44,10 @@ export default function ProjectsList() {
     // eslint-disable-next-line
   }, [refreshIndex]);
 
-  const user = new User(useRecoilValue($UserInfo));
-  const appIndex = useSelector(state => state.home.activeAppIndex.value);
+  const { userInfo, apps } = useAuth();
+  const path = useLocation().pathname.split('/')[1];
+  const appIndex = apps.find(el => el.path == path).id;
+  const user = new User(userInfo);
 
   return (
     <div className="col-12 d-flex flex-wrap p-3 Tab flex-grow-1" style={{ minHeight: "1vh" }} id="allProjectsTab">
@@ -73,7 +74,7 @@ export default function ProjectsList() {
                 <th>Progress %</th>
                 <th>Status</th>
                 {
-                  user.isAppAdmin(appIndex) && <th>Actions</th>
+                  user.isSuper() && <th>Actions</th>
                 }
               </tr>
             </thead>
@@ -90,7 +91,7 @@ export default function ProjectsList() {
                       <td>{pro.project_progress && pro.project_progress.toFixed(2)} %</td>
                       <td><p style={{ color: pro.status_color_code }}></p>{pro.status_name}</td>
                       {
-                        user.isAppAdmin(appIndex) && (
+                        user.isSuper() && (
                           <td><button onClick={(event) => handleRemove(event, pro.project_id)} className="btn btn-danger">Remove</button></td>
                         )
                       }

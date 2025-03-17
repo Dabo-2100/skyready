@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import NoImg from '@/assets/offline.png'
-import { useRecoilValue } from "recoil";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { User } from "../../../../shared/core/User";
-import { $UserInfo } from "../../../../store-recoil";
 import { useDispatch, useSelector } from "react-redux";
 import ProjectTasksFilter from "../components/ProjectTasksFilter";
 import useProjects from "../hooks/useProjects";
@@ -12,6 +10,7 @@ import { searchByName } from "../../state/projectTasksFilterSlice";
 import { setAvailablePackages, setActivePackages } from "../../state/activeProjectSlice";
 import WorkPackage from "../components/WorkPackage";
 import MultiSelector from "../components/MultiSelector";
+import { useAuth } from "../../../../store-zustand";
 
 export default function ProjectTasks() {
     const multiSelect = useSelector(state => state.projects.multiTasksSelector);
@@ -20,7 +19,8 @@ export default function ProjectTasks() {
     const activeProject = useSelector(state => state.projects.activeProject);
     const projectTasksFilters = useSelector(state => state.projects.projectTasksFilter);
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
-    const user = new User(useRecoilValue($UserInfo));
+    const { userInfo } = useAuth();
+    const user = new User(userInfo);
     const appIndex = useSelector(state => state.home.activeAppIndex.value);
     const dispatch = useDispatch();
     const [workpackages, setWorkPackaes] = useState([]);

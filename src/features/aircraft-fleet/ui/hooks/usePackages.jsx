@@ -1,7 +1,5 @@
-import { useRecoilState, useRecoilValue } from "recoil";
-import { $LoaderIndex, $Server, $SwalDark, $Token } from "../../../../store-recoil";
 import { WorkPackagesRepo } from "../../data/repositories/WorkPackagesRepo";
-import { formCheck } from "../../../../customHooks";
+import { formCheck } from "../../../../validator";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { setAllDesignators } from "../../state/selectedDesignatorsSlice";
@@ -9,12 +7,10 @@ import { setAllZones } from "../../state/selectedZonesSlice";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
 import { resetActiveType } from "../../state/activeWorkPackageTypeIdSlice";
 import { closeModal } from "../../../../shared/state/modalSlice";
+import { darkSwal, serverUrl, token, useLoader } from "../../../../store-zustand";
 
 export default function usePackages() {
-    const token = useRecoilValue($Token);
-    const serverUrl = useRecoilValue($Server);
-    const darkSwal = useRecoilValue($SwalDark);
-    const [, setLoaderIndex] = useRecoilState($LoaderIndex);
+    const{setLoaderIndex} = useLoader();
     const dispatch = useDispatch();
 
     const getWorkPackageTypes = async () => {

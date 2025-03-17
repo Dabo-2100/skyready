@@ -1,11 +1,11 @@
 <?php
+// PHP Version 8.3.16
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
 // ini_set('mysqlnd_ms_config.max_packet_size', '64M');
 // SET GLOBAL max_allowed_packet = 1073741824;
-
 // Include Composer autoloader
 require 'vendor/autoload.php';
 // make .env File Load

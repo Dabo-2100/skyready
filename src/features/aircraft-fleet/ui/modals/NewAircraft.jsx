@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGears } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useRef, useState } from "react"
+import { useRef } from "react"
 
 import useAircraft from "../hooks/useAircraft";
 import { openModal2 } from "../../../../shared/state/modalSlice";
@@ -8,22 +8,15 @@ import { useDispatch, useSelector } from "react-redux";
 import Modal from "../../../../shared/ui/modals/Modal";
 import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 export default function NewAircraft() {
-    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
-    const dispatch = useDispatch();
-    const { getAircraftManufacturers, getAircraftStatus, getAircraftModels, getAircraftUsages, addNewAircraftToFleet } = useAircraft();
-    const formInputs = useRef([]);
-    const [manufacturers, setManufacturers] = useState([]);
-    const [aircraftStatus, setAircraftStatus] = useState([]);
-    const [aircraftModels, setAircraftModels] = useState([]);
-    const [aircraftUsages, setAircraftUsages] = useState([]);
 
-    useEffect(() => {
-        getAircraftManufacturers().then(setManufacturers);
-        getAircraftStatus().then(setAircraftStatus);
-        getAircraftModels().then(setAircraftModels);
-        getAircraftUsages().then(setAircraftUsages);
-        // eslint-disable-next-line
-    }, [refreshIndex]);
+    const dispatch = useDispatch();
+    const { addNewAircraftToFleet } = useAircraft();
+    const formInputs = useRef([]);
+
+    const manufacturers = useSelector(state => state.aircraftFleet.aircraftManufacturers.value);
+    const aircraftStatus = useSelector(state => state.aircraftFleet.aircraftStatus.value);
+    const aircraftModels = useSelector(state => state.aircraftFleet.aircraftModels.value);
+    const aircraftUsages = useSelector(state => state.aircraftFleet.aircraftUsages.value);
 
     return (
         <Modal>

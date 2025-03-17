@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
 import { UsersRepo } from "../../../../users/data/repositories/UsersRepo";
-import { useRecoilValue } from "recoil";
-import { $Server, $Token } from "../../../../../store-recoil";
-import { useOperators } from "../../../../../store-zustand";
+import { serverUrl, token, useOperators } from "../../../../../store-zustand";
 import useProjects from "../../hooks/useProjects";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
@@ -11,8 +9,6 @@ import { refresh } from "../../../../../shared/state/refreshIndexSlice";
 
 export default function Operators() {
     const dispatch = useDispatch();
-    const token = useRecoilValue($Token);
-    const server = useRecoilValue($Server);
     const nameInput = useRef();
 
     const { closeModal, active_task_id } = useOperators();
@@ -60,7 +56,7 @@ export default function Operators() {
             is_super: 0,
             user_roles: []
         };
-        UsersRepo.register_new_user(server, token, data).then((res) => {
+        UsersRepo.register_new_user(serverUrl, token, data).then((res) => {
             Swal.fire({
                 icon: res == true ? "success" : "error",
                 text: res == true ? "User added successfully !" : res == undefined ? "Connection Problem" : res,
@@ -73,7 +69,7 @@ export default function Operators() {
     useEffect(() => {
         getTaskOperators(active_task_id).then((res) => {
             setSelectedOperatros(res.map((op) => (op.user_id)));
-            UsersRepo.all_users(server, token).then((res) => {
+            UsersRepo.all_users(serverUrl, token).then((res) => {
                 setUsers(res);
                 setView(res);
             });

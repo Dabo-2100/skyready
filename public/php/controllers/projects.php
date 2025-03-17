@@ -16,6 +16,7 @@ $endpoints += [
     '/api/project/task/update/multi'                  => 'project_task_multi_update',
     '/api/project/task/update/operators'              => 'update_task_operators',
     '/api/project/task/operators/\d+'                 => 'index_task_operators',
+    '/api/project/task/progress'                      => 'update_task_progress',
 ];
 
 function projects_index()
@@ -42,31 +43,25 @@ function projects_store()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $data = [
-                "project_name"          => htmlspecialchars($POST_data["project_name"]),
-                "status_id"             => htmlspecialchars($POST_data["status_id"]),
-                "aircraft_id"           => htmlspecialchars($POST_data["aircraft_id"]),
-                "work_start_at"         => htmlspecialchars($POST_data["work_start_at"]),
-                "work_end_at"           => htmlspecialchars($POST_data["work_end_at"]),
-                "active_hours"          => htmlspecialchars($POST_data["active_hours"]),
-                "working_days"          => htmlspecialchars($POST_data["working_days"]),
-                "project_desc"          => isset($POST_data['project_desc']) ? htmlspecialchars($POST_data['project_desc']) : null,
-                "project_start_date"    => isset($POST_data['project_start_date']) ? htmlspecialchars($POST_data['project_start_date']) : null,
-                "project_due_date"      => isset($POST_data['project_due_date']) ? htmlspecialchars($POST_data['project_due_date']) : null,
-            ];
-            $status_id = insert_data("app_projects", array_keys($data), array_values($data));
-            if (is_null($status_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "New Project Added Successfully";
-                $response['data'] = getRows("app_projects", "is_active = 1");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $data = [
+            "project_name"          => htmlspecialchars($POST_data["project_name"]),
+            "status_id"             => htmlspecialchars($POST_data["status_id"]),
+            "aircraft_id"           => htmlspecialchars($POST_data["aircraft_id"]),
+            "work_start_at"         => htmlspecialchars($POST_data["work_start_at"]),
+            "work_end_at"           => htmlspecialchars($POST_data["work_end_at"]),
+            "active_hours"          => htmlspecialchars($POST_data["active_hours"]),
+            "working_days"          => htmlspecialchars($POST_data["working_days"]),
+            "project_desc"          => isset($POST_data['project_desc']) ? htmlspecialchars($POST_data['project_desc']) : null,
+            "project_start_date"    => isset($POST_data['project_start_date']) ? htmlspecialchars($POST_data['project_start_date']) : null,
+            "project_due_date"      => isset($POST_data['project_due_date']) ? htmlspecialchars($POST_data['project_due_date']) : null,
+        ];
+        $status_id = insert_data("app_projects", array_keys($data), array_values($data));
+        if (is_null($status_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "New Project Added Successfully";
+            $response['data'] = getRows("app_projects", "is_active = 1");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -555,6 +550,25 @@ function project_workpackage_store()
             $response['msg'] = "Tasks Added To Project";
             echo json_encode($response, true);
         }
+        echo json_encode($response, true);
+    } else {
+        echo 'Method Not Allowed';
+    }
+}
+
+function update_task_progress()
+{
+    global $method, $POST_data, $response;
+    if ($method === "POST") {
+        $operator_info = checkAuth();
+        $log_id =  @$POST_data["log_id"];
+        $data = [
+            "task_progress" => $POST_data["task_progress"],
+            "status_id" =>  $POST_data["status_id"],
+        ];
+        update_data("project_tasks", "log_id = {$log_id}", $data);
+        $response['err'] = false;
+        $response['msg'] = "New Project Added Successfully";
         echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';

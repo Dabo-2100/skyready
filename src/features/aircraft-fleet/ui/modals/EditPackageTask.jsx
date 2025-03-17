@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react"
-import { useRecoilState } from "recoil";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGears, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Select from 'react-select'
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem } from "react-bootstrap";
-import { $LoaderIndex } from "../../../../store-recoil";
 import { useDispatch, useSelector } from "react-redux";
 import usePackages from "../hooks/usePackages";
 import TaskWorkingZone from "../components/TaskWorkingZone";
@@ -17,11 +15,14 @@ import Modal from "../../../../shared/ui/modals/Modal";
 import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 import CommentsTree from "../../../../shared/ui/components/CommentTree";
 import useProjects from "../../../project-manager/ui/hooks/useProjects";
-import { buildTree } from "../../../../customHooks";
 import EditBtn from "../../../../shared/ui/components/EditBtn";
+import { setSpecialties } from "../../state/aircraftSpecialtiesSlice";
+import useAircraft from "../hooks/useAircraft";
+import { buildTree } from "../../../../shared/utilities/buildTree";
+import { useLoader } from "../../../../store-zustand";
 // import { setActiveId as setActiveModelId } from "../../state/activeAircraftModelIdSlice";
-
 export default function EditPackageTask() {
+    const { getAircraftSpecialties } = useAircraft();
     const dispatch = useDispatch();
     const { getTaskComments, addNewComment, removeWorkPackageTask } = useProjects();
     const { getWorkPackageTaskInfo, getWorkPackageTaskTypes, updateWorkPackageTask } = usePackages();
@@ -36,7 +37,7 @@ export default function EditPackageTask() {
     const activeProjectId = useSelector(state => state.projects.activeProject.id);
     const activeTaskId = useSelector(state => state.aircraftFleet.activeWorkPackageTaskId.value);
 
-    const [, setLoaderIndex] = useRecoilState($LoaderIndex);
+    const { setLoaderIndex } = useLoader();
 
     const taskInputs = useRef([]);
     const [comments, setComments] = useState([]);
@@ -106,6 +107,11 @@ export default function EditPackageTask() {
         });
         // eslint-disable-next-line
     }, [activeTaskId, refreshIndex]);
+
+    useEffect(() => {
+        getAircraftSpecialties().then((res) => { dispatch(setSpecialties(res)) });
+        // eslint-disable-next-line
+    }, [refreshIndex]);
 
 
     return (

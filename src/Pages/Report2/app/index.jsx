@@ -3,12 +3,10 @@ import logoUrl from "../../../assets/IPACOLogo.png";
 import { useState } from "react";
 import { useEffect } from "react";
 import { KpiRepo } from "../data/repositories/KpiRepo";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { $LoaderIndex, $Server } from "../../../store-recoil";
+import { serverUrl, useLoader } from "../../../store-zustand";
 
 export default function AlbertoReport() {
-    const serverUrl = useRecoilValue($Server);
-    const [, setLoaderIndex] = useRecoilState($LoaderIndex);
+    const { setLoaderIndex } = useLoader();
     const [isLoading, setIsLoading] = useState(true);
     const [activeProjects, setActiveProjects] = useState([]);
     const [activeProject, setActiveProject] = useState(-1);

@@ -4,7 +4,7 @@ import { RecoilRoot } from "recoil";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle.js";
 import "animate.css";
-import "./index.scss";
+import "./index.css";
 import { Provider } from "react-redux";
 import store from "./store-redux";
 import { BrowserRouter } from "react-router-dom";

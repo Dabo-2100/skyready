@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./index.module.css";
 import { ReportRepo } from "../data/repositories/ReportRepo";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { $LoaderIndex, $Server } from "../../../store-recoil";
+import { serverUrl, useLoader } from "../../../store-zustand";
 import ProjectDetails from "../ui/modals/ProjectDetails";
 import { useProjectDetailsModal, useRemainTasksModal, useWorkPackageModal } from "../../../store-zustand";
 import WPDetails from "../ui/modals/WPDetails";
@@ -11,8 +10,7 @@ import RemainTasks from "../ui/modals/RemainTasks";
 
 export default function ReportFinal() {
 
-    const [, setLoaderIndex] = useRecoilState($LoaderIndex);
-    const [serverURl] = useRecoilState($Server);
+    const{setLoaderIndex} = useLoader();
     const { index, openDetails, setReportDetails } = useProjectDetailsModal();
     const { index: wpIndex } = useWorkPackageModal();
     const { index: remainIndex } = useRemainTasksModal();
@@ -20,7 +18,7 @@ export default function ReportFinal() {
 
     useEffect(() => {
         setLoaderIndex(true)
-        ReportRepo.all_projects(serverURl).then((res) => {
+        ReportRepo.all_projects(serverUrl).then((res) => {
             setProjects(res);
             setReportDetails(res);
             setLoaderIndex(false);

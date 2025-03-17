@@ -2,15 +2,12 @@ import { useEffect, useRef } from "react";
 import "./index.scss";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useRecoilState } from "recoil";
-import { $LoaderIndex, $Token, $Server, $SwalDark } from "@/store-recoil";
+
 import axios from "axios";
 import Swal from "sweetalert2";
+import { darkSwal, serverUrl, token, useLoader } from "../../store-zustand";
 export default function ActivatePage() {
-  const [darkSwal] = useRecoilState($SwalDark);
-  const [, setLoaderIndex] = useRecoilState($LoaderIndex);
-  const [token] = useRecoilState($Token);
-  const [serverUrl] = useRecoilState($Server);
+  const { setLoaderIndex } = useLoader();
   const navigate = useNavigate();
   const [checkEmail, setCheckEmail] = useState();
   const inputsRef = useRef([]);

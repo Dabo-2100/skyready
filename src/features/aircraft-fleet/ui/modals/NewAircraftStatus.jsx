@@ -2,13 +2,14 @@ import { useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import useAircraft from "../hooks/useAircraft";
-import useAircraftData from "../hooks/useAircraftData";
 import Modal from "../../../../shared/ui/modals/Modal";
+import { useSelector } from "react-redux";
 
 export default function NewStatus() {
     const { addNewAircraftStatus, removeAircraftStatus } = useAircraft();
-    const { aircraftStatus } = useAircraftData();
+    const aircraftStatus = useSelector(state => state.aircraftFleet.aircraftStatus.value);
     const new_status_name = useRef();
+    
     const handleSubmit = (event) => {
         event.preventDefault();
         addNewAircraftStatus(new_status_name);

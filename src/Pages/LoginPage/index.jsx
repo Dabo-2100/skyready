@@ -1,8 +1,5 @@
 import styles from "./index.module.css";
 import { HiOutlineMail } from "react-icons/hi";
-import { IoLockClosedOutline } from "react-icons/io5";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { $Token, $SwalDark, $LoaderIndex, $UserInfo } from "@/store-recoil";
 import { IoIosEyeOff } from "react-icons/io";
 import { IoIosEye } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,13 +10,12 @@ import useAuthentication from "../../shared/ui/hooks/useAuthentication";
 
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as yup from "yup";
+import { darkSwal, token, useAuth, useLoader } from "../../store-zustand";
 
 export default function LoginPage() {
   // GlobalState
-  const darkSwal = useRecoilValue($SwalDark);
-  const [token, setToken] = useRecoilState($Token);
-  const [, setUserInfo] = useRecoilState($UserInfo);
-  const [, setLoaderIndex] = useRecoilState($LoaderIndex);
+  const { setUserInfo } = useAuth();
+  const { setLoaderIndex } = useLoader();
   const navigate = useNavigate();
   const { checkToken, userLogin } = useAuthentication();
   // LocalState
@@ -40,8 +36,7 @@ export default function LoginPage() {
       if (res) {
         if (res.err) {
           if (res.data != null) {
-            let userInfo = res.data;
-            setToken(userInfo.user_token);
+            // let userInfo = res.data;
             sessionStorage.setItem("user_email", values.email);
             Swal.fire({
               icon: "info",
@@ -62,7 +57,6 @@ export default function LoginPage() {
         } else {
           let userInfo = res.data[0];
           setUserInfo(userInfo);
-          setToken(userInfo.user_token);
           values.rememberMe ? localStorage.setItem("$Token", userInfo.user_token) : sessionStorage.setItem("$Token", userInfo.user_token);
           Swal.fire({
             icon: "success",
@@ -117,7 +111,7 @@ export default function LoginPage() {
                     <label className="mb-2">Email Address</label>
                     <div className="d-flex position-relative col-12">
                       <HiOutlineMail className={styles.inputIcon} />
-                      <Field className="form-control" name="email" placeholder="email@company.com" />
+                      <Field className="form-control" name="email" placeholder="email@company.com" autoComplete="username" />
                     </div>
                     <ErrorMessage className={"animate__animated animate__fadeIn " + styles.error} name="email" component="span" />
                   </div>
@@ -127,7 +121,7 @@ export default function LoginPage() {
                     <div className="d-flex position-relative col-12">
                       <IoLockClosedOutline className={styles.inputIcon} />
                       {showPass ? <IoIosEyeOff className={styles.iconPass} onClick={() => setShowPass(!showPass)} /> : <IoIosEye onClick={() => setShowPass(!showPass)} className={styles.iconPass} />}
-                      <Field type={showPass ? 'text' : 'password'} className="form-control" name="password" placeholder="Enter Password" />
+                      <Field type={showPass ? 'text' : 'password'} className="form-control" name="password" placeholder="Enter Password" autoComplete="current-password" />
                     </div>
                     <ErrorMessage className={"animate__animated animate__fadeIn " + styles.error} name="password" component="span" />
                   </div>

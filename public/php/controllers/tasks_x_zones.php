@@ -47,23 +47,17 @@ function task_zones_store()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $task_id = htmlspecialchars($POST_data["task_id"]);
-            $zone_id = htmlspecialchars($POST_data["zone_id"]);
-            $fields = ["task_id", "zone_id"];
-            $values = ["$task_id", "$zone_id"];
-            $log_id = insert_data("tasks_x_zones", $fields, $values);
-            if (is_null($log_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "New Zone Added Successfully to The Task";
-                $response['data'] = getRows("tasks_x_zones", "is_active = 1 AND task_id = {$task_id}");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $task_id = htmlspecialchars($POST_data["task_id"]);
+        $zone_id = htmlspecialchars($POST_data["zone_id"]);
+        $fields = ["task_id", "zone_id"];
+        $values = ["$task_id", "$zone_id"];
+        $log_id = insert_data("tasks_x_zones", $fields, $values);
+        if (is_null($log_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "New Zone Added Successfully to The Task";
+            $response['data'] = getRows("tasks_x_zones", "is_active = 1 AND task_id = {$task_id}");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -74,20 +68,14 @@ function task_zones_delete()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $zone_id = htmlspecialchars($POST_data["zone_id"]);
-            $zone_id = delete_data("aircraft_zones", "zone_id = $zone_id");
-            if (is_null($zone_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "Zone Deleted Successfully";
-                $response['data'] = getRows("aircraft_zones", "is_active = 1");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $zone_id = htmlspecialchars($POST_data["zone_id"]);
+        $zone_id = delete_data("aircraft_zones", "zone_id = $zone_id");
+        if (is_null($zone_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "Zone Deleted Successfully";
+            $response['data'] = getRows("aircraft_zones", "is_active = 1");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }

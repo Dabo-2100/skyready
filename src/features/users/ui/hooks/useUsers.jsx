@@ -1,16 +1,14 @@
-import { useRecoilValue } from "recoil"
+
 import Swal from "sweetalert2";
-import { $Server, $Token } from "../../../../store-recoil"
 import { UsersRepo } from "../../data/repositories/UsersRepo";
-import { formCheck } from "../../../../customHooks";
+import { formCheck } from "../../../../validator";
 import { closeModal } from "../../../../shared/state/modalSlice";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { serverUrl, token } from "../../../../store-zustand";
 
 export default function useUsers() {
     const dispatch = useDispatch();
-    const serverUrl = useRecoilValue($Server);
-    const token = useRecoilValue($Token);
     const userToEdit = useSelector(state => state.users.activeUser.value);
 
     const registerNewUser = async (formInputs, selectedRoles) => {

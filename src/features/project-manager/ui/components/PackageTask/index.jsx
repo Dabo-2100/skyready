@@ -3,9 +3,7 @@ import ProgressBar from "../ProgressBar"
 import Status from "../Status"
 import { faComment, faEye, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useRecoilValue } from "recoil"
 import { User } from "../../../../../shared/core/User"
-import { $UserInfo } from "../../../../../store-recoil"
 import { useDispatch, useSelector } from "react-redux"
 import { setActiveId } from "../../../../aircraft-fleet/state/activeWorkPackageTaskIdSlice"
 import PropTypes from "prop-types"
@@ -16,13 +14,14 @@ import { SiTicktick } from "react-icons/si";
 import { TiDelete } from "react-icons/ti";
 import { HiUserAdd } from "react-icons/hi";
 
-import { useOperators } from "../../../../../store-zustand"
+import { useAuth, useOperators } from "../../../../../store-zustand"
 import Swal from "sweetalert2"
 import { refresh } from "../../../../../shared/state/refreshIndexSlice"
 
 export default function PackageTask(props) {
+    const {userInfo} = useAuth();
     const { openModal } = useOperators();
-    const user = new User(useRecoilValue($UserInfo));
+    const user = new User(userInfo);
     const { removeWorkPackageTask, updateTaskOperators } = useProjects();
     const dispatch = useDispatch();
     const multiSelect = useSelector(state => state.projects.multiTasksSelector);

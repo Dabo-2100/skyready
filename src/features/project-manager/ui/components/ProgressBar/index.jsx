@@ -1,18 +1,14 @@
 import "./index.scss";
 import { useEffect, useRef, useState } from 'react';
-import { useRecoilState } from "recoil";
-import { $Server, $Token, $SwalDark } from "@/store-recoil";
 import Swal from "sweetalert2";
-import { useUpdate } from "@/customHooks";
 import { refresh } from "../../../../../shared/state/refreshIndexSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
+import { ProjectsRepo } from "../../../data/repositories/ProjectsRepo";
+import { darkSwal, serverUrl, token } from "../../../../../store-zustand";
 
 export default function ProgressBar({ status_id, log_id, percentage, canEdit }) {
     const dispatch = useDispatch();
-    const [serverUrl] = useRecoilState($Server);
-    const [token] = useRecoilState($Token);
-    const [darkSwal] = useRecoilState($SwalDark);
     const [editIndex, setEditIndex] = useState(false);
     const theSelect = useRef();
     const projectStatus = useSelector(state => state.projects.projectTaskStatus.value);
@@ -32,7 +28,7 @@ export default function ProgressBar({ status_id, log_id, percentage, canEdit }) 
                 }
             }
             let obj = { log_id, task_progress: newProgress, status_id: newStatus }
-            useUpdate(serverUrl, token, "project_tasks", `log_id = ${log_id}`, obj).then(() => {
+            ProjectsRepo.update_progress(serverUrl, token, log_id, obj).then(() => {
                 Swal.fire({
                     icon: "success",
                     text: "Task Progress Updated !",

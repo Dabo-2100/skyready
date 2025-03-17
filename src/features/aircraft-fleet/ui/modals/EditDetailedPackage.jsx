@@ -5,12 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { resetActiveId } from "../../state/activeWorkPackageIdSlice";
 
-import useAircraft from "../hooks/useAircraft";
 import EditBtn from "../../../../shared/ui/components/EditBtn";
 import TasksTable from "../components/TasksTable";
 import usePackages from "../hooks/usePackages";
-import { setAircraftFleet } from "../../state/aircraftFleetSlice"
-import { setAircraftModels } from "../../state/aircraftModelsSlice";
 import { setPackageInfo } from "../../state/activeWorkPackageInfoSlice";
 import useProjects from "../../../project-manager/ui/hooks/useProjects";
 import { openModal3 } from "../../../../shared/state/modalSlice";
@@ -18,15 +15,14 @@ import Modal from "../../../../shared/ui/modals/Modal";
 import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 
 export default function EditDetailedPackage() {
-
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const packageInfo = useSelector(state => state.aircraftFleet.activeWorkPackageInfo.value);
     const active_work_package_id = useSelector(state => state.aircraftFleet.activeWorkPackageId.value);
     const models = useSelector(state => state.aircraftFleet.aircraftModels.value);
     const aircraftFleet = useSelector(state => state.aircraftFleet.aircraftFleet.value);
     const activeProject = useSelector(state => state.projects.activeProject);
+
     const { removeWorkPackageFromProject } = useProjects();
-    const { getAircraftFleetByModel, getAircraftModels } = useAircraft();
     const { updateWorkPackageInfo, getWorkPackageTasks } = usePackages();
     const dispatch = useDispatch();
     // Local States 
@@ -34,18 +30,20 @@ export default function EditDetailedPackage() {
     const [workPackageTasks, setWorkPackageTasks] = useState([]);
     const [, setWorkPackageApplicablity] = useState([]);
     const [selectedApplicablity, setSelectedApplicablity] = useState([]);
+    const [aircraftView, setView] = useState([]);
     // Refs
     const formInputs = useRef([]);
 
     const handleModelChange = (event) => {
-        getAircraftFleetByModel(event.target.value).then((res) => dispatch(setAircraftFleet(res)));
+        setView(aircraftFleet.filter(el => el.model_id == event.target.value))
+        setSelectedApplicablity([]);
     }
 
     const handleSaveWPInfo = () => {
         updateWorkPackageInfo(formInputs, selectedApplicablity, packageInfo.package_id).then(() => setEditIndex(false))
     }
 
-    const toggleApp = (aircraft_id) => {
+    const toggleApplicablity = (aircraft_id) => {
         let oApp = [...selectedApplicablity];
         let index = oApp.findIndex((el) => el.aircraft_id == aircraft_id);
         index == -1 ? oApp.push(aircraftFleet.find(el => el.aircraft_id == aircraft_id)) : oApp.splice(index, 1);
@@ -55,18 +53,23 @@ export default function EditDetailedPackage() {
     const handleReOrder = () => { }
 
     useEffect(() => {
-        getAircraftModels().then((res) => dispatch(setAircraftModels(res))).then(() => {
-            formInputs.current[5] && (formInputs.current[5].value = packageInfo.model_id)
-        });
-
+        setView(aircraftFleet);
         getWorkPackageTasks(active_work_package_id).then((res) => {
             setPackageInfo(res.info);
             setWorkPackageTasks(res.tasks);
             setWorkPackageApplicablity(res.info.applicability);
             setSelectedApplicablity(res.info.applicability)
+
         });
         // eslint-disable-next-line
-    }, [active_work_package_id, refreshIndex])
+    }, [active_work_package_id, refreshIndex]);
+
+    useEffect(() => {
+        if (editIndex) {
+            formInputs.current[5].value = packageInfo.model_id;
+            setView(aircraftFleet.filter(el => el.model_id == packageInfo.model_id))
+        }
+    }, [editIndex]);
 
     useEffect(() => {
         return () => dispatch(resetActiveId()); // eslint-disable-next-line
@@ -154,7 +157,7 @@ export default function EditDetailedPackage() {
                                             onChange={handleModelChange}
                                             disabled={!editIndex}
                                         >
-                                            <option value={-1}>Select Aircraft Model</option>
+                                            <option hidden value={-1}>Select Aircraft Model</option>
                                             {
                                                 models.map((el, index) => {
                                                     return (<option key={index} value={el.model_id}>{el.model_name}</option>)
@@ -183,14 +186,14 @@ export default function EditDetailedPackage() {
                                                     </div>
                                                 )
                                             }) :
-                                            aircraftFleet.map((el) => {
+                                            aircraftView.map((el) => {
                                                 return (
                                                     <div className="d-flex col-6 col-md-4 p-2 gap-2 algin-items-center" key={el.aircraft_id}>
                                                         <input
                                                             id={`check-${el.aircraft_id}`}
                                                             type="checkbox"
                                                             defaultChecked={selectedApplicablity.some(x => x.aircraft_id == el.aircraft_id)}
-                                                            onChange={() => toggleApp(el.aircraft_id)}
+                                                            onChange={() => toggleApplicablity(el.aircraft_id)}
                                                             disabled={!editIndex}
                                                         />
                                                         <label htmlFor={`check-${el.aircraft_id}`}>{el.aircraft_serial_no}</label>

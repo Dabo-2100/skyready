@@ -2,8 +2,6 @@
 
 import { useRef, useState } from "react";
 import usePackages from "../hooks/usePackages";
-import useAircraft from "../hooks/useAircraft";
-import useAircraftData from "../hooks/useAircraftData";
 import { useSelector } from "react-redux";
 import Modal from "../../../../shared/ui/modals/Modal";
 import SaveBtn from "../../../../shared/ui/components/SaveBtn";
@@ -12,12 +10,13 @@ import SaveBtn from "../../../../shared/ui/components/SaveBtn";
 export default function NewDetailedPackage() {
     const activeWorkPackageFolderId = useSelector(state => state.aircraftFleet.activeWorkPackageFolderId.value);
     const activeWorkPackageTypeId = useSelector(state => state.aircraftFleet.activeWorkPackageTypeId.value);
+    const models = useSelector(state => state.aircraftFleet.aircraftModels.value);
+    const aircraftFleet = useSelector(state => state.aircraftFleet.aircraftFleet.value);
+
     const formInputs = useRef([]);
     const { addNewDetailedWorkPackage } = usePackages()
-    const { getAircraftFleetByModel } = useAircraft();
-    const { aircraftModels: models, aircraftFleet: aircraftFleet, setAircraftFleet } = useAircraftData();
     const [selectedApplicablity, setSelectedApplicablity] = useState([]);
-
+    const [aircraftFleetView, setView] = useState([]);
     const handleSubmit = () => {
         addNewDetailedWorkPackage(formInputs, selectedApplicablity, activeWorkPackageFolderId, activeWorkPackageTypeId);
     }
@@ -30,7 +29,7 @@ export default function NewDetailedPackage() {
     }
 
     const handleModelChange = (event) => {
-        getAircraftFleetByModel(event.target.value).then(setAircraftFleet);
+        setView(aircraftFleet.filter(el => el.model_id == event.target.value));
         setSelectedApplicablity([]);
     }
 
@@ -77,6 +76,7 @@ export default function NewDetailedPackage() {
                                 className="form-select"
                                 onChange={handleModelChange}
                             >
+                                <option value="-1" hidden>Select Model</option>
                                 {
                                     models.map((el, index) => {
                                         return (<option key={index} value={el.model_id}>{el.model_name}</option>)
@@ -84,23 +84,28 @@ export default function NewDetailedPackage() {
                                 }
                             </select>
                         </div>
-                        <p className="col-12 pb-2 px-2">Applicaplity</p>
-                        <div className="col-12 d-flex flex-wrap gap-0">
-                            {
-                                aircraftFleet.map((el) => {
-                                    return (
-                                        <div className="d-flex col-6 col-md-4 p-2 gap-2 algin-items-center" key={el.aircraft_id}>
-                                            <input
-                                                id={`check-${el.aircraft_id}`}
-                                                type="checkbox"
-                                                onChange={() => toggleApp(el.aircraft_id)}
-                                            />
-                                            <label htmlFor={`check-${el.aircraft_id}`}>{el.aircraft_serial_no}</label>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
+                        {
+                            formInputs.current[5] && formInputs.current[5].value != -1 && <>
+                                <p className="col-12 pb-2 px-2">Applicaplity</p>
+                                <div className="col-12 d-flex flex-wrap gap-0">
+                                    {
+                                        aircraftFleetView.map((el) => {
+                                            return (
+                                                <div className="d-flex col-6 col-md-4 p-2 gap-2 algin-items-center" key={el.aircraft_id}>
+                                                    <input
+                                                        id={`check-${el.aircraft_id}`}
+                                                        type="checkbox"
+                                                        onChange={() => toggleApp(el.aircraft_id)}
+                                                    />
+                                                    <label htmlFor={`check-${el.aircraft_id}`}>{el.aircraft_serial_no}</label>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </>
+                        }
+
                     </div>
                 </div>
             </main>

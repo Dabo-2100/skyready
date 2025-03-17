@@ -35,47 +35,36 @@ function packages_store()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $package_name = @htmlspecialchars($POST_data["package_name"]);
-            $is_folder = @htmlspecialchars($POST_data["is_folder"]);
-            $package_duration = @htmlspecialchars($POST_data["package_duration"]);
-            $package_issued_duration = @htmlspecialchars($POST_data["package_issued_duration"]);
-            $package_type_id = @htmlspecialchars($POST_data["package_type_id"]);
-            $package_desc = @htmlspecialchars($POST_data["package_desc"]);
-            $package_version = @htmlspecialchars($POST_data["package_version"]);
-            $package_release_date = @htmlspecialchars($POST_data["package_release_date"]);
-            $model_id = @htmlspecialchars($POST_data["model_id"]);
-            $fields = ["package_name", "package_duration", "package_issued_duration", "package_type_id", "package_desc", "package_version", "package_release_date", "is_folder"];
-            $values = [$package_name, $package_duration, $package_issued_duration, $package_type_id, $package_desc, $package_version, $package_release_date, $is_folder];
+        $all_fields = ["package_name", "parent_id", "package_duration", "model_id", "package_issued_duration", "package_type_id", "package_desc", "package_version", "package_release_date", "is_folder"];
+        $fields = [];
+        $values = [];
 
-            if (isset($POST_data["parent_id"])) {
-                $parent_id = htmlspecialchars($POST_data["parent_id"]);
-                array_push($fields, "parent_id");
-                array_push($values, $parent_id);
+        foreach ($all_fields as $field) {
+            if (isset($POST_data[$field])) {
+                $value = $POST_data[$field];
+                if (in_array($field, ["parent_id", "package_duration", "model_id", "package_issued_duration", "package_type_id"])) {
+                    $values[] = is_numeric($value) ? (int) $value : null;
+                } else {
+                    $values[] = htmlspecialchars(strval($value));
+                }
+                $fields[] = $field;
             }
-            if (isset($POST_data["model_id"])) {
-                $model_id = htmlspecialchars($POST_data["model_id"]);
-                array_push($fields, "model_id");
-                array_push($values, $model_id);
-            }
-            $package_id = insert_data("work_packages", $fields, $values);
+        }
+        $package_id = insert_data("work_packages", $fields, $values);
 
+        if ($POST_data['is_folder'] == 0) {
             delete_data("work_package_applicability", "package_id = {$package_id}");
             foreach ($POST_data['work_package_applicability'] as $index => $el) {
                 insert_data("work_package_applicability", ["package_id", "aircraft_id"], [$package_id, $el['aircraft_id']]);
             }
-
-            if (is_null($package_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "New Work Package Added Successfully";
-                $response['data'] = getRows("work_packages", "is_active = 1");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
         }
+
+        if (is_null($package_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "New Work Package Added Successfully";
+            $response['data'] = getRows("work_packages", "is_active = 1");
+        }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -86,26 +75,20 @@ function packages_delete()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $package_id = htmlspecialchars($POST_data["package_id"]);
-            $sons = get_heriarcy("work_packages", "package_id", $package_id);
-            if (count($sons) == 1) {
-                $removeIndex = delete_data("work_packages", "package_id = $package_id");
-            } else {
-                foreach ($sons as $index => $package) {
-                    $package_id = $package['package_id'];
-                    $removeIndex = delete_data("work_packages", "package_id = $package_id");
-                }
-            }
-            $response['err'] = false;
-            $response['msg'] = "Package Deleted Successfully";
-            $response['data'] = getRows("work_packages", "is_active = 1");
-            echo json_encode($response, true);
+        $package_id = htmlspecialchars($POST_data["package_id"]);
+        $sons = get_heriarcy("work_packages", "package_id", $package_id);
+        if (count($sons) == 1) {
+            $removeIndex = delete_data("work_packages", "package_id = $package_id");
         } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+            foreach ($sons as $index => $package) {
+                $package_id = $package['package_id'];
+                $removeIndex = delete_data("work_packages", "package_id = $package_id");
+            }
         }
+        $response['err'] = false;
+        $response['msg'] = "Package Deleted Successfully";
+        $response['data'] = getRows("work_packages", "is_active = 1");
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -172,20 +155,14 @@ function packages_type_store()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $package_type_name = htmlspecialchars($POST_data["package_type_name"]);
-            $package_type_id = insert_data("work_package_types", ["package_type_name"], [$package_type_name]);
-            if (is_null($package_type_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "New Work Package Type Added Successfully";
-                $response['data'] = getRows("work_package_types", "is_active = 1");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $package_type_name = htmlspecialchars($POST_data["package_type_name"]);
+        $package_type_id = insert_data("work_package_types", ["package_type_name"], [$package_type_name]);
+        if (is_null($package_type_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "New Work Package Type Added Successfully";
+            $response['data'] = getRows("work_package_types", "is_active = 1");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -196,20 +173,14 @@ function packages_type_delete()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $package_type_id = htmlspecialchars($POST_data["package_type_id"]);
-            $manufacturer_id = delete_data("work_package_types", "package_type_id = $package_type_id");
-            if (is_null($manufacturer_id) == false) {
-                $response['err'] = false;
-                $response['msg'] = "Package Type Deleted Successfully";
-                $response['data'] = getRows("work_package_types", "is_active = 1");
-            }
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        $package_type_id = htmlspecialchars($POST_data["package_type_id"]);
+        $manufacturer_id = delete_data("work_package_types", "package_type_id = $package_type_id");
+        if (is_null($manufacturer_id) == false) {
+            $response['err'] = false;
+            $response['msg'] = "Package Type Deleted Successfully";
+            $response['data'] = getRows("work_package_types", "is_active = 1");
         }
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
@@ -243,6 +214,7 @@ function packages_update($id)
     if ($method === "POST") {
         $operator_info = checkAuth();
         update_data("work_packages", "package_id = {$package_id}", [
+            'model_id' => (int) $POST_data['model_id'],
             'package_name' => $POST_data['package_name'],
             'package_desc' => $POST_data['package_desc'],
             'package_version' => $POST_data['package_version'],

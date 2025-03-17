@@ -3,13 +3,12 @@ import NoImg from '@/assets/offline.png'
 import useAircraft from "../hooks/useAircraft";
 import { useDispatch, useSelector } from "react-redux";
 import { addDesignator, removeDesignator } from "../../state/selectedDesignatorsSlice";
-import { useRecoilState } from "recoil";
-import { $LoaderIndex } from "../../../../store-recoil";
 import Modal from "../../../../shared/ui/modals/Modal";
+import { useLoader } from "../../../../store-zustand";
 
 export default function TaskDesignators() {
     const dispatch = useDispatch();
-    const [, setLoaderIndex] = useRecoilState($LoaderIndex);
+    const { setLoaderIndex } = useLoader();
     const selectedDesignators = useSelector(state => state.aircraftFleet.selectedDesignators.value);
     const { filterAircraftDesignators, getDesignatorTypes, addNewDesignator, getAircraftDesignators, updateDesignatorType, removeAircraftDesignator } = useAircraft();
     const [designatorTypes, setDesignatorTypes] = useState([]);

@@ -1,8 +1,8 @@
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { $LoaderIndex, $UserInfo } from "../../../../store-recoil";
+import { useRecoilState } from "recoil";
+import { $LoaderIndex } from "../../../../store-recoil";
 import NoData from "../../../../shared/ui/components/NoData";
 import useAircraft from "../hooks/useAircraft";
 import { User } from "../../../../shared/core/User";
@@ -10,30 +10,37 @@ import { useDispatch, useSelector } from "react-redux";
 import { setActiveId } from "../../state/activeAircraftIdSlice";
 import PrintBtn from "../../../../shared/ui/components/PrintBtn";
 import { openModal } from "../../../../shared/state/modalSlice";
+import { useAuth } from "../../../../store-zustand";
+import { useLocation } from "react-router-dom";
+import { setAircraftFleet } from "../../state/aircraftFleetSlice";
 
 export default function Aircraft() {
-    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
-    const aircraftFleetTable = useRef();
-    const userData = new User(useRecoilValue($UserInfo));
-    const [view, setView] = useState([]);
-    const [aircraft, setAircaft] = useState([]);
+    const { userInfo, apps } = useAuth();
+    const path = useLocation().pathname.split('/')[1];
+    const activeId = apps.find(el => el.path == path).id;
+    const userData = new User(userInfo);
+
     const [loaderIndex, setLoaderIndex] = useRecoilState($LoaderIndex);
+    const refreshIndex = useSelector(state => state.home.refreshIndex.value);
+    const aircraft = useSelector(state => state.aircraftFleet.aircraftFleet.value);
+
+    const aircraftFleetTable = useRef();
+    const [view, setView] = useState([]);
+
     const dispatch = useDispatch();
-    const appIndex = useSelector(state => state.home.activeAppIndex.value);
     const { getAircraftFleet, filterAircraftFleet } = useAircraft();
 
     useEffect(() => {
         setLoaderIndex(true);
         getAircraftFleet().then((res) => {
-            setAircaft(res);
+            dispatch(setAircraftFleet(res));
             setView(res);
             setTimeout(() => { setLoaderIndex(false) }, 500);
         });
-        // eslint-disable-next-line
     }, [refreshIndex]);
 
     return (
-        < div className="col-12 d-flex flex-wrap p-3 Tab" id="aircraftTab" >
+        <div className="col-12 d-flex flex-wrap p-3 Tab" id="aircraftTab" >
             <div className="col-12 d-flex flex-column content rounded-4 animate__animated animate__fadeIn">
                 <div className="col-12 actions gap-3 gap-md-0 p-3 d-flex flex-wrap align-items-center justify-content-between">
                     <h5 className="m-0 text-white">Aircraft Fleet List</h5>
@@ -46,20 +53,17 @@ export default function Aircraft() {
                     <div className="d-flex align-items-center gap-3">
                         <PrintBtn contentRef={aircraftFleetTable} />
                         {
-                            userData.isAppAdmin(appIndex) &&
+                            userData.isAppAdmin(activeId) &&
                             <button className="btn btn-danger addBtn" onClick={() => { dispatch(openModal(1001)) }}>
                                 <FontAwesomeIcon icon={faAdd} /> Add Aircraft
                             </button>
                         }
-
                     </div>
                 </div>
                 {
                     !loaderIndex && (
                         aircraft.length == 0 ?
-                            (
-                                <NoData text="There are no aircraft into the fleet yet !" />
-                            )
+                            (<NoData text="There are no aircraft into the fleet yet !" />)
                             : (
                                 <div className="col-12 p-3" style={{ height: "2vh", flexGrow: 1, overflow: "auto", borderTop: "1px solid #ffffff4d" }}>
                                     <table ref={aircraftFleetTable} className="col-12 table m-0 table-dark text-center">

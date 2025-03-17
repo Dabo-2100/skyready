@@ -1,13 +1,13 @@
 import { useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-import useAircraftData from "../hooks/useAircraftData";
 import useAircraft from "../hooks/useAircraft";
 import Modal from "../../../../shared/ui/modals/Modal";
+import { useSelector } from "react-redux";
 
 export default function NewManufacturer() {
     const { addNewManufacturer, removeManufacturer } = useAircraft();
-    const { manufacturers } = useAircraftData();
+    const manufacturers = useSelector(state => state.aircraftFleet.aircraftManufacturers.value);
     const new_manufact_name = useRef();
 
     const handleSubmit = (event) => {

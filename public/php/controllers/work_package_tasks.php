@@ -31,56 +31,50 @@ function workpackge_tasks_store()
     global $method, $POST_data, $response;
     if ($method === "POST") {
         $operator_info = checkAuth();
-        if ($operator_info['is_super'] == 1) {
-            $package_id         = htmlspecialchars($POST_data["package_id"]);
-            $task_name          = htmlspecialchars($POST_data["task_name"]);
-            $task_duration      = htmlspecialchars($POST_data["task_duration"]);
-            $specialty_id       = htmlspecialchars($POST_data["specialty_id"]);
-            $task_type_id       = htmlspecialchars($POST_data["task_type_id"]);
-            $task_zones         = $POST_data["task_zones"];
-            $task_designators   = $POST_data["task_designators"];
+        $package_id         = htmlspecialchars($POST_data["package_id"]);
+        $task_name          = htmlspecialchars($POST_data["task_name"]);
+        $task_duration      = htmlspecialchars($POST_data["task_duration"]);
+        $specialty_id       = htmlspecialchars($POST_data["specialty_id"]);
+        $task_type_id       = htmlspecialchars($POST_data["task_type_id"]);
+        $task_zones         = $POST_data["task_zones"];
+        $task_designators   = $POST_data["task_designators"];
 
-            $fields = ["package_id", "task_name", "task_duration", "specialty_id", "task_type_id"];
-            $values = [$package_id, $task_name, $task_duration, $specialty_id, $task_type_id];
+        $fields = ["package_id", "task_name", "task_duration", "specialty_id", "task_type_id"];
+        $values = [$package_id, $task_name, $task_duration, $specialty_id, $task_type_id];
 
-            if (isset($POST_data["parent_id"])) {
-                array_push($fields, "parent_id");
-                array_push($values, $POST_data["parent_id"]);
-            }
-            if (isset($POST_data["task_desc"])) {
-                array_push($fields, "task_desc");
-                array_push($values, $POST_data["task_desc"]);
-            }
-            if (isset($POST_data["task_order"])) {
-                array_push($fields, "task_order");
-                array_push($values, $POST_data["task_order"]);
-            }
-
-            $task_id = insert_data("work_package_tasks", $fields, $values);
-
-            if (is_null($task_id) == false) {
-                $response['task_id'] =  $task_id;
-                $response['err'] = false;
-                $response['msg'] = "New Task Added Successfully";
-                $response['data'] = getRows("work_package_tasks", "package_id = {$package_id} AND is_active = 1");
-            }
-
-            foreach ($task_zones as $index => $zone) {
-                insert_data("tasks_x_zones", ['task_id', 'zone_id'], [$task_id, $zone['zone_id']]);
-            }
-
-            foreach ($task_designators as $index => $zone) {
-                insert_data("tasks_x_designators", ['task_id', 'designator_id'], [$task_id, $zone['designator_id']]);
-            }
-
-            workpackge_tasks_reorder($package_id);
-
-            echo json_encode($response, true);
-        } else {
-            echo "Error : 401 | No Authority";
-            http_response_code(401);
-            exit();
+        if (isset($POST_data["parent_id"])) {
+            array_push($fields, "parent_id");
+            array_push($values, $POST_data["parent_id"]);
         }
+        if (isset($POST_data["task_desc"])) {
+            array_push($fields, "task_desc");
+            array_push($values, $POST_data["task_desc"]);
+        }
+        if (isset($POST_data["task_order"])) {
+            array_push($fields, "task_order");
+            array_push($values, $POST_data["task_order"]);
+        }
+
+        $task_id = insert_data("work_package_tasks", $fields, $values);
+
+        if (is_null($task_id) == false) {
+            $response['task_id'] =  $task_id;
+            $response['err'] = false;
+            $response['msg'] = "New Task Added Successfully";
+            $response['data'] = getRows("work_package_tasks", "package_id = {$package_id} AND is_active = 1");
+        }
+
+        foreach ($task_zones as $index => $zone) {
+            insert_data("tasks_x_zones", ['task_id', 'zone_id'], [$task_id, $zone['zone_id']]);
+        }
+
+        foreach ($task_designators as $index => $zone) {
+            insert_data("tasks_x_designators", ['task_id', 'designator_id'], [$task_id, $zone['designator_id']]);
+        }
+
+        workpackge_tasks_reorder($package_id);
+
+        echo json_encode($response, true);
     } else {
         echo 'Method Not Allowed';
     }
