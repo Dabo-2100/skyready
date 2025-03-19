@@ -4,10 +4,11 @@ import { ProjectsRepo } from "../../data/repositories/ProjectsRepo";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
 import { formCheck } from "../../../../validator";
 import { closeModal } from "../../../../shared/state/modalSlice";
-import { darkSwal, serverUrl, token } from "../../../../store-zustand";
+import { darkSwal, serverUrl, useToken } from "../../../../store-zustand";
 
 export default function useProjects() {
     const dispatch = useDispatch();
+    const { token } = useToken();
     const projectTasksFilters = useSelector(state => state.projects.projectTasksFilter);
 
     const getAllProjects = async () => {

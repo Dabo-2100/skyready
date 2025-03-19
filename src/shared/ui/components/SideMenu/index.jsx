@@ -2,7 +2,7 @@ import Logo from "@/assets/IPACOLogo.png";
 import styles from "./index.module.css"
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { IoPower } from "react-icons/io5";
+import { IoPower, IoSettings } from "react-icons/io5";
 import { useAuth } from '../../../../store-zustand';
 import useAuthentication from '../../hooks/useAuthentication';
 
@@ -42,13 +42,14 @@ export default function SideMenu() {
                     <Link
                         key={index}
                         to={el.path}
-                        style={{ order: `${el['app_order']}`, width: isPhone ? `calc(100% / ${Apps.length})` : `100%` }}
+                        style={{ order: `${el['app_order']}`, width: isPhone ? `calc(100% / ${onlyAuthor().length + 1})` : `100%` }}
                         className={`d-flex flex-column flex-lg-row align-items-center gap-3 py-4 py-lg-2 ${activePath && activePath.includes(el.path) ? styles.activeLink : null} `}
                     >
                         {el.icon}
                         <p className='mb-0 text-center text-lg-start'>{el.name}</p>
                     </Link>
                 ))}
+                <Link className={`d-flex flex-column flex-lg-row align-items-center gap-3 py-4 py-lg-2`} style={{ width: isPhone ? `calc(100% / ${onlyAuthor().length + 1})` : `100%` }} to='settings'><IoSettings />Settings</Link>
             </main>
             <footer onClick={logout} style={{ cursor: "pointer" }} className='col-12 d-flex text-center align-items-center text-white justify-content-center gap-3 p-3'>
                 <IoPower />

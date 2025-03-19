@@ -10,12 +10,14 @@ import useAuthentication from "../../shared/ui/hooks/useAuthentication";
 
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as yup from "yup";
-import { darkSwal, token, useAuth, useLoader } from "../../store-zustand";
+import { darkSwal, useAuth, useLoader, useToken } from "../../store-zustand";
+import { IoLockClosedOutline } from "react-icons/io5";
 
 export default function LoginPage() {
   // GlobalState
   const { setUserInfo } = useAuth();
   const { setLoaderIndex } = useLoader();
+  const { setToken, token } = useToken();
   const navigate = useNavigate();
   const { checkToken, userLogin } = useAuthentication();
   // LocalState
@@ -36,8 +38,9 @@ export default function LoginPage() {
       if (res) {
         if (res.err) {
           if (res.data != null) {
-            // let userInfo = res.data;
+            let userInfo = res.data;
             sessionStorage.setItem("user_email", values.email);
+            setToken(userInfo.user_token);
             Swal.fire({
               icon: "info",
               title: "User is not active",
@@ -58,6 +61,7 @@ export default function LoginPage() {
           let userInfo = res.data[0];
           setUserInfo(userInfo);
           values.rememberMe ? localStorage.setItem("$Token", userInfo.user_token) : sessionStorage.setItem("$Token", userInfo.user_token);
+          setToken(userInfo.user_token);
           Swal.fire({
             icon: "success",
             title: "Login Successfully !",
@@ -96,7 +100,7 @@ export default function LoginPage() {
     <div id={styles.LoginPage} className="col-12 p-4 pt-5 d-flex align-items-start justify-content-center">
       {
         tokenCheck &&
-        <div className="container d-flex flex-column align-items-center col-12 col-md-6 col-lg-5 animate__animated animate__fadeInDown" id={styles.loginContent}>
+        <div className="container d-flex flex-column align-items-center col-12 col-md-6 col-lg-4 animate__animated animate__fadeInDown" id={styles.loginContent}>
           <div className="col-12 d-flex flex-column gap-2 align-items-center" id={styles.logoHeader}>
             <img src={Logo} alt="IPACO Source Logo" />
             <h1 className="mb-0">Welcome Back</h1>

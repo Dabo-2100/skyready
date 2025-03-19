@@ -1,6 +1,6 @@
 #UsersApp {
     .content {
-        background-color: #171829;
+        background-color: var(--dark-800);
         height: 100%;
         overflow-y: auto;
 

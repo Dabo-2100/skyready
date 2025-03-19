@@ -7,6 +7,7 @@ export class User {
     }
 
     isSuper() { return this.is_super == 1 ? true : false }
+
     isAppAdmin(appId) {
         let obj = this.roles.find(el => el.app_id == appId);
         return (obj && obj.role_id == 1) ? true : false;

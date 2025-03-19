@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
 import { UsersRepo } from "../../../../users/data/repositories/UsersRepo";
-import { serverUrl, token, useOperators } from "../../../../../store-zustand";
+import { serverUrl, useOperators, useToken } from "../../../../../store-zustand";
 import useProjects from "../../hooks/useProjects";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
@@ -10,7 +10,7 @@ import { refresh } from "../../../../../shared/state/refreshIndexSlice";
 export default function Operators() {
     const dispatch = useDispatch();
     const nameInput = useRef();
-
+    const { token } = useToken();
     const { closeModal, active_task_id } = useOperators();
     const { updateTaskOperators, getTaskOperators } = useProjects();
     const [newIndex, setNewIndex] = useState(false);

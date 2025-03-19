@@ -1,8 +1,6 @@
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
-import { useRecoilState } from "recoil";
-import { $LoaderIndex } from "../../../../store-recoil";
 import NoData from "../../../../shared/ui/components/NoData";
 import useAircraft from "../hooks/useAircraft";
 import { User } from "../../../../shared/core/User";
@@ -10,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setActiveId } from "../../state/activeAircraftIdSlice";
 import PrintBtn from "../../../../shared/ui/components/PrintBtn";
 import { openModal } from "../../../../shared/state/modalSlice";
-import { useAuth } from "../../../../store-zustand";
+import { useAuth, useLoader } from "../../../../store-zustand";
 import { useLocation } from "react-router-dom";
 import { setAircraftFleet } from "../../state/aircraftFleetSlice";
 
@@ -19,8 +17,8 @@ export default function Aircraft() {
     const path = useLocation().pathname.split('/')[1];
     const activeId = apps.find(el => el.path == path).id;
     const userData = new User(userInfo);
+    const { setLoaderIndex, loaderIndex } = useLoader();
 
-    const [loaderIndex, setLoaderIndex] = useRecoilState($LoaderIndex);
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const aircraft = useSelector(state => state.aircraftFleet.aircraftFleet.value);
 

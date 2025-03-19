@@ -1,13 +1,13 @@
 .treeView {
   .TreeRoot {
     color: white;
-    background-color: #10101c;
+    background-color: var(--primary-color);
     padding: 1rem;
   }
   .ZoneRoot {
     color: white;
     border-radius: 6px;
-    background-color: #10101c;
+    background-color: var(--primary-color);
     &:hover {
       background-color: rgba(35, 46, 86, 0.593);
     }

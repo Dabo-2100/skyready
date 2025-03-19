@@ -11,6 +11,7 @@ import { setPackageInfo } from "../../../../aircraft-fleet/state/activeWorkPacka
 import { openModal2 } from "../../../../../shared/state/modalSlice";
 import { selectAllTasks, unselectAllTasks } from "../../../state/multiTasksSelectorSlice";
 import { useAuth } from "../../../../../store-zustand";
+import { useLocation } from "react-router-dom";
 
 export default function WorkPackage({ package_id, estimated_duration, package_name, start_at, end_at, work_package_progress, info }) {
     const dispatch = useDispatch();
@@ -80,9 +81,10 @@ export default function WorkPackage({ package_id, estimated_duration, package_na
     //     selectAllRef.current && (selectAllRef.current.checked = selectAllIndex);
 
     // }, [selectAllIndex]);
-    const { userInfo } = useAuth();
+    const { userInfo, apps } = useAuth();
     const user = new User(userInfo);
-    const appIndex = useSelector(state => state.home.activeAppIndex.value);
+    const path = useLocation().pathname.split('/')[1];
+    const appIndex = apps.find(el => el.path == path).id;
     return (
         <>
             <tr

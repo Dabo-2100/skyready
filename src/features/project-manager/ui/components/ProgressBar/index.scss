@@ -13,7 +13,7 @@
     font-size: 12px;
     font-weight: 800;
     padding: 4px 0;
-    color: #10101c;
+    color: var(--primary-color);
   }
   .bar {
     width: 0%;
@@ -22,6 +22,6 @@
     position: absolute;
     top: 0;
     left: 0;
-    background-image: linear-gradient(90deg, #383a63 0%, #5c61f2 100%);
+    background-image: linear-gradient(90deg, var(--violet-100) 0%, #5c61f2 100%);
   }
 }

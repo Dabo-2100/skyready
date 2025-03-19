@@ -17,15 +17,21 @@ import { HiUserAdd } from "react-icons/hi";
 import { useAuth, useOperators } from "../../../../../store-zustand"
 import Swal from "sweetalert2"
 import { refresh } from "../../../../../shared/state/refreshIndexSlice"
+import { useLocation } from "react-router-dom"
 
 export default function PackageTask(props) {
-    const {userInfo} = useAuth();
+
     const { openModal } = useOperators();
+
+    const { userInfo, apps } = useAuth();
     const user = new User(userInfo);
+    let path = useLocation().pathname.split('/')[1];
+    let appIndex = apps.find(el => el.path == path).id;
+
     const { removeWorkPackageTask, updateTaskOperators } = useProjects();
     const dispatch = useDispatch();
     const multiSelect = useSelector(state => state.projects.multiTasksSelector);
-    const appIndex = useSelector(state => state.home.activeAppIndex.value);
+
     const taskFilter = useSelector(state => state.projects.projectTasksFilter);
 
     const openTaskDetails = (event) => {

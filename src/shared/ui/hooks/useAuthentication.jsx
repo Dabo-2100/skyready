@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthRepo } from "../../data/repositories/AuthRepo";
-import { useAuth, serverUrl, darkSwal, token } from "../../../store-zustand";
+import { useAuth, serverUrl, darkSwal, useToken } from "../../../store-zustand";
 import Swal from "sweetalert2";
 
 export default function useAuthentication() {
     const { apps, setUserInfo, resetUserInfo } = useAuth();
+    const { token, resetToken } = useToken();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -20,7 +21,7 @@ export default function useAuthentication() {
         let user = await AuthRepo.user_info_by_token(serverUrl, token);
         if (!user) { navigate('/login'); return false }
         // check Authortiy
-        if (path != '') {
+        if (path != '' && path != 'settings') {
             let activeAppId = apps.find(el => el.path == path).id;
             let hasAuthority = user.user_roles.find(el => el.app_id == activeAppId);
             if (!hasAuthority) { navigate('/403'); return false }
@@ -46,6 +47,7 @@ export default function useAuthentication() {
             if (res.isConfirmed) {
                 localStorage.clear();
                 sessionStorage.clear();
+                resetToken()
                 resetUserInfo();
                 navigate('/login');
             }

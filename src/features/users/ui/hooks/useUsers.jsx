@@ -5,9 +5,10 @@ import { formCheck } from "../../../../validator";
 import { closeModal } from "../../../../shared/state/modalSlice";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { serverUrl, token } from "../../../../store-zustand";
+import { serverUrl, useToken } from "../../../../store-zustand";
 
 export default function useUsers() {
+    const { token } = useToken();
     const dispatch = useDispatch();
     const userToEdit = useSelector(state => state.users.activeUser.value);
 

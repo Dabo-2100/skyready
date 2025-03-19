@@ -4,10 +4,11 @@ import { AircraftRepo } from "../../data/repositories/AircraftRepo";
 import { formCheck } from "../../../../validator";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
 import { closeModal } from "../../../../shared/state/modalSlice";
-import { darkSwal, serverUrl, token, useLoader } from "../../../../store-zustand";
+import { darkSwal, serverUrl, useLoader, useToken } from "../../../../store-zustand";
 
 export default function useAircraft() {
-    const{setLoaderIndex} = useLoader();
+    const { token } = useToken();
+    const { setLoaderIndex } = useLoader();
     const dispatch = useDispatch();
     const editAircaft_id = useSelector(state => state.aircraftFleet.activeAircraftId.value);
     const activeWorkPackageInfo = useSelector(state => state.aircraftFleet.activeWorkPackageInfo.value);

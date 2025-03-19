@@ -5,10 +5,11 @@ import { refresh } from "../../../../../shared/state/refreshIndexSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { ProjectsRepo } from "../../../data/repositories/ProjectsRepo";
-import { darkSwal, serverUrl, token } from "../../../../../store-zustand";
+import { darkSwal, serverUrl, useToken } from "../../../../../store-zustand";
 
 export default function ProgressBar({ status_id, log_id, percentage, canEdit }) {
     const dispatch = useDispatch();
+    const { token } = useToken();
     const [editIndex, setEditIndex] = useState(false);
     const theSelect = useRef();
     const projectStatus = useSelector(state => state.projects.projectTaskStatus.value);

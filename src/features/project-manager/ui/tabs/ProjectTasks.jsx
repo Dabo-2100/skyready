@@ -11,6 +11,7 @@ import { setAvailablePackages, setActivePackages } from "../../state/activeProje
 import WorkPackage from "../components/WorkPackage";
 import MultiSelector from "../components/MultiSelector";
 import { useAuth } from "../../../../store-zustand";
+import { useLocation } from "react-router-dom";
 
 export default function ProjectTasks() {
     const multiSelect = useSelector(state => state.projects.multiTasksSelector);
@@ -19,9 +20,11 @@ export default function ProjectTasks() {
     const activeProject = useSelector(state => state.projects.activeProject);
     const projectTasksFilters = useSelector(state => state.projects.projectTasksFilter);
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
-    const { userInfo } = useAuth();
+    const { userInfo, apps } = useAuth();
     const user = new User(userInfo);
-    const appIndex = useSelector(state => state.home.activeAppIndex.value);
+    const path = useLocation().pathname.split('/')[1];
+    let appIndex = apps.find(el => el.path == path).id;
+
     const dispatch = useDispatch();
     const [workpackages, setWorkPackaes] = useState([]);
     const [wpView, setwpView] = useState([]);
@@ -112,7 +115,7 @@ export default function ProjectTasks() {
 
     return (
         <div className="col-12 d-flex flex-column flex-grow-1 position-relative p-3 pt-2"
-            style={{ background: "#171829", borderTop: "1px solid grey" }}
+            style={{ background: "var(--dark-800)", borderTop: "1px solid grey" }}
         >
 
             {multiSelect.index && (<MultiSelector />)}
@@ -126,7 +129,7 @@ export default function ProjectTasks() {
                     <div className="overflow-auto col-12 flex-grow-1" style={{ height: "20px" }}>
                         <table className="table table-tree mb-0 ">
                             <thead>
-                                <tr style={{ background: "#10101c !important" }}>
+                                <tr style={{ background: "var(--primary-color) !important" }}>
                                     <th>-</th>
                                     <th colSpan={projectTasksFilters.tableView.reduce((old, el, index) => {
                                         if (index < 4 && el.active) {
@@ -145,6 +148,7 @@ export default function ProjectTasks() {
                                     {projectTasksFilters.tableView[7].active && <th>Start Date</th>}
                                     {projectTasksFilters.tableView[8].active && <th>End Date</th>}
                                     {user.isAppAdmin(appIndex) && projectTasksFilters.tableView[9].active && <th>Package Actions</th>}
+                                    {projectTasksFilters.tableView[10].active && <th>End Date</th>}
                                 </tr>
                             </thead>
                             <tbody>

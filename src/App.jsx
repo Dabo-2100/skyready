@@ -1,6 +1,6 @@
 
 import { Route, Routes } from "react-router-dom";
-import { LoginPage, WelcomePage } from "./routes";
+import { LoginPage, SettingsPage, WelcomePage } from "./routes";
 import Loader from "./shared/ui/components/Loader";
 
 import AppLayout from "./layouts/AppLayout";
@@ -23,6 +23,7 @@ export default function App() {
           <Route path="fleet" element={<FleetApp />} />
           <Route path="projects" element={<ProjectsApp />} />
           <Route path="users" element={<UsersApp />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
 
         <Route path="/">

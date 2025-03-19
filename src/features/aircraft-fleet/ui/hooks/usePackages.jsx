@@ -7,10 +7,11 @@ import { setAllZones } from "../../state/selectedZonesSlice";
 import { refresh } from "../../../../shared/state/refreshIndexSlice";
 import { resetActiveType } from "../../state/activeWorkPackageTypeIdSlice";
 import { closeModal } from "../../../../shared/state/modalSlice";
-import { darkSwal, serverUrl, token, useLoader } from "../../../../store-zustand";
+import { darkSwal, serverUrl, useLoader, useToken } from "../../../../store-zustand";
 
 export default function usePackages() {
-    const{setLoaderIndex} = useLoader();
+    const { setLoaderIndex } = useLoader();
+    const { token } = useToken();
     const dispatch = useDispatch();
 
     const getWorkPackageTypes = async () => {

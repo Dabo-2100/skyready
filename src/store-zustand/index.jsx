@@ -7,7 +7,11 @@ export const serverUrl = window.location.href.includes("localhost")
     ? "http://localhost/skyready/public"
     : "";
 
-export const token = sessionStorage.getItem("$Token") || localStorage.getItem("$Token");
+export const useToken = create((set) => ({
+    token: sessionStorage.getItem("$Token") || localStorage.getItem("$Token"),
+    setToken: (token) => (set(() => ({ token }))),
+    resetToken: () => (set(() => ({ token: undefined })))
+}))
 
 export const darkSwal = {
     popup: "dark-theme",
@@ -103,7 +107,6 @@ export const useLoader = create((set) => ({
     setLoaderIndex: (value) => (set(() => ({ loaderIndex: value })))
 }))
 
-
 export const useAuth = create((set) => ({
     userInfo: undefined,
     apps: [
@@ -114,7 +117,6 @@ export const useAuth = create((set) => ({
     setUserInfo: (user) => (set(() => ({ userInfo: { ...user } }))),
     resetUserInfo: () => (set(() => ({ userInfo: undefined })))
 }))
-
 
 export const useProjectDetailsModal = create((set) => ({
     index: false,

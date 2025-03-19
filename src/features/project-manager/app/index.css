@@ -2,7 +2,7 @@
   color : white;
   .Tab {
     .content {
-      background-color: #171829;
+      background-color: var(--dark-800);
       overflow-x: auto;
     }
 
@@ -38,7 +38,7 @@
 
   .package-active {
     color: white !important;
-    background-color: #383a63;
+    background-color: var(--violet-100);
     border-radius: 8px 8px 0 0;
   }
 
@@ -63,7 +63,7 @@
       td {
         border: 0 !important;
         color: rgba(255, 255, 255, 0.6);
-        background-color: #10101c !important;
+        background-color: var(--primary-color) !important;
       }
     }
 
@@ -87,11 +87,11 @@
 }
 
 .selectedTask {
-  background-color: #171829 !important;
+  background-color: var(--dark-800) !important;
 
   th,
   td {
-    background-color: #171829 !important;
+    background-color: var(--dark-800) !important;
     color: white !important;
   }
 }
@@ -113,7 +113,7 @@
       min-width: max-content;
       white-space: nowrap;
       font-weight: 600;
-      background-color: #10101c !important;
+      background-color: var(--primary-color) !important;
       color: white;
       padding: 8px;
       text-align: center;
@@ -178,7 +178,7 @@
       th,
       td {
         color: white !important;
-        background-color: #10101c !important;
+        background-color: var(--primary-color) !important;
         font-size: 12px !important;
 
       }
@@ -186,7 +186,7 @@
 
     .task {
       transition: ease all 300ms;
-      background-color: #171829 !important;
+      background-color: var(--dark-800) !important;
 
       &:hover {
         background-color: rgb(56 58 99 / 63%) !important;

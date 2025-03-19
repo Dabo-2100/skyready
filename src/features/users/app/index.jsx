@@ -22,7 +22,7 @@ export default function UsersApp() {
         <div className="col-12 d-flex flex-column p-3" id={styles.UsersApp}>
             <div className={"col-12 d-flex flex-column p-3 rounded-4 gap-3 " + styles.content}>
                 <div className="col-12 d-flex align-items-center justify-content-between ">
-                    <h5 className="m-0">Users List</h5>
+                    <h5 className="m-0 text-white">Users List</h5>
                     <button className="btn addBtn" onClick={() => { dispatch(openModal(7000)) }}>
                         <FontAwesomeIcon icon={faPlus} /> Add User
                     </button>

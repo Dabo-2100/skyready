@@ -126,3 +126,17 @@ function auth_active_user()
         echo 'Method Not Allowed';
     }
 }
+
+// function reset_token()
+// {
+//     global $method, $response, $POST_data;
+//     if ($method === "POST") {
+//         $operator_info = checkAuth();
+//         $user_email = $POST_data['user_email'];
+
+//         createToken();
+//         echo json_encode($response, true);
+//     } else {
+//         echo 'Method Not Allowed';
+//     }
+// }

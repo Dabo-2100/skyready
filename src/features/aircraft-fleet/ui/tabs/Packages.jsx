@@ -10,14 +10,13 @@ import usePackages from "../hooks/usePackages";
 import { setWorkPackages } from "../../state/workPackagesSlice";
 import { setWorkPackageTypes } from "../../state/workPackageTypesSlice";
 import { buildTree } from "../../../../shared/utilities/buildTree";
-import { useRecoilState } from "recoil";
-import { $LoaderIndex } from "../../../../store-recoil";
 import { openModal } from "../../../../shared/state/modalSlice";
 import TreeView from "../../../../shared/ui/components/Tree";
 import ControlsBtn from "../../../../shared/ui/components/ControlsBtn";
+import { useLoader } from "../../../../store-zustand";
 
 export default function Packages() {
-    const [loaderIndex, setLoaderIndex] = useRecoilState($LoaderIndex);
+    const { setLoaderIndex, loaderIndex } = useLoader();
     const dispatch = useDispatch();
     const refreshIndex = useSelector(state => state.home.refreshIndex.value);
     const workPackages = useSelector(state => state.aircraftFleet.workPackages.value);

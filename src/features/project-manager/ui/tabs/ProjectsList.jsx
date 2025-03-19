@@ -73,9 +73,7 @@ export default function ProjectsList() {
                 <th>Due Date</th>
                 <th>Progress %</th>
                 <th>Status</th>
-                {
-                  user.isSuper() && <th>Actions</th>
-                }
+                {user.isSuper() && <th>Actions</th>}
               </tr>
             </thead>
             <tbody>

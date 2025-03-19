@@ -4,12 +4,14 @@
   /* // Dark Mode */
   --primary-color: #050a16;
   --secondary-color: #818cf8;
+  --dark-800: #0c1221;
   --grey-100: #b4bfd9;
   --grey-200: #9eaac4;
   --border-color: #1a2640;
   --icons-color: #394052;
   --hover-color: #171e38;
-  --purple-100: rgb(79, 70, 229);
+  --violet-100: rgb(79, 70, 229);
+  
 }
 
 
@@ -141,9 +143,10 @@ body,
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #10101c;
+  background-color: var(--primary-color);
 
   .modalHeader {
+    color : white;
     .homeIcon {
       cursor: pointer;
     }
@@ -164,7 +167,7 @@ ul {
 }
 
 .swal2-popup.dark-theme {
-  background-color: #10101c;
+  background-color: var(--primary-color);
   border: 1px solid black;
   color: rgba(255, 255, 255, 0.6);
   box-shadow: rgb(255 255 255 / 11%) 0px 0px 10px 4px;
@@ -614,7 +617,7 @@ tr {
 
 .NavAndTabs {
   ul {
-    background-color: #171829;
+    background-color: var(--dark-800);
 
     li {
       background-color: transparent;
@@ -627,7 +630,7 @@ tr {
     }
 
     li.active {
-      background-color: #383a63;
+      background-color: var(--violet-100);
       color: white;
       font-weight: 600;
     }

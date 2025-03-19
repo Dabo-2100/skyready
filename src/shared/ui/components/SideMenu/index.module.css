@@ -1,16 +1,17 @@
 #SideMenu {
   width: 275px;
   height: 100vh;
-  background-color: #171829;
+  background-color: var(--primary-color);
   transition: ease all 250ms;
   position: relative;
+  border-right: 1px solid var(--border-color);
 
   * {
     transition: ease all 250ms;
   }
 
   header {
-    border-bottom: 1px solid rgba(106, 113, 133, 0.2);
+    border-bottom: 1px solid var(--border-color);
     color: white;
   }
 
@@ -18,7 +19,7 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    border-top: 1px solid rgba(106, 113, 133, 0.2);
+    border-top: 1px solid var(--border-color);
 
     @media screen and (max-width: 991px) {
       position: static;

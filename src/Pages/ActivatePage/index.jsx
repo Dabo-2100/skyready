@@ -5,8 +5,9 @@ import { useState } from "react";
 
 import axios from "axios";
 import Swal from "sweetalert2";
-import { darkSwal, serverUrl, token, useLoader } from "../../store-zustand";
+import { darkSwal, serverUrl, useLoader, useToken } from "../../store-zustand";
 export default function ActivatePage() {
+  const { token } = useToken();
   const { setLoaderIndex } = useLoader();
   const navigate = useNavigate();
   const [checkEmail, setCheckEmail] = useState();
