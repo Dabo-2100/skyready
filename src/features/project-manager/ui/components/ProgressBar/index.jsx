@@ -1,4 +1,4 @@
-import "./index.scss";
+import "./index.css";
 import { useEffect, useRef, useState } from 'react';
 import Swal from "sweetalert2";
 import { refresh } from "../../../../../shared/state/refreshIndexSlice";

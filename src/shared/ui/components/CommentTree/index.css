@@ -1,0 +1,22 @@
+.treeView {
+  .commentRoot {
+    border-radius: 6px;
+    background-color: #f0f1f5;
+    color: black;
+  }
+
+  .TreeRoot {
+    background-color: var(--primary-color);
+    padding: 1rem;
+    color: white;
+  }
+
+  .connector {
+    position: absolute;
+    height: 2px;
+    width: 16px;
+    background-color: rgb(148, 148, 148);
+    top: calc(50% - 1px);
+    left: -16px;
+  }
+}

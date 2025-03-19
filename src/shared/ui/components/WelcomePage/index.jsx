@@ -1,21 +1,9 @@
-import "./index.scss";
+import "./index.css";
 import Logo from "@/assets/IPACOLogo.png";
 import { useAuth } from "../../../../store-zustand";
 export default function WelcomePage() {
     const { userInfo } = useAuth();
 
-    // const [updateIndex, setUpdateIndex] = useState(false);
-
-    // const updateSystem = () => {
-    //     localStorage.clear();
-    //     localStorage.setItem("UpdateDone", true);
-    //     window.location.reload();
-    // }
-
-    // useEffect(() => {
-    //     let x = localStorage.getItem("UpdateDone");
-    //     if (x) { setUpdateIndex(true) }
-    // }, []);
     return (
         <div className='col-12 d-flex align-items-center justify-content-center' id="WelcomePage">
             <div className="content d-flex flex-column align-content-center align-items-center">

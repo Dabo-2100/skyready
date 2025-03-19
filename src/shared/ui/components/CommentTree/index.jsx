@@ -1,4 +1,4 @@
-import "./index.scss";
+import "./index.css";
 import CommentNode from './CommentNode';
 import PropTypes from "prop-types";
 

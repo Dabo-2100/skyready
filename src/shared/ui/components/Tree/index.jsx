@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import TreeNode from './TreeNode';
 import ZoneNode from './ZoneNode';
-import "./index.scss";
+import "./index.css";
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 

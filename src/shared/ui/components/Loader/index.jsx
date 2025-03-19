@@ -1,5 +1,5 @@
 import IPACOLoader from "./logo.gif";
-import "./index.scss";
+import "./index.css";
 export default function Loader() {
   return (
     <div className="col-12" id="Loader">
