@@ -12,9 +12,8 @@ function final_Report()
 {
     global $method, $response, $pdo;
     if ($method === "GET") {
-        $all_projects = getRows("app_projects", "project_progress != 100");
+        $all_projects = getRows("app_projects", "project_progress != 100 AND project_name NOT LIKE '%IPACO%'");
         $data = [];
-
         foreach ($all_projects as $index => $project) {
             $project_obj = [];
             $project_obj['project_id'] = $project['project_id'];
